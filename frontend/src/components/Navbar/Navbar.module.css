@@ -1,0 +1,109 @@
+/* ===== CONTENEDOR PRINCIPAL DEL NAVBAR ===== */
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  margin: 15px auto;
+  width: 100%;
+  max-width: 550px;
+  
+  background-color: rgba(30, 30, 30, 0.2); 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  /* Asegura que no se rompa el contenedor con el scroll interno en móviles */
+  overflow: hidden; 
+}
+
+/* ===== LISTA DE NAVEGACIÓN ===== */
+.navList {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== CONTENEDOR DEL ELEMENTO LI ===== */
+.navItem {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* ===== LÍNEAS DIVISORIAS ENTRE OPCIONES ===== */
+.navItem:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  height: 20px;
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* ===== OPCIONES ESTILO BOTÓN INTERACTIVO ===== */
+.navLink {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+  text-decoration: none;
+  width: 100%;
+  padding: 10px 14px;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              background-color 0.2s ease, 
+              box-shadow 0.2s ease,
+              color 0.2s ease;
+}
+
+.navLink:hover {
+  color: #ffffff;
+  background-color: #7a0f2b;
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(122, 15, 43, 0.3);
+  z-index: 2;
+}
+
+/* 📱 RESPONSIVE: MODO CARRUSEL DESLIZABLE HORIZONTAL */
+@media (max-width: 600px) {
+  .navbar {
+    border-radius: 20px;
+    padding: 6px 12px;
+    /* Activa scroll horizontal si el contenido desborda en pantallas pequeñas */
+    overflow-x: auto; 
+    scrollbar-width: none; /* Oculta barra en Firefox */
+  }
+
+  .navbar::-webkit-scrollbar {
+    display: none; /* Oculta barra en Chrome/Safari/Edge */
+  }
+
+  .navList {
+    width: auto;
+    gap: 8px; /* Espaciado entre botones del carrusel */
+  }
+
+  .navItem {
+    flex: 0 0 auto; /* Evita que los botones se encojan o aplasten */
+  }
+
+  .navItem:not(:last-child)::after {
+    display: none; /* Quitamos las líneas divisorias para dar un aspecto de tarjetas/píldoras sueltas */
+  }
+
+  .navLink {
+    padding: 8px 16px;
+    background-color: rgba(0, 0, 0, 0.1); /* Fondo sutil para denotar que son botones individuales deslizables */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}

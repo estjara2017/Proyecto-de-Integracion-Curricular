@@ -1,0 +1,69 @@
+/* src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+/* ===== RESET GLOBAL ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== VARIABLES DE DISEÑO ===== */
+:root {
+  --color-primary: #7a0f2b; 
+  --color-tittle:#a05c6e;  
+  --color-secondary: #1a1a1a; 
+  --color-subtitle: #0f0f10;        
+  --color-text: #2c2a2a;      
+  --color-accent: #c1c1c1;
+  --color-background: #e6dbdb;
+}
+
+/* ===== CONFIGURACIÓN GLOBAL ===== */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+/* ===== TIPOGRAFÍA Y FONDO BASE ===== */
+body {
+  font-family: 'Oswald', 'Montserrat', sans-serif;
+  color: var(--color-text);
+  background-color: #e6dbdb; /* El color claro que solicitas que permanezca siempre */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== ELEMENTOS BASE ===== */
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+p {
+  color: var(--color-accent);
+}
+
+/* ===== BOTONES BASE ===== */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+/* ===== LINKS ===== */
+a {
+  text-decoration: none;
+  color: var(--color-primary);
+}
+
+/* ===== SCROLLBAR (opcional pero pro) ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+}

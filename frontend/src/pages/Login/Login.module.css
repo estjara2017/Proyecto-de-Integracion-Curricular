@@ -1,0 +1,137 @@
+/* CONTENEDOR PRINCIPAL (Pantalla completa) */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;                 
+  min-height: 100vh;
+  width: 100vw;
+  font-family: Arial, sans-serif;
+  padding: 40px;
+  position: relative;
+}
+
+/* CONTENEDOR DE LA ALERTA: Se encarga del centrado horizontal superior */
+.alertContainer {
+  position: fixed;
+  top: 25px;                 /* Despegado ligeramente del techo */
+  left: 0;
+  width: 100vw;
+  display: flex;
+  justify-content: center;   /* Centra horizontalmente su contenido */
+  padding: 0 20px;           /* Evita que toque los bordes en pantallas chicas */
+  z-index: 1000;
+  pointer-events: none;      /* Permite hacer clics a través del contenedor */
+}
+
+/* LA ALERTA FÍSICA */
+.alert {
+  pointer-events: auto;      /* Devuelve los eventos de mouse solo a la alerta */
+  background-color: #83204b; /* Color morado principal de tu diseño */
+  color: white;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 500px;          /* Evita que se estire demasiado en pantallas gigantes */
+  width: 100%;
+  animation: entradaSuperior 0.3s ease-out;
+}
+
+/* Animación de entrada de arriba hacia abajo */
+@keyframes entradaSuperior {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* SECCIÓN IZQUIERDA: EL LOGO */
+.left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  width: 100%;
+  max-width: 360px;         
+  height: auto;
+  object-fit: contain;
+}
+
+/* SECCIÓN DERECHA: TARJETA DEL FORMULARIO */
+.right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* TARJETA DEL FORMULARIO (Translúcida con tono plomo) */
+.formCard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 320px;
+  padding: 35px 30px;
+  background-color: rgba(30, 30, 30, 0.2); 
+  backdrop-filter: blur(4px);              
+  border: 1px solid rgba(0, 0, 0, 0.08);    
+  border-radius: 12px;                      
+}
+
+.formCard h2 {
+  font-size: 22px;
+  color: #2c2a2a;                             
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+/* CAMPOS DE ENTRADA */
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;                       
+  background-color: rgba(255, 255, 255, 0.7); 
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #7a0f2b;                     
+  background-color: #ffffff;
+}
+
+/* CONTENEDOR DE BOTONES */
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+/* RESPONSIVE (Ajuste para móviles) */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;                  
+    padding: 20px;
+  }
+
+  .logo {
+    max-width: 180px;                        
+  }
+
+  .formCard {
+    width: 100%;
+    max-width: 300px;
+  }
+}

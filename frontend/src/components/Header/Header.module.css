@@ -1,0 +1,43 @@
+/* ===== BARRA SUPERIOR (LOGO Y NAVBAR) ===== */
+.topBar {
+  background-color: #bfbfbf;
+  width: 100%;
+  padding: 10px 20px;
+  box-sizing: border-box;
+}
+
+/* Contenedor interno para simetría del ancho máximo */
+.topBarContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Mantiene el logo y el menú agrupados al centro */
+  gap: 40px;
+  width: 100%;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
+.navWrapper {
+  display: flex;
+  align-items: center;
+}
+
+/* 📱 RESPONSIVE (Móviles y Tablets) ===== */
+@media (max-width: 768px) {
+  .topBarContainer {
+    flex-direction: column; /* Apila el logo arriba y el menú abajo en celulares */
+    gap: 15px;
+    padding: 5px 0;
+  }
+}

@@ -1,0 +1,178 @@
+/* ===== CONTENEDOR PRINCIPAL (Pantalla completa) ===== */
+.container {
+  display: flex;
+  flex-direction: column;     
+  justify-content: center;
+  align-items: center;
+  gap: 30px;                  
+  min-height: 100vh;
+  width: 100vw;
+  font-family: Arial, sans-serif;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+/* ===== TARJETA DE REGISTRO HORIZONTAL ===== */
+.formCard {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+  max-width: 700px;          
+  padding: 35px 40px;
+  
+  background-color: rgba(30, 30, 30, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.formCard h2 {
+  font-size: 24px;
+  color: #2c2a2a; 
+  margin: 0;
+  text-align: center;
+}
+
+/* ===== MALLA DE CAMPOS (2 Columnas perfectas) ===== */
+.gridFields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 16px;
+  width: 100%;
+}
+
+/* El campo de descripción ahora toma las dos columnas inferiores de la grilla */
+.fullWidthField {
+  grid-column: span 2;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.input, .select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;         
+  background-color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.input:focus, .select:focus {
+  outline: none;
+  border-color: #7a0f2b;       
+  background-color: #ffffff;
+}
+
+/* Look inactivo cuando está bloqueado */
+.disabledInput {
+  background-color: rgba(220, 215, 215, 0.5) !important;
+  color: #757070;
+  cursor: not-allowed;
+  border-style: dashed;       
+}
+
+/* ===== SECCIÓN INFERIOR DE BOTONES ===== */
+.buttons {
+  display: flex;
+  justify-content: center;    
+  gap: 16px;                  
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btnWrapper {
+  width: 140px;               
+}
+
+/* ===== CONTENEDOR DEL LOGO ===== */
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.logo {
+  width: 100%;
+  max-width: 220px;          
+  height: auto;
+  object-fit: contain;
+}
+
+.planAlert {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background-color: rgba(131, 32, 75, 0.15); 
+  border-left: 5px solid #83204b;              
+  padding: 14px 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 700px;                            
+  box-sizing: border-box;
+  animation: slideDown 0.4s ease forwards;     
+}
+
+.planAlert p {
+  margin: 0;
+  color: #5c1232; 
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.alertIcon {
+  font-size: 18px;
+}
+
+/* 📱 RESPONSIVE ===== */
+@media (max-width: 680px) {
+  .formCard {
+    padding: 25px 20px;
+  }
+
+  .gridFields {
+    grid-template-columns: 1fr; 
+    gap: 12px;
+  }
+
+  .fullWidthField {
+    grid-column: span 1; 
+  }
+
+  .buttons {
+    flex-direction: column;   
+    align-items: center;
+    gap: 12px;                
+  }
+
+  .btnWrapper {
+    width: 100%;              
+    max-width: 280px;         
+  }
+
+  .logo {
+    max-width: 160px;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

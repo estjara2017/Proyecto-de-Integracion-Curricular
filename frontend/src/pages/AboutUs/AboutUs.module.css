@@ -1,0 +1,204 @@
+/* ===== CONTENEDOR RAÍZ ===== */
+.container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #e6dbdb; /* Fondo global original intacto */
+}
+
+/* ===== CONTENIDO CENTRAL ===== */
+.mainContent {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.sectionHeader h1 {
+  font-family: 'Special Elite', system-ui; /* Tipografía estilo máquina rústica */
+  font-size: 2.5rem;
+  color: var(--color-tittle);              /* Variable del index.css */
+  margin-bottom: 10px;
+  text-transform: uppercase;               /* Mayúsculas para mantener estética urbana */
+}
+
+.sectionHeader h2 {
+  font-size: 1.2rem;
+  color: #000000;
+  font-weight: normal;
+}
+
+/* ===== SECCIÓN DEL CARRUSEL INTERACTIVO ===== */
+.carouselSection {
+  margin-bottom: 50px;
+}
+
+.carouselSection h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #444;
+  text-transform: uppercase;
+}
+
+/* Contenedor flexible para alinear los botones laterales y la grilla */
+.carouselWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 15px;
+}
+
+/* ===== BOTONES DE NAVEGACIÓN ===== */
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #83204b; 
+  color: #ffffff;            
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;        
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  flex-shrink: 0;            
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navButton:hover {
+  background-color: #aa4373; 
+  transform: scale(1.05);    
+}
+
+/* Grilla del carrusel */
+.instagramGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  flex: 1;
+}
+
+.mediaContainer {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 1 / 1;
+  background-color: #000; 
+}
+
+.carouselMedia {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(131, 32, 75, 0.7); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  text-decoration: none; 
+}
+
+.overlay span {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 0.95rem;
+  border: 1px solid #fff;
+  padding: 8px 12px;
+  border-radius: 20px;
+}
+
+.mediaContainer:hover .carouselMedia {
+  transform: scale(1.05);
+}
+
+.mediaContainer:hover .overlay {
+  opacity: 1;
+}
+
+.indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.activeDot {
+  background-color: #83204b; 
+  width: 12px;
+  height: 12px;
+}
+
+/* ===== SECCIÓN RECUADROS SIMÉTRICOS: MISIÓN Y VISIÓN ===== */
+.aboutGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.misionCard, .visionCard {
+  background-color: #a09d9d; /* Color grisáceo/marrón opaco de fondo de tus tarjetas */
+  border-radius: 16px;
+  padding: 25px 30px;
+  box-sizing: border-box;
+}
+
+.misionCard h2, .visionCard h2 {
+  font-size: 1.6rem;
+  color: #7a0f2b; /* Alineado a tu --color-primary de marca */
+  margin: 0 0 10px 0; /* Margen inferior controlado */
+  text-transform: uppercase;
+}
+
+.misionCard p, .visionCard p {
+  color: #000000; /* Alineado a tu --color-text */
+  line-height: 1.5;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+/* ===== MEDIA QUERIES (Responsivo) ===== */
+@media (max-width: 900px) {
+  .instagramGrid {
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
+
+@media (max-width: 768px) {
+  .aboutGrid {
+    grid-template-columns: 1fr; /* Pasan a una sola columna en móviles */
+    gap: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .instagramGrid {
+    grid-template-columns: 1fr; 
+  }
+}

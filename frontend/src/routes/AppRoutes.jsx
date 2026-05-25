@@ -1,0 +1,24 @@
+import { Routes, Route } from 'react-router-dom'
+import Login from '../pages/Login/Login'
+import Home from '../pages/Home/Home'
+import Register from '../pages/Register/Register'
+import Contacts from '../pages/Contacts/Contacts'
+import AboutUs from '../pages/AboutUs/AboutUs'
+import Services from '../pages/Services/Services'
+import Plans from '../pages/Plans/Plans'
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/contacts" element={<Contacts/>} />
+      <Route path="/about" element={<AboutUs/>} />
+      <Route path="/services" element={<Services/>} />
+      <Route path="/plans" element={<Plans/>} />
+    </Routes>
+  )
+}
+
+export default AppRoutes

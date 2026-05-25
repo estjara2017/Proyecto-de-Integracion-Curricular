@@ -1,0 +1,74 @@
+/* CONTENEDOR GENERAL (Pantalla Completa) */
+.container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+/* CONTENEDOR ESPECÍFICO DEL NAVBAR */
+.navbarContainer {
+  width: 100%;
+  padding-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+/* CONTENIDO CENTRAL (Logo y Botones de sesión) */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin-top: -40px;
+}
+
+/* LOGO */
+.logo {
+  width: 480px;
+  max-width: 90%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* BOTONES DE INICIO/REGISTRO */
+.buttons {
+  display: flex;
+  flex-direction: row; /* Forzado explícitamente a mantenerse horizontal */
+  gap: 20px;
+}
+
+/* 📱 RESPONSIVE GENERAL GENERAL (Tablets y Smartphones standard) */
+@media (max-width: 768px) {
+  .content {
+    margin-top: 0;
+    gap: 30px;
+  }
+
+  /* Los botones siguen horizontales aquí gracias a flex-direction: row ancestral */
+  .buttons {
+    gap: 15px; 
+  }
+
+  .logo {
+    width: 280px; /* Tamaño balanceado para pantallas medianas/pequeñas */
+  }
+}
+
+/* 📱 RESPONSIVE CRÍTICO (Solo celulares extremadamente pequeños) */
+@media (max-width: 380px) {
+  .buttons {
+    flex-direction: column; /* Solo se apilan si la pantalla ya no da espacio físico */
+    width: 100%;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 220px;
+  }
+}

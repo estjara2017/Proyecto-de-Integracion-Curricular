@@ -1,0 +1,409 @@
+/* Contenedor general de la página completa */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #e4dcdc;
+  font-family: Arial, sans-serif;
+}
+
+/* Espaciado del cuerpo principal */
+.mainContent {
+  flex: 1;
+  padding: 60px 40px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Contenedor de grilla simétrica de 2 columnas */
+.splitLayoutContainer {
+  display: flex;
+  width: 100%;
+  max-width: 1300px;
+  gap: 80px;         /* Separación elegante entre columnas */
+}
+
+/* Envoltura para cada columna independiente */
+.columnWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Título de la sección izquierda */
+.sectionTitle {
+  font-size: 28px;
+  font-weight: bold;
+  color:var(--color-primary);
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+/* Título de la sección derecha (Simétrico) */
+.sectionTitleRight {
+  font-size: 28px;
+  font-weight: bold;
+  color:var(--color-primary);
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+/* Contenedor de la lista de acordeones */
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.serviceItem {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Encabezado Clásico (Izquierda: Texto - Icono) */
+.serviceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+/* EFECTO ESPEJO: Encabezado Invertido (Derecha: Icono - Texto) */
+.serviceHeaderInverse {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.serviceTitleText {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+  text-transform: uppercase;
+}
+
+/* Interacciones visuales compartidas (Hover y Activo) */
+.serviceHeader:hover .serviceTitleText,
+.serviceHeaderInverse:hover .serviceTitleText,
+.activeHeader .serviceTitleText {
+  color: #83204b; /* Morado corporativo */
+}
+
+.icon {
+  font-size: 20px;
+  color: #83204b;
+  font-weight: bold;
+}
+
+/* Cierre visual inferior de las listas */
+.finalLine {
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+/* --- ANIMACIONES DE DESPLIEGUE --- */
+.dropdownContent {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgba(30, 30, 30, 0.02);
+}
+
+.open {
+  max-height: 800px;
+}
+
+.cardBody {
+  padding: 0px 10px 25px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.serviceDescription {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.mediaContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+/* CAMBIO AQUÍ: Adaptación inteligente del tamaño de imágenes y videos */
+.serviceImage,
+.serviceVideo {
+  width: 100%;
+  height: 280px;
+
+  object-fit: cover;          
+  object-position: center 30%; 
+
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.serviceImage {
+  object-position: center 10%;
+}
+
+.serviceVideo {
+  object-position: center 30%;
+}
+
+/* --- HOJA DE ESTILOS ADAPTADA PARA LOS CARRUSELES DINÁMICOS --- */
+
+.openCarousel {
+  max-height: 1200px; /* Aumentado para soportar el carrusel + video en el layout */
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+}
+
+.carouselWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 15px;
+  position: relative;
+}
+
+/* Indicador superior dinámico para la sección de Extras */
+.sectionIndicatorName {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #83204b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+/* Contenedor relativo para estructurar las flechas encima de las imágenes */
+.carouselViewport {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+/* Grid de distribución interna para las 2 Tarjetas */
+.carouselGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  padding: 0 10px;
+}
+
+/* Estilo exacto de las tarjetas de imágenes */
+.carouselImageCard {
+  background-color: #fdfdfd;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  height: 210px;
+  display: flex;
+}
+
+.carouselImageCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Botones de dirección de navegación (Flechas) */
+.arrowButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(131, 32, 75, 0.85);
+  color: #ffffff;
+  border: none;
+  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.arrowButton:hover {
+  background: #83204b;
+}
+
+.leftArrow {
+  left: -12px;
+}
+
+.rightArrow {
+  right: -12px;
+}
+
+/* Puntos de progreso del carrusel */
+.carouselDots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dot:hover {
+  background-color: #83204b;
+}
+
+.activeDot {
+  background-color: #83204b;
+  transform: scale(1.25);
+}
+
+/* Contenedor de Video inferior (Sección de Nuestro Local) */
+.standaloneVideoContainer {
+  margin-top: 20px;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* (Conserva todo tu código CSS anterior intacto e integra estas nuevas líneas al final) */
+
+/* Clase de apertura específica para la altura de la rejilla de equipos */
+.openGrid {
+  max-height: 1000px;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgba(30, 30, 30, 0.02);
+}
+
+/* Contenedor Grid: 3 columnas arriba y 3 abajo */
+.equipmentGridContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 16px; /* 20px de espacio vertical, 16px horizontal */
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Tarjeta individual de equipo */
+.equipmentCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espacio sutil entre el cuadro y el texto inferior */
+}
+
+/* Envoltura/Cuadro contenedor de la imagen */
+.equipmentImageWrapper {
+  width: 100%;
+  height: 140px; /* Altura ideal balanceada para el layout de 3 columnas */
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+}
+
+/* Ajuste matemático perfecto de la imagen dentro de su cuadro */
+.equipmentGridImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+/* Efecto opcional de zoom suave al pasar el mouse por encima del cuadro */
+.equipmentCard:hover .equipmentGridImage {
+  transform: scale(1.04);
+}
+
+/* Estilo del texto ubicado debajo de la card al lado izquierdo */
+.equipmentNameText {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  text-align: left; /* Alineado estrictamente a la izquierda */
+  padding-left: 2px;
+  text-transform: capitalize; /* Convierte la primera letra en mayúscula */
+}
+
+/* --- RESPONSIVE / ADAPTACIÓN MÓVIL --- */
+@media (max-width: 900px) {
+  /* En tablets medianas cambia a 2 columnas para no comprometer el tamaño */
+  .equipmentGridContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 550px) {
+  /* En teléfonos se apila en una sola columna para total legibilidad */
+  .equipmentGridContainer {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .equipmentImageWrapper {
+    height: 160px;
+  }
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 600px) {
+  .carouselGrid {
+    grid-template-columns: 1fr; /* Colapsa a una imagen en dispositivos móviles */
+  }
+  .carouselImageCard {
+    height: 170px;
+  }
+  .leftArrow {
+    left: -4px;
+  }
+
+  .rightArrow {
+    right: -4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 40px 20px;
+  }
+  
+  .serviceTitleText {
+    font-size: 16px;
+  }
+
+  /* Reducción controlada de la altura para que encaje perfectamente en pantallas de celulares */
+  .serviceImage,
+  .serviceVideo {
+    height: 200px;
+  }
+}

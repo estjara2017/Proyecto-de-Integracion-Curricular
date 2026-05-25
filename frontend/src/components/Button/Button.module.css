@@ -1,0 +1,40 @@
+/* Botón Base */
+.button {
+  flex: 1;
+  padding: 12px 24px;       /* Controla la proporción horizontal y vertical */
+  font-size: 15px;
+  font-weight: 600;         /* Le da un poco más de presencia al texto */
+  
+  /* CAMBIO AQUÍ: Borde mínimo visible de color negro */
+  border: 1px solid #000000; 
+  
+  border-radius: 6px;       /* Bordes ligeramente redondeados [cite: 8] */
+  white-space: nowrap;      /* Fuerza a que todo el texto se mantenga en la misma línea [cite: 7] */
+  display: inline-flex;     /* Alineación interna limpia */
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* MORADO (Principal) */
+.primary {
+  background-color: #83204b;
+  color: white;
+}
+
+/* Hover más claro */
+.primary:hover {
+  background-color: #aa4373;
+}
+
+/* GRIS (Secundario) */
+.secondary {
+  background-color: #bfbfbf;
+  color: black;
+}
+
+/* Hover más oscuro */
+.secondary:hover {
+  background-color: #9e9e9e;
+}
