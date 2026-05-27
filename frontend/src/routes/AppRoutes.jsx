@@ -6,6 +6,8 @@ import Contacts from '../pages/Contacts/Contacts'
 import AboutUs from '../pages/AboutUs/AboutUs'
 import Services from '../pages/Services/Services'
 import Plans from '../pages/Plans/Plans'
+import DashboardClient from '../pages/DashboardClient/DashboardClient'
+
 
 function AppRoutes() {
   return (
@@ -17,6 +19,7 @@ function AppRoutes() {
       <Route path="/about" element={<AboutUs/>} />
       <Route path="/services" element={<Services/>} />
       <Route path="/plans" element={<Plans/>} />
+      <Route path="/dashboardClient" element={<DashboardClient/>}/>
     </Routes>
   )
 }

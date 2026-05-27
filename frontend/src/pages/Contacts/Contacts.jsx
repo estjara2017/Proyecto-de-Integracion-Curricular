@@ -43,9 +43,7 @@ const Contacts = () => {
             
             {/* Canales de Redes */}
             <div className={styles.directChannels}>
-              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.whatsappBtn}>
-                <FaWhatsapp className={styles.icon} /> <span>WhatsApp</span>
-              </a>
+              
 
               <a href="https://www.facebook.com/profile.php?id=61576875033538" target="_blank" rel="noopener noreferrer" className={styles.facebookBtn}>
                 <FaFacebookF className={styles.icon} /> <span>Facebook</span>
@@ -53,6 +51,10 @@ const Contacts = () => {
 
               <a href="https://www.instagram.com/trainingelementalcross?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className={styles.instagramBtn}>
                 <FaInstagram className={styles.icon} /> <span>Instagram</span>
+              </a>
+              
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className={styles.whatsappBtn}>
+                <FaWhatsapp className={styles.icon} /> <span>WhatsApp</span>
               </a>
             </div>
 

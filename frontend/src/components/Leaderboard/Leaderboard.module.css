@@ -1,0 +1,221 @@
+.leaderboardSection {
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(121, 119, 119, 0.15);
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionHeader {
+  background-color: #721c47;
+  padding: 16px 24px;
+  color: #ffffff;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.subHeader {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  display: block;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   CONTENEDOR DE FILTROS EN FILA HORIZONTAL
+   ========================================================================== */
+.filterContainer {
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+  gap: 35px; 
+  padding: 18px 24px;
+  background-color: #fcfafb;
+  border-bottom: 1px solid rgba(114, 28, 71, 0.1);
+  flex-wrap: wrap; 
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+}
+
+.switchLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #444444;
+  cursor: pointer;
+  user-select: none;
+}
+
+.switchLabel input {
+  display: none;
+}
+
+.customCheck {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #a67382;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.switchLabel input:checked + .customCheck {
+  background-color: #721c47;
+  border-color: #721c47;
+}
+
+.switchLabel input:checked + .customCheck::after {
+  content: '✓';
+  color: #ffffff;
+  font-size: 0.75rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+}
+
+/* ==========================================================================
+   DISEÑO CON LIMITACIÓN DE ALTURA Y SCROLL VERTICAL
+   ========================================================================== */
+.tableResponsive {
+  width: 100%;
+  max-height: 340px; 
+  overflow-y: auto; 
+  overflow-x: auto; 
+}
+
+.tableResponsive::-webkit-scrollbar {
+  width: 6px;
+}
+.tableResponsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.tableResponsive::-webkit-scrollbar-thumb {
+  background: #c2b6bc;
+  border-radius: 3px;
+}
+.tableResponsive::-webkit-scrollbar-thumb:hover {
+  background: #721c47;
+}
+
+.rankTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.rankTable th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #f4f1f2;
+  color: #555555;
+  font-weight: bold;
+  padding: 14px 20px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  border-bottom: 2px solid rgba(121, 119, 119, 0.15);
+}
+
+.rankTable td {
+  padding: 16px 20px; 
+  border-bottom: 1px solid rgba(121, 119, 119, 0.1);
+  color: #333333;
+  vertical-align: middle;
+  background-color: #ffffff;
+}
+
+.rankCell {
+  font-weight: bold;
+  color: #1a1a1a;
+}
+
+.globalCell {
+  color: #721c47;
+  background-color: #faf7f8 !important;
+}
+
+.centerText {
+  text-align: center !important;
+}
+
+/* ==========================================================================
+   FILA DIVISORIA (...)
+   ========================================================================== */
+.dividerRow {
+  background-color: #fdfcfc !important;
+}
+
+.dividerCell {
+  text-align: center;
+  color: #9c8b92 !important;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  padding: 10px 20px !important;
+  font-style: italic;
+  background-color: #faf8f9 !important;
+  border-top: 1px dashed rgba(114, 28, 71, 0.15);
+  border-bottom: 1px dashed rgba(114, 28, 71, 0.15);
+}
+
+/* FILAS DE USUARIO DESTACADO */
+.rowHighlight td {
+  background-color: rgba(166, 115, 130, 0.12) !important;
+  font-weight: 500;
+}
+
+.youBadge {
+  color: #721c47;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.nivelBadge {
+  background-color: rgba(114, 28, 71, 0.1);
+  color: #721c47;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.noData {
+  text-align: center;
+  padding: 40px !important;
+  color: #777777;
+  font-style: italic;
+}
+
+.rankTable tbody tr:hover:not(.dividerRow) td {
+  background-color: #faf9fa;
+}
+
+/* RESPONSIVE MÓVIL */
+@media (max-width: 768px) {
+  .filterContainer {
+    flex-direction: column; 
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
+  }
+  
+  .rankTable th, .rankTable td {
+    padding: 12px 14px;
+    font-size: 0.85rem;
+  }
+}
