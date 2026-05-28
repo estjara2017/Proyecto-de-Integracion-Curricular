@@ -1,0 +1,142 @@
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+  margin: 20px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.clientTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #ffffff;
+  text-align: left;
+}
+
+.clientTable th {
+  background-color: #f8f9fa;
+  color: #495057;
+  padding: 16px;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.tableRow {
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.tableRow:hover {
+  background-color: #fcfcfc;
+}
+
+/* Distribución interna de los datos solicitados */
+.infoCell {
+  padding: 16px;
+  width: 60%;
+}
+
+.infoGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mainInfo, .subInfo {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.clientName {
+  font-weight: bold;
+  color: #212529;
+  font-size: 1.1rem;
+}
+
+/* Estado Badges */
+.statusCell {
+  padding: 16px;
+  vertical-align: middle;
+}
+
+.statusBadge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.active {
+  background-color: #e6f4ea;
+  color: #137333;
+}
+
+.inactive {
+  background-color: #fce8e6;
+  color: #c5221f;
+}
+
+/* Inputs de Edición In-line */
+.editInput {
+  padding: 4px 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  width: 180px;
+}
+
+.editInput:focus {
+  outline: none;
+  border-color: #4dabf7;
+  box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.2);
+}
+
+/* Botones de Acción */
+.actionsCell {
+  padding: 16px;
+  vertical-align: middle;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButtons button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.editBtn { background-color: #e7f5ff; color: #1c7ed6; }
+.editBtn:hover { background-color: #d0ebff; }
+
+.deleteBtn { background-color: #fff5f5; color: #fa5252; }
+.deleteBtn:hover { background-color: #ffe3e3; }
+
+.saveBtn { background-color: #2b8a3e; color: white; }
+.saveBtn:hover { background-color: #237032; }
+
+.cancelBtn { background-color: #868e96; color: white; }
+.cancelBtn:hover { background-color: #495057; }
+
+.clientPhone {
+  /* Estilos opcionales para el teléfono */
+  color: #495057;
+}
+
+.clientAddress {
+  /* Estilos opcionales para la dirección */
+  color: #495057;
+}
+
+.clientEmail {
+  /* Estilos opcionales para el correo */
+  color: #495057;
+}

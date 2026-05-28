@@ -7,6 +7,7 @@ import AboutUs from '../pages/AboutUs/AboutUs'
 import Services from '../pages/Services/Services'
 import Plans from '../pages/Plans/Plans'
 import DashboardClient from '../pages/DashboardClient/DashboardClient'
+import DashboardAdmin from '../pages/DashboardAdmin/DashboardAdmin'
 
 
 function AppRoutes() {
@@ -20,6 +21,7 @@ function AppRoutes() {
       <Route path="/services" element={<Services/>} />
       <Route path="/plans" element={<Plans/>} />
       <Route path="/dashboardClient" element={<DashboardClient/>}/>
+      <Route path="/dashboardAdmin" element={<DashboardAdmin/>}/>
     </Routes>
   )
 }

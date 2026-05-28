@@ -1,28 +1,43 @@
-import { useNavigate } from 'react-router-dom'
-import styles from './Profile.module.css'
-import Button from '../../../components/Button/Button'
+import { useNavigate } from 'react-router-dom';
+import styles from './AdminProfile.module.css';
+import Button from '../../../components/Button/Button';
 
-function Profile({ dbUser, avatares = [], onCambiarAvatar }) {
-  const navigate = useNavigate()
+function AdminProfile({ dbUser, avatares = [], onCambiarAvatar }) {
+  const navigate = useNavigate();
+
+  // Prevenir fallos si dbUser no ha cargado desde la base de datos
+  if (!dbUser) return null;
 
   const porcentajeProgreso = Math.min(
     Math.round((dbUser.pesoMaxPromedio / dbUser.pesoTeoricoMax) * 100),
     100
-  )
+  );
 
   const srcAvatar = (avatares && avatares[dbUser.avatarIndex]) 
     ? avatares[dbUser.avatarIndex] 
     : '/agua.png';
 
+  // NUEVA FUNCIÓN: Abre la raíz de la plataforma en otra pestaña
+  const handleAbrirInicioNuevaPestana = () => {
+    window.open('/', '_blank');
+  };
+
   return (
     <section className={styles.profileCard}>
+      
+      {/* NUEVA FILA SUPERIOR: Indicador exclusivo para Administrador */}
+      <div className={styles.adminHeaderRow}>
+        <span className={styles.adminBadge}>ADMINISTRADOR</span>
+      </div>
+
+      {/* Todo lo demás se mantiene idéntico y alineado debajo */}
       <div className={styles.mainContentWrapper}>
         {/* Columna Izquierda: Avatar y Acciones */}
         <div className={styles.avatarZone}>
           <div className={styles.avatarWrapper}>
             <img
               src={srcAvatar} 
-              alt="Avatar de perfil"
+              alt="Avatar de perfil de administrador"
               className={styles.avatarImg}
               onError={(e) => { e.target.src = '/agua.png' }}
             />
@@ -102,28 +117,17 @@ function Profile({ dbUser, avatares = [], onCambiarAvatar }) {
         </div>
       </div>
 
-      {/* Zona Inferior de Navegación */}
       <div className={styles.navigationZone}>
         <div className={styles.navButtonsGroup}>
-          {/* Botón 1: Variante dark y abre en nueva pestaña */}
+          {/* MODIFICADO: Ahora ejecuta la función con window.open */}
           <Button 
-            variant="dark" 
+            variant="primary" 
             type="button" 
-            onClick={() => window.open('/', '_blank')}
+            onClick={handleAbrirInicioNuevaPestana}
           >
             Inicio
           </Button>
 
-          {/* Botón 2: Variante primary */}
-          <Button 
-            variant="primary" 
-            type="button" 
-            onClick={() => navigate('/contacts')}
-          >
-            Contactos
-          </Button>
-
-          {/* Botón 3: Variante secondary */}
           <Button 
             variant="secondary" 
             type="button" 
@@ -134,7 +138,7 @@ function Profile({ dbUser, avatares = [], onCambiarAvatar }) {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default Profile
+export default AdminProfile;

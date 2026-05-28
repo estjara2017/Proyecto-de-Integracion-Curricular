@@ -1,16 +1,15 @@
 import { useState } from 'react'
 import styles from './DashboardClient.module.css'
-import logo from '/logo.png' 
 import Profile from '../DashboardClient/Profile/Profile'
 import Leaderboard from '../../components/Leaderboard/Leaderboard'
 import Button from '../../components/Button/Button'
 
-import avatar1 from '../../assets/agua.png'
-import avatar2 from '../../assets/fuego.png'
-import avatar3 from '../../assets/aire.png'
-import avatar4 from '../../assets/tierra.png'
-
-const AVATARES = [avatar1, avatar2, avatar3, avatar4]
+const AVATARES = [
+  '/images/avatars/agua.png',
+  '/images/avatars/fuego.png',
+  '/images/avatars/aire.png',
+  '/images/avatars/tierra.png'
+] 
 
 function DashboardClient() {
   const [dbUser, setDbUser] = useState({
@@ -38,22 +37,30 @@ function DashboardClient() {
   return (
     <div className={styles.dashboardContainer}>
       
-      {/* HIJO 1: ENCABEZADO (Ocupa el 100% de ancho) */}
-      <header className={styles.header}>
-        <img src={logo} alt="Logo" className={styles.logo} />
+      {/* HIJO 1: ENCABEZADO IDÉNTICO AL DE ADMIN (Ocupa el 100% de ancho) */}
+      <header className={styles.brandBanner}>
+        <div className={styles.logoPlaceholder}>
+          <img 
+            src="/logo.png" 
+            alt="Logo Elemental Cross Training" 
+            className={styles.logoImg}
+            onError={(e) => { e.target.style.display = 'none'; }} 
+          />
+          <span className={styles.logoText}>ELEMENTAL CROSS TRAINING</span>
+        </div>
       </header>
 
-      {/* HIJO 2: Tarjeta de Perfil (Recibe flex: 1.2 automáticamente) */}
+      {/* HIJO 2: Tarjeta de Perfil */}
       <Profile 
         dbUser={dbUser} 
         avatares={AVATARES} 
         onCambiarAvatar={() => setShowAvatarModal(true)} 
       />
 
-      {/* HIJO 3: Tabla de Posiciones (Recibe flex: 0.9 automáticamente) */}
+      {/* HIJO 3: Tabla de Posiciones */}
       <Leaderboard dbUser={dbUser} />
 
-      {/* MODAL SELECCIÓN DE AVATAR (Fuera del flujo gracias a position: fixed) */}
+      {/* MODAL SELECCIÓN DE AVATAR */}
       {showAvatarModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
