@@ -36,7 +36,7 @@ const Plan = () => {
 
   // 👈 Implementación del Custom Hook para controlar de forma aislada cada columna
   const [activePlan, togglePlan] = useAccordion(null);
-  const [activeBenefit, toggleBenefit] = useAccordion(1);
+  const [activeBenefit, toggleBenefit] = useAccordion(null);
 
   const handlePriceClick = (e) => {
     e.stopPropagation(); 
