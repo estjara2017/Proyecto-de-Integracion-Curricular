@@ -1,0 +1,151 @@
+.accordionContainer {
+  width: 100%;
+  margin-top: 5px;
+  background-color: #554e4d;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.accordionHeader {
+  width: 100%;
+  padding: 16px 24px;
+  background-color: #554e4d;
+  color: #ffffff;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-transform: uppercase; 
+  letter-spacing: 1px;
+}
+
+.accordionHeader:hover {
+  background-color: #443e3d;
+}
+
+.icon {
+  font-size: 1.6rem;
+}
+
+.accordionContent {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out, padding 0.3s ease;
+  padding: 0 24px;
+  background-color: #bfbfbf;
+}
+
+.accordionContent.show {
+  max-height: 2000px; /* Se incrementó para prevenir cortes si crecen las columnas hacia abajo */
+  padding: 24px;
+}
+
+.hintText {
+  color: #221111;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  border-left: 4px solid #83204b;
+  padding-left: 12px;
+  font-weight: 500;
+}
+
+/* 💻 GRIS PARA PANTALLAS GRANDES (Escritorio / Tablets) */
+.planesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+/* 🎨 Cards plomas interactivas */
+.planCard {
+  background-color: #d4add8; 
+  border: 1px solid #a69e9d;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.planCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(138, 53, 112, 0.15);
+  border-color: #83204b;
+}
+
+.planCard h3 {
+  color: #1a0d0d;
+  font-size: 1.25rem;
+  margin-top: 0;
+  margin-bottom: 6px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.precio {
+  font-size: 1.85rem;
+  color: #83204b; 
+  font-weight: 800;
+  margin: 6px 0;
+}
+
+.descripcion {
+  color: #2d2525;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.show {
+  max-height: 2000px;
+  padding: 24px;
+}
+
+/* ==========================================================================
+   📱 RESPONSIVE: Optimización estricta para celulares y pantallas pequeñas
+   ========================================================================== */
+@media (max-width: 600px) {
+  .accordionContent.show {
+    padding: 16px 12px; /* Reduce ligeramente los márgenes externos en móvil */
+  }
+
+  /* 🚀 Fuerza la separación exacta en 2 columnas */
+  .planesGrid {
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 12px; /* Espaciado más compacto y óptimo para celulares */
+  }
+
+  .planCard {
+    padding: 16px 10px; /* Ajusta el padding interno para que no se sature el espacio */
+  }
+
+  .planCard h3 {
+    font-size: 1rem; /* Tipografía balanceada para pantallas de smartphone */
+    margin-bottom: 4px;
+  }
+
+  .precio {
+    font-size: 1.4rem; /* El precio se lee claro sin romper la card */
+    margin: 4px 0;
+  }
+
+  .descripcion {
+    font-size: 0.8rem; /* Tamaño de lectura ideal para dispositivos móviles */
+  }
+}
+
+/* Ajuste adicional extremo para celulares muy antiguos o muy angostos (ej. pantallas menores a 350px) */
+@media (max-width: 350px) {
+  .planesGrid {
+    grid-template-columns: 1fr; /* Cae verticalmente a 1 columna solo si es ultra-pequeño */
+  }
+}

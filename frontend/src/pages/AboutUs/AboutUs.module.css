@@ -20,11 +20,11 @@
 }
 
 .sectionHeader h1 {
-  font-family: 'Special Elite', system-ui; /* Tipografía estilo máquina rústica */
+  font-family: 'Special Elite', system-ui;
   font-size: 2.5rem;
-  color: var(--color-tittle);              /* Variable del index.css */
+  color: var(--color-tittle); 
   margin-bottom: 10px;
-  text-transform: uppercase;               /* Mayúsculas para mantener estética urbana */
+  text-transform: uppercase; 
 }
 
 .sectionHeader h2 {
@@ -45,7 +45,6 @@
   text-transform: uppercase;
 }
 
-/* Contenedor flexible para alinear los botones laterales y la grilla */
 .carouselWrapper {
   display: flex;
   align-items: center;
@@ -97,41 +96,9 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.3s ease;
 }
 
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(131, 32, 75, 0.7); 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  text-decoration: none; 
-}
-
-.overlay span {
-  color: #ffffff;
-  font-weight: bold;
-  font-size: 0.95rem;
-  border: 1px solid #fff;
-  padding: 8px 12px;
-  border-radius: 20px;
-}
-
-.mediaContainer:hover .carouselMedia {
-  transform: scale(1.05);
-}
-
-.mediaContainer:hover .overlay {
-  opacity: 1;
-}
-
+/* Indicadores de página */
 .indicators {
   display: flex;
   justify-content: center;
@@ -163,7 +130,7 @@
 }
 
 .misionCard, .visionCard {
-  background-color: #a09d9d; /* Color grisáceo/marrón opaco de fondo de tus tarjetas */
+  background-color: #a09d9d; 
   border-radius: 16px;
   padding: 25px 30px;
   box-sizing: border-box;
@@ -171,13 +138,13 @@
 
 .misionCard h2, .visionCard h2 {
   font-size: 1.6rem;
-  color: #7a0f2b; /* Alineado a tu --color-primary de marca */
-  margin: 0 0 10px 0; /* Margen inferior controlado */
+  color: #7a0f2b; 
+  margin: 0 0 10px 0; 
   text-transform: uppercase;
 }
 
 .misionCard p, .visionCard p {
-  color: #000000; /* Alineado a tu --color-text */
+  color: #000000; 
   line-height: 1.5;
   font-size: 1.05rem;
   margin: 0;
@@ -192,7 +159,7 @@
 
 @media (max-width: 768px) {
   .aboutGrid {
-    grid-template-columns: 1fr; /* Pasan a una sola columna en móviles */
+    grid-template-columns: 1fr; 
     gap: 20px;
   }
 }

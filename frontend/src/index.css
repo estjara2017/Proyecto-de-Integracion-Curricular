@@ -11,7 +11,7 @@
 /* ===== VARIABLES DE DISEÑO ===== */
 :root {
   --color-primary: #7a0f2b; 
-  --color-tittle:#a05c6e;  
+  --color-tittle:rgb(221, 29, 80);  
   --color-secondary: #1a1a1a; 
   --color-subtitle: #0f0f10;        
   --color-text: #2c2a2a;      

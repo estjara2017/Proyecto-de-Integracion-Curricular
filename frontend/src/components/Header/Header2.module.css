@@ -1,0 +1,46 @@
+.brandBanner {
+  width: 100%;
+  max-width: 1350px; 
+  margin: 0 auto 5px auto; 
+  background-color: #bfbfbf; 
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.logoPlaceholder {
+  display: flex;
+  flex-direction: row; 
+  align-items: center; 
+  gap: 15px; 
+}
+
+.logoImg {
+  height: 50px; 
+  width: auto;  
+  object-fit: contain;
+}
+
+.logoText {
+  font-weight: bold;
+  color: #332222;
+  letter-spacing: 2px;
+  font-size: 1.4rem; 
+  text-transform: uppercase;
+}
+
+@media (max-width: 1024px) {
+  .logoPlaceholder {
+    flex-direction: column; 
+    text-align: center;
+    gap: 8px;
+  }
+
+  .logoText {
+    font-size: 1.1rem;
+  }
+}

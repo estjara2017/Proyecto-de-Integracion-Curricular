@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import styles from './ClientTable.module.css';
 
+
 // Simulación de datos que vendrían del Backend
 const MOCK_CLIENTS = [
   { id: '1', name: 'Esteban Jara', phone: '0243221', address: 'La Floresta', email: 'estjara19958@yahoo.com', active: true },

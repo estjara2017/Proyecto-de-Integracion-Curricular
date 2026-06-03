@@ -1,0 +1,124 @@
+/* Contenedor con scroll para evitar desbordes en móviles */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+/* Tabla base */
+.customTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Encabezado limpio y minimalista como el de ClientTable */
+.customTable th {
+  background-color: #f8f9fa; /* Fondo gris claro sutil */
+  color: #4f5e66;            /* Texto gris azulado suave */
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eaeaea;
+  letter-spacing: 0.2px;
+}
+
+/* Estilo de las celdas y filas espaciadas */
+.customTable td {
+  padding: 18px 20px;       /* Padding generoso idéntico a la imagen */
+  border-bottom: 1px solid #f5f5f5; /* Línea divisoria muy fina */
+  color: #444444;
+  font-size: 0.92rem;
+  vertical-align: middle;
+}
+
+/* Efecto hover suave al pasar por encima de la fila */
+.customTable tbody tr:hover {
+  background-color: #fafafa;
+}
+
+/* Tipografía destacada para el nombre del Atleta */
+.boldText {
+  font-weight: 700;
+  color: #222222;
+  font-size: 0.95rem;
+}
+
+/* Badge estilizado para el plan (siguiendo los tonos de la app) */
+.planBadge {
+  background-color: #f0eaed;
+  color: #7a1e48; /* Hacemos juego con el color vino institucional */
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Precio destacado con sutil elegancia */
+.priceText {
+  font-weight: 700;
+  color: #222222;
+}
+
+/* Textos secundarios */
+.dateText {
+  color: #666666;
+  font-size: 0.88rem;
+}
+
+.methodText {
+  color: #555555;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+/* Alineaciones específicas */
+.centerText {
+  text-align: center;
+}
+
+.actionCell {
+  text-align: center;
+  min-width: 150px;
+}
+
+/* Ajuste compacto para los botones dentro de las celdas */
+.actionCell button {
+  padding: 8px 14px !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  width: auto !important;
+}
+
+/* Contenedor de estado vacío */
+.emptyContainer {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+.emptyMessage {
+  margin: 0;
+  color: #665c59;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   📱 RESPONSIVE DESIGN FOR TABLES
+   ========================================================================== */
+@media (max-width: 768px) {
+  .customTable th, 
+  .customTable td {
+    padding: 12px 14px; /* Reducción de espacio en pantallas pequeñas */
+  }
+  
+  .boldText {
+    font-size: 0.88rem;
+  }
+}

@@ -1,128 +1,121 @@
 .dashboardContainer {
   min-height: 100vh;
-  background-color: #e2dcd9; /* Color de fondo exterior */
+  background-color: #e2dcd9;
   padding: 20px;
   box-sizing: border-box;
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-/* Banner de Marca superior */
-.brandBanner {
-  max-width: 1200px;
-  margin: 0 auto 20px auto;
-  background-color: #b0a8a6; /* Gris oscuro del banner */
-  border-radius: 8px;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* Distribución horizontal: Logo al lado de las letras */
-.logoPlaceholder {
-  display: flex;
-  flex-direction: row; 
-  align-items: center; /* Alineación vertical perfecta */
-  gap: 15px; /* Espaciado entre la imagen y el texto */
-}
-
-/* Control del tamaño del logotipo */
-.logoImg {
-  height: 50px; 
-  width: auto;  /* Mantiene el aspecto original sin deformarse */
-  object-fit: contain;
-}
-
-.logoText {
-  font-weight: bold;
-  color: #332222;
-  letter-spacing: 2px;
-  font-size: 1.4rem; 
-  text-transform: uppercase;
-}
-
-/* Cuerpo Principal */
 .mainContent {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 30px auto 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Separación limpia entre secciones */
+  gap: 25px;
 }
 
-/* ==========================================================================
-   SECCIÓN DE LA TARJETA DEL PERFIL (Invisible como contenedor, actúa como eje)
-   ========================================================================== */
 .profileSection {
   width: 100%;
-  max-width: 740px;       /* Tamaño ideal adaptado a las proporciones de la imagen de referencia */
-  align-self: center;     /* Mantiene el perfil perfectamente centrado en la pantalla */
-  background-color: transparent; /* CAMBIO: Contenedor invisible para que solo resalte la card interna */
-  padding: 0;             /* CAMBIO: Eliminamos rellenos extras que estiraban el componente */
-  box-shadow: none;       /* CAMBIO: Sin sombras duplicadas */
+  max-width: 740px;
+  align-self: center;
+  background-color: transparent;
   box-sizing: border-box;
 }
 
-/* 
-   Control de simetría y tamaño adecuado para los botones bajo el avatar.
-   Asumiendo que los botones heredan el tamaño de la columna del Avatar en el componente.
-*/
 .profileSection :global(button),
 .profileSection button {
-  max-width: 150px;       /* Ajusta este valor en píxeles para reducir el tamaño horizontal a tu gusto */
-  width: 100%;            /* Obliga a ambos botones a estirarse idénticamente al mismo ancho máximo */
-  margin: 0 auto;         /* Los mantiene centrados verticalmente debajo del avatar */
-  padding: 10px 15px;     /* Reduce el relleno interno para que se vean más estilizados y compactos */
-  font-size: 0.9rem;      /* Tamaño de fuente más equilibrado para la jerarquía visual */
-}
-
-/* ==========================================================================
-   SECCIÓN DE GESTIÓN INFERIOR (Tabla de clientes - se mantiene intacta)
-   ========================================================================== */
-.managementSection {
-  width: 100%;            /* Se mantiene al 100% para aprovechar el espacio del listado */
-  align-self: center;     
-  background-color: #f5f3f2;
-  padding: 25px;
-  border-radius: 8px;
-  box-sizing: border-box;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
-}
-
-.sectionHeader {
-  margin-bottom: 20px;
-  border-bottom: 2px solid #e2dcd9;
-  padding-bottom: 10px;
-}
-
-.sectionHeader h3 {
-  margin: 0 0 5px 0;
-  color: #4a2834; /* Tono vino/oscuro */
-  font-size: 1.4rem;
-}
-
-.sectionHeader p {
-  margin: 0;
-  color: #665c59;
+  max-width: 150px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px 15px;
   font-size: 0.9rem;
 }
 
-/* Módulos de administración e internos */
-.gridModules {
-  width: 100%;
-}
-
-.moduleCard {
-  background: #ffffff;
-  border-radius: 6px;
-  padding: 15px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
 /* ==========================================================================
-   ESTILOS PARA EL MODAL SELECCIÓN DE AVATAR (Mismo comportamiento que el cliente)
+   🎛️ NUEVO DISEÑO ESTRUCTURAL DE PESTAÑAS (TABS)
    ========================================================================== */
+.tabsContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Barra superior que contiene las pestañas */
+.tabsHeader {
+  display: flex;
+  background-color: #f5f3f2;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: none;
+  overflow: hidden;
+}
+
+.tabButton {
+  flex: 1;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #665c59;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+  border-bottom: 3px solid transparent;
+}
+
+.tabButton:hover {
+  background-color: #eae6e4;
+  color: #4a2834;
+}
+
+/* Pestaña activa con la línea vino inferior de la marca */
+.tabActive {
+  background-color: #ffffff;
+  color: #7a1e48;
+  border-bottom: 3px solid #7a1e48;
+}
+
+/* Bloque contenedor de la vista actual renderizada */
+.tabViewContent {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Descripciones superiores de cada espacio de trabajo */
+.viewDescription {
+  margin-bottom: 20px;
+  border-left: 4px solid #7a1e48;
+  padding-left: 14px;
+}
+
+.viewDescription h3 {
+  margin: 0 0 4px 0;
+  color: #4a2834;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.viewDescription p {
+  margin: 0;
+  color: #665c59;
+  font-size: 0.88rem;
+}
+
+/* Animación de entrada suave para evitar parpadeos rudos */
+.viewFadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* MODAL */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -142,14 +135,13 @@
   border-radius: 8px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
-
-.modalContent h3 {
-  margin-top: 0;
-  color: #4a2834;
-  margin-bottom: 20px;
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    /* Tus estilos aquí */
 }
 
 .avatarOptionsGrid {
@@ -166,45 +158,42 @@
   border-radius: 6px;
   cursor: pointer;
   border: 2px solid #e2dcd9;
-  transition: transform 0.2s ease, border-color 0.2s ease;
-}
-
-.modalAvatarOpt:hover {
-  transform: scale(1.05);
-  border-color: #a5536c; /* Resalta con el color vino de la marca al pasar el mouse */
-}
-
-.modalActions {
-  display: flex;
-  justify-content: center;
 }
 
 /* ==========================================================================
-   RESPONSIVE (Unificado en un solo bloque multimedia)
+   📱 RESPONSIVE DESIGN (Pantallas Móviles)
    ========================================================================== */
 @media (max-width: 768px) {
   .dashboardContainer {
     padding: 10px;
   }
-  
-  .brandBanner, 
-  .managementSection, 
-  .profileSection {
+
+  .mainContent {
+    margin-top: 15px;
+    gap: 15px;
+  }
+
+  .tabsHeader {
+    flex-direction: column;
+    border-radius: 8px;
+  }
+
+  .tabButton {
+    padding: 12px;
+    font-size: 0.9rem;
+    border-bottom: none;
+    border-left: 4px solid transparent;
+    text-align: left;
+  }
+
+  .tabActive {
+    border-left: 4px solid #7a1e48;
+    background-color: #eae6e4;
+  }
+
+  .tabViewContent {
+    border-radius: 8px;
+    margin-top: 10px;
     padding: 15px;
-    border-radius: 6px;
-  }
-
-  .logoPlaceholder {
-    flex-direction: column; /* El logo se apila sobre el texto en móviles */
-    text-align: center;
-    gap: 8px;
-  }
-  
-  .logoText {
-    font-size: 1.1rem;
-  }
-
-  .avatarOptionsGrid {
-    grid-template-columns: repeat(2, 1fr); /* Mantiene un layout cómodo en pantallas chicas */
   }
 }

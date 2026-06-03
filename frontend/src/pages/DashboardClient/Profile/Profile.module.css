@@ -108,7 +108,7 @@
 }
 
 .progressSub {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: #333333;
   font-style: italic;
   margin-top: 1px;
@@ -128,44 +128,92 @@
 .navButtonsGroup {
   display: flex;
   gap: 12px;
-  width: 420px; /* Controla el ancho total del bloque de botones en pantallas grandes */
+  width: 420px; 
 }
 
-/* Asegura que cada botón mida exactamente lo mismo compartiendo el espacio */
 .navButtonsGroup button {
   flex: 1;
-  white-space: nowrap; /* Evita que el texto del botón se rompa en dos líneas */
+  white-space: nowrap; 
 }
 
-/* RESPONSIVE MÓVIL */
+/* ==========================================================================
+   📱 OPTIMIZACIÓN RESPONSIVE: Datos en 2 columnas y botones compactos
+   ========================================================================== */
 @media (max-width: 768px) {
+  .profileCard {
+    padding: 16px; 
+  }
+
   .mainContentWrapper {
     flex-direction: column;
     align-items: center;
+    gap: 20px;
   }
 
+  /* 🚀 BOTONES SUPERIORES (Cambiar Avatar y Asistencia) */
   .avatarZone {
     width: 100%;
+    max-width: 240px; /* Reducimos el ancho máximo para que no se estiren tanto */
+    gap: 8px; /* Menor separación entre el avatar y los botones */
   }
 
+  /* Reducimos el tamaño real de los botones de la zona del avatar */
+  .avatarZone button {
+    padding: 8px 16px !important; /* Forzamos un padding más compacto */
+    font-size: 13px !important;    /* Texto un poco más pequeño y estilizado */
+  }
+
+  /* Grilla de datos en 2 columnas */
   .infoGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr); 
     width: 100%;
-    gap: 12px;
+    gap: 10px 14px; 
   }
 
   .fullWidth {
-    grid-column: span 1;
+    grid-column: span 2; 
+  }
+
+  .label {
+    font-size: 0.65rem; 
+    padding: 3px 6px;
+  }
+
+  .value {
+    font-size: 0.95rem; 
   }
   
   .navigationZone {
-    margin-top: 25px;
+    margin-top: 18px;
+    padding-top: 12px;
     justify-content: center; 
   }
 
-  /* Ocupa el ancho completo en móviles manteniendo proporciones iguales */
+  /* 🚀 BOTONES INFERIORES (Inicio, Contactos, Salir) */
   .navButtonsGroup {
     width: 100%;
-    justify-content: center;
+    gap: 6px; /* Pegamos un poco más los botones para ganar espacio horizontal */
+  }
+
+  /* Encogemos proporcionalmente los tres botones inferiores */
+  .navButtonsGroup button {
+    padding: 8px 12px !important; /* Padding móvil ideal */
+    font-size: 13px !important;    /* Misma escala que los de arriba */
+    letter-spacing: 0.3px;
+  }
+}
+
+/* Ajuste extremo para celulares muy pequeños (pantallas menores a 360px) */
+@media (max-width: 360px) {
+  .infoGrid {
+    grid-template-columns: 1fr; 
+  }
+  .fullWidth {
+    grid-column: span 1;
+  }
+  /* Si la pantalla es diminuta, los botones inferiores se apilan limpiamente */
+  .navButtonsGroup {
+    flex-direction: column; 
+    gap: 8px;
   }
 }

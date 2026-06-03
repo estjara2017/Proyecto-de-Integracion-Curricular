@@ -164,6 +164,15 @@
   object-position: center 30%;
 }
 
+.serviceVideo {
+  width: 100%;          /* Fuerza al video a ocupar todo el ancho disponible */
+  height: auto;         /* Permite que la altura se calcule proporcionalmente sin deformarse */
+  max-height: 350px;    /* Opcional: un tope para que no se haga gigantón en pantallas grandes */
+  object-fit: cover;    /* Opción A: Llena la card (puede recortar un poco los bordes de manera estética) */
+  /* object-fit: contain;  Opción B: Si no quieres que se pierda NI UN pixel del video (deja barras negras a los lados) */
+  border-radius: 8px;   /* Para que combine si las esquinas de tus cards son redondeadas */
+}
+
 /* --- HOJA DE ESTILOS ADAPTADA PARA LOS CARRUSELES DINÁMICOS --- */
 
 .openCarousel {

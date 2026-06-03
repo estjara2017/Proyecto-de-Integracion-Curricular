@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import styles from './DashboardClient.module.css'
-import Profile from '../DashboardClient/Profile/Profile'
-import Leaderboard from '../../components/Leaderboard/Leaderboard'
+import Profile from './Profile/Profile'
+import Leaderboard from './Leaderboard/Leaderboard'
 import Button from '../../components/Button/Button'
+import Header2 from '../../components/Header/Header2' // 🚀 Importamos el nuevo encabezado
+import PlanSelector from './PlanSelector/PlanSelector' // 🚀 Importamos el selector de planes
 
 const AVATARES = [
   '/images/avatars/agua.png',
@@ -37,28 +39,21 @@ function DashboardClient() {
   return (
     <div className={styles.dashboardContainer}>
       
-      {/* HIJO 1: ENCABEZADO IDÉNTICO AL DE ADMIN (Ocupa el 100% de ancho) */}
-      <header className={styles.brandBanner}>
-        <div className={styles.logoPlaceholder}>
-          <img 
-            src="/logo.png" 
-            alt="Logo Elemental Cross Training" 
-            className={styles.logoImg}
-            onError={(e) => { e.target.style.display = 'none'; }} 
-          />
-          <span className={styles.logoText}>ELEMENTAL CROSS TRAINING</span>
-        </div>
-      </header>
+      {/* HIJO 1: Encabezado Global de la aplicación */}
+      <Header2 />
 
-      {/* HIJO 2: Tarjeta de Perfil */}
+      {/* HIJO 2: Tarjeta de Perfil del Atleta */}
       <Profile 
         dbUser={dbUser} 
         avatares={AVATARES} 
         onCambiarAvatar={() => setShowAvatarModal(true)} 
       />
 
-      {/* HIJO 3: Tabla de Posiciones */}
+      {/* HIJO 3: Tabla de Posiciones Interna */}
       <Leaderboard dbUser={dbUser} />
+
+      {/* HIJO 4: Desplegable de suscripción (Ocupa el 100% inferior) */}
+      <PlanSelector />
 
       {/* MODAL SELECCIÓN DE AVATAR */}
       {showAvatarModal && (

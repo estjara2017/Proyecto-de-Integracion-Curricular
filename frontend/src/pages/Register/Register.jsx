@@ -1,68 +1,61 @@
-import { useState, useEffect } from 'react'
 import styles from './Register.module.css'
 import Button from '../../components/Button/Button'
-import { useNavigate, useLocation } from 'react-router-dom'
 import logo from '../../assets/logo1.png'
+import { useRegisterForm } from '../../hooks/useRegisterForm' // Comprueba que la ruta apunte bien a src/hooks
 
-function FormRegister() {
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  const alertMessage = location.state?.message
-  const [showAlert, setShowAlert] = useState(!!alertMessage)
-  
-  // Estados para el formulario
-  const [birthDate, setBirthDate] = useState('')
-  const [gender, setGender] = useState('masculino') 
-  const [tieneLesion, setTieneLesion] = useState('no')
-  const [descripcionLesion, setDescripcionLesion] = useState('')
-
-  useEffect(() => {
-    if (showAlert) {
-      const timer = setTimeout(() => {
-        setShowAlert(false)
-      }, 5000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [showAlert])
-
-  const handleLesionChange = (e) => {
-    const value = e.target.value
-    setTieneLesion(value)
-    if (value === 'no') {
-      setDescripcionLesion('') 
-    }
-  }
-
-  const handleRegister = (e) => {
-    e.preventDefault()
-    console.log('Formulario enviado con éxito', { birthDate, gender, tieneLesion, descripcionLesion })
-    navigate('/login')
-  }
+function Register() {
+  // 🚀 Asegúrate de incluir setDescripcionLesion aquí en la destructuración:
+  const {
+    alertMessage,
+    showAlert,
+    firstName, setFirstName,
+    lastName, setLastName,
+    idCard, setIdCard,
+    phone, setPhone,
+    email, setEmail,
+    weight, setWeight,
+    height, setHeight,
+    address, setAddress,
+    birthDate, setBirthDate,
+    gender, setGender,
+    tieneLesion,
+    descripcionLesion, setDescripcionLesion, // 👈 ¡Esta era la que faltaba declarar aquí!
+    handleLesionChange,
+    handleRegister,
+    navigate
+  } = useRegisterForm()
 
   return (
+    
     <div className={styles.container}>
       
-      {/* Lado Izquierdo: Alerta + Formulario */}
+      {/* Lado Izquierdo: Solo el Formulario */}
       <div className={styles.leftSection}>
-        {showAlert && (
-          <div className={styles.planAlert}>
-            <span className={styles.alertIcon}>⚠️</span>
-            <p>{alertMessage}</p>
-          </div>
-        )}
-
         <form className={styles.formCard} onSubmit={handleRegister}>
           <h2>Crear Cuenta</h2>
 
           <div className={styles.gridFields}>
             
+            {/* Fila 1 - Columna 1 */}
             <div className={styles.inputGroup}>
               <input 
                 type="text" 
-                placeholder="Nombre completo" 
+                placeholder="Nombre" 
                 className={styles.input}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required 
+              />
+            </div>
+
+            {/* Fila 1 - Columna 2 */}
+            <div className={styles.inputGroup}>
+              <input 
+                type="text" 
+                placeholder="Apellido" 
+                className={styles.input}
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 required 
               />
             </div>
@@ -72,6 +65,8 @@ function FormRegister() {
                 type="text" 
                 placeholder="Cédula / Identificación" 
                 className={styles.input}
+                value={idCard}
+                onChange={(e) => setIdCard(e.target.value)}
                 required 
               />
             </div>
@@ -81,6 +76,8 @@ function FormRegister() {
                 type="tel" 
                 placeholder="Teléfono de contacto" 
                 className={styles.input}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 required 
               />
             </div>
@@ -90,6 +87,8 @@ function FormRegister() {
                 type="email" 
                 placeholder="Correo electrónico" 
                 className={styles.input}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required 
               />
             </div>
@@ -100,6 +99,8 @@ function FormRegister() {
                 step="0.1"
                 placeholder="Peso actual (kg) - Opcional" 
                 className={styles.input}
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
               />
             </div>
 
@@ -109,20 +110,22 @@ function FormRegister() {
                 step="0.01"
                 placeholder="Estatura (m) - Opcional" 
                 className={styles.input}
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
               />
             </div>
 
-            {/* Dirección Principal */}
             <div className={styles.inputGroup}>
               <input 
                 type="text" 
                 placeholder="Dirección principal" 
                 className={styles.input}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 required 
               />
             </div>
 
-            {/* Fecha de nacimiento */}
             <div className={styles.inputGroup}>
               <input 
                 type="date" 
@@ -133,7 +136,6 @@ function FormRegister() {
               />
             </div>
 
-            {/* Opciones de Género */}
             <div className={styles.inputGroup}>
               <label className={styles.sectionLabel}>Género</label>
               <div className={styles.radioGroup}>
@@ -165,7 +167,6 @@ function FormRegister() {
               </div>
             </div>
 
-            {/* Selección Lesiones */}
             <div className={styles.selectGroup}>
               <label className={styles.sectionLabel}>Condición Física</label>
               <select 
@@ -179,37 +180,29 @@ function FormRegister() {
               </select>
             </div>
 
-            {/* Descripción */}
+            {/* Tu bloque de código que fallaba (Líneas 183-191): */}
             <div className={`${styles.inputGroup} ${styles.fullWidthField}`}>
               <input 
                 type="text" 
                 placeholder={tieneLesion === 'si' ? "Describa detalladamente la lesión o discapacidad" : "Campo bloqueado (No registra lesión)"} 
                 className={`${styles.input} ${tieneLesion === 'no' ? styles.disabledInput : ''}`}
                 value={descripcionLesion}
-                onChange={(e) => setDescripcionLesion(e.target.value)}
+                onChange={(e) => setDescripcionLesion(e.target.value)} // 👈 Ahora compilará perfectamente
                 disabled={tieneLesion === 'no'}
                 required={tieneLesion === 'si'} 
               />
             </div>
-
           </div>
 
           <div className={styles.buttons}>
             <div className={styles.btnWrapper}>
-              <Button 
-                variant="secondary" 
-                type="button"
-                onClick={() => navigate('/')}
-              >
+              <Button variant="secondary" type="button" onClick={() => navigate('/')}>
                 Cancelar
               </Button>
             </div>
             
             <div className={styles.btnWrapper}>
-              <Button 
-                variant="primary" 
-                type="submit"
-              >
+              <Button variant="primary" type="submit">
                 Registrar
               </Button>
             </div>
@@ -217,8 +210,14 @@ function FormRegister() {
         </form>
       </div>
 
-      {/* Lado Derecho: Logotipo */}
+      {/* Lado Derecho */}
       <div className={styles.logoContainer}>
+        {showAlert && (
+          <div className={styles.planAlert}>
+            <span className={styles.alertIcon}>⚠️</span>
+            <p>{alertMessage}</p>
+          </div>
+        )}
         <img src={logo} alt="Logo Institutional" className={styles.logo} />
       </div>
 
@@ -226,4 +225,4 @@ function FormRegister() {
   )
 }
 
-export default FormRegister
+export default Register // Exportación limpia como Register

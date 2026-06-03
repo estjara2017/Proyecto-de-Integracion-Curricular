@@ -1,3 +1,4 @@
+
 import Header from '../../components/Header/Header'; 
 import Footer from '../../components/Footer/Footer'; 
 import styles from './AboutUs.module.css';
@@ -11,23 +12,22 @@ import img4 from '../../assets/imagen4.png';
 import img5 from '../../assets/imagen5.png';
 
 const AboutUs = () => {
-  const instagramProfileUrl = "https://www.instagram.com/trainingelementalcross?...";
 
   const carouselSections = [
     {
       id: 'seccion-uno',
       items: [
-        { id: 's1-i1', type: 'IMAGE', src: img1, permalink: '...' },
-        { id: 's1-i2', type: 'IMAGE', src: img2, permalink: instagramProfileUrl },
-        { id: 's2-i1', type: 'IMAGE', src: img3, permalink: '...' },
-        { id: 's2-i2', type: 'IMAGE', src: img4, permalink: instagramProfileUrl },
+        { id: 's1-i1', type: 'IMAGE', src: img1 },
+        { id: 's1-i2', type: 'IMAGE', src: img2 },
+        { id: 's2-i1', type: 'IMAGE', src: img3 },
+        { id: 's2-i2', type: 'IMAGE', src: img4 },
       ]
     },
     {
       id: 'seccion-dos',
       items: [
-        { id: 's2-i1', type: 'IMAGE', src: img5, permalink: instagramProfileUrl },
-        { id: 's2-i2', type: 'IMAGE', src: img4, permalink: instagramProfileUrl },
+        { id: 's2-i1', type: 'IMAGE', src: img5 },
+        { id: 's2-i2', type: 'IMAGE', src: img4 },
       ]
     }
   ];
@@ -61,13 +61,10 @@ const AboutUs = () => {
               {carouselSections[currentSection].items.map((item) => (
                 <div key={item.id} className={styles.mediaContainer}>
                   {item.type === 'IMAGE' ? (
-                    <img src={item.src} alt="Feed Elemental Cross" className={styles.carouselMedia} />
+                    <img src={item.src} alt="Momento Elemental Cross" className={styles.carouselMedia} />
                   ) : (
                     <video src={item.src} className={styles.carouselMedia} autoPlay muted loop playsInline />
                   )}
-                  <a href={item.permalink} target="_blank" rel="noopener noreferrer" className={styles.overlay}>
-                    <span>Ver en Instagram</span>
-                  </a>
                 </div>
               ))}
             </div>
@@ -91,11 +88,11 @@ const AboutUs = () => {
         <div className={styles.aboutGrid}>
           <section className={styles.misionCard}>
             <h2>Nuestra Misión</h2>
-            <p>Ofrecer un espacio de entrenamiento integral sakjdhasfjkhsdkgjbhsdgfjhsdkjgbsdgbdskgjhdsjkghj</p>
+            <p>Promover una metodología de enseñanza diferente e innovadora donde nuestro enfoque es el bienestar de la comunidad en el entrenamiento de Crossfit.</p>
           </section>
           <section className={styles.visionCard}> 
             <h2>Nuestra Visión</h2>
-            <p>Ser el centro de acondicionamiento físico referentedskjfhgdskjfghsdkjhfhgdsfgsdkfgdshfgsdhjfghusgdf</p>
+            <p>Llegar a ser un lugar de entrenamiento único, donde la enseñanza sea base fundamental para la comunidad, brindando más confianza en salud y seguridad especializado en el entrenamiento de Crossfit, llegar a crecer en mas zonas donde nuestra forma de entrenamiento sea diferente. </p>
           </section>
         </div>
       </main>

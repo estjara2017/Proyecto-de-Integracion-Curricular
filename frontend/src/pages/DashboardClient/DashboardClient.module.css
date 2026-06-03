@@ -3,78 +3,34 @@
   margin: 0 auto;
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #c9c1c1;
   display: flex;
   gap: 25px;
   flex-wrap: wrap; 
-  /* CAMBIO CLAVE: Evita que Profile y Leaderboard se estiren mutuamente. 
-     Ahora cada componente mantiene su altura independiente. */
   align-items: flex-start; 
 }
 
 /* ==========================================================================
-   ENCABEZADO UNIFICADO (Clonado perfectamente de Admin)
+    LAYOUT RESTANTE (Control estricto de alturas independientes y Scroll)
    ========================================================================== */
-.brandBanner {
-  width: 100%; /* Fuerza a que ocupe todo el ancho superior en el layout flex del cliente */
-  max-width: 1350px; 
-  margin: 0 auto 5px auto; 
-  background-color: #b0a8a6; 
-  border-radius: 8px;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  box-sizing: border-box;
-}
-
-/* Distribución horizontal: Logo al lado de las letras */
-.logoPlaceholder {
-  display: flex;
-  flex-direction: row; 
-  align-items: center; 
-  gap: 15px; 
-}
-
-/* Control del tamaño del logotipo */
-.logoImg {
-  height: 50px; 
-  width: auto;  
-  object-fit: contain;
-}
-
-.logoText {
-  font-weight: bold;
-  color: #332222;
-  letter-spacing: 2px;
-  font-size: 1.4rem; 
-  text-transform: uppercase;
-}
-
-/* ==========================================================================
-   LAYOUT RESTANTE (Control estricto de alturas independientes y Scroll)
-   ========================================================================== */
-.dashboardContainer > :not(header):not(.modalOverlay) {
+.dashboardContainer > :not(header):not(.modalOverlay):not([class*="accordionContainer"]) {
   min-width: 0; 
 }
 
 /* El hijo 2 es <Profile /> */
 .dashboardContainer > :nth-child(2) {
   flex: 1.5; 
-  /* Al tener flex-start en el padre, su altura se queda fija según su contenido original */
 }
 
 /* El hijo 3 es <Leaderboard /> */
 .dashboardContainer > :nth-child(3) {
-  flex: 1.5;         /* Le damos un poco más de peso visual a lo ancho si es necesario */
-  max-height: 550px; /* Altura máxima fija, haciéndola un poco más larga que el perfil */
-  overflow-y: auto;  /* Si los atletas superan los 550px de alto, se activa el scroll vertical */
-  border-radius: 8px; /* Evita que las esquinas del scroll se desborden de la estética de la tarjeta */
+  flex: 1.5;         
+  max-height: 550px; 
+  overflow-y: auto;  
+  border-radius: 8px; 
 }
 
 /* ==========================================================================
-   MODAL SELECCIÓN DE AVATAR
+    MODAL SELECCIÓN DE AVATAR
    ========================================================================== */
 .modalOverlay {
   position: fixed;
@@ -136,12 +92,12 @@
 }
 
 /* ==========================================================================
-   RESPONSIVE
+    RESPONSIVE
    ========================================================================== */
 @media (max-width: 1024px) {
   .dashboardContainer {
     flex-direction: column; 
-    align-items: stretch; /* En móviles vuelven a acoplarse al ancho completo */
+    align-items: stretch; 
     padding: 15px;
   }
 
@@ -149,16 +105,6 @@
   .dashboardContainer > :nth-child(3) {
     flex: none;
     width: 100%;
-    max-height: none; /* Elimina el límite de scroll en móvil para que fluya hacia abajo */
-  }
-
-  .logoPlaceholder {
-    flex-direction: column; 
-    text-align: center;
-    gap: 8px;
-  }
-
-  .logoText {
-    font-size: 1.1rem;
+    max-height: none; 
   }
 }

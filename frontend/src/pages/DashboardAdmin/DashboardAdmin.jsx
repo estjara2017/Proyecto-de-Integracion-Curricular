@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './DashboardAdmin.module.css';
-import AdminProfile from '../DashboardAdmin/AdminProfile/AdminProfile'; // Ajusta la ruta según tus carpetas
-import ClientTable from '../../components/ClientTable/ClientTable'; // Tu componente de tabla de clientes
+import Header2 from '../../components/Header/Header2'; 
+import AdminProfile from './AdminProfile/AdminProfile'; 
+import ClientTable from './ClientTable/ClientTable'; // 👥 Re-importado
+import PlanVerificationTable from './PlanVerificationTable/PlanVerificationTable'; 
+import AdminLeaderboard from './AdminLeaderboard/AdminLeaderboard';
 import Button from '../../components/Button/Button';
 
-// Simulación de los datos del Administrador desde la Base de Datos
 const MOCK_ADMIN_DB = {
   nombre: "Esteban Jara",
   nivel: "Coach / Certificado",
@@ -16,7 +18,6 @@ const MOCK_ADMIN_DB = {
   avatarIndex: 0
 };
 
-// Definición de rutas absolutas apuntando a la carpeta public (Mismo formato que en Cliente)
 const AVATARES = [
   '/images/avatars/agua.png',
   '/images/avatars/fuego.png',
@@ -25,71 +26,92 @@ const AVATARES = [
 ];
 
 export default function DashboardAdmin() {
-  const [adminUser, setAdminUser] = useState(null);
+  const [adminUser, setAdminUser] = useState(MOCK_ADMIN_DB);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAdminUser(MOCK_ADMIN_DB);
-    }, 50); // Un retraso mínimo de 50ms para simular asincronía asíncrona limpia
-
-    return () => clearTimeout(timer);
-  }, []);
+  
+  // 🔄 Ponemos 'clientes' como la pestaña activa por defecto al cargar la vista
+  const [activeTab, setActiveTab] = useState('clientes');
 
   const handleSelectAvatar = (index) => {
-    setAdminUser(prev => ({
-      ...prev,
-      avatarIndex: index
-    }));
+    setAdminUser(prev => ({ ...prev, avatarIndex: index }));
     setShowAvatarModal(false);
   };
 
   return (
     <div className={styles.dashboardContainer}>
-      
-      {/* Banner Superior decorativo de la marca con Logotipo horizontal */}
-      <header className={styles.brandBanner}>
-        <div className={styles.logoPlaceholder}>
-          <img 
-            src="/logo.png" /* Usamos exactamente el mismo archivo que en el de clientes */ 
-            alt="Logo Elemental Cross Training" 
-            className={styles.logoImg}
-            onError={(e) => { e.target.style.display = 'none'; }} 
-          />
-          <span className={styles.logoText}>ELEMENTAL CROSS TRAINING</span>
-        </div>
-      </header>
+      <Header2 />
 
-      {/* Zona Central / Contenido Principal */}
       <main className={styles.mainContent}>
-        
-        {/* Fila Superior: Perfil del Administrador centrado */}
+        {/* Fila Superior: Perfil Administrador */}
         <section className={styles.profileSection}>
           <AdminProfile 
             dbUser={adminUser} 
-            avatares={AVATARES} /* CORREGIDO: Se cambió MOCK_AVATARES por AVATARES */
+            avatares={AVATARES} 
             onCambiarAvatar={() => setShowAvatarModal(true)} 
           />
         </section>
 
-        {/* Fila Inferior: Espacio modular para otros paneles del Administrador */}
-        <section className={styles.managementSection}>
-          <div className={styles.sectionHeader}>
-            <h3>Panel de Control General</h3>
-            <p>Gestión de atletas, asistencias y membresías activas.</p>
+        {/* 🎛️ PANEL DE NAVEGACIÓN POR PESTAÑAS (TABS) */}
+        <section className={styles.tabsContainer}>
+          <div className={styles.tabsHeader}>
+            <button 
+              className={`${styles.tabButton} ${activeTab === 'clientes' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('clientes')}
+            >
+              👥 Control General
+            </button>
+            <button 
+              className={`${styles.tabButton} ${activeTab === 'pagos' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('pagos')}
+            >
+              💰 Verificación de Pagos
+            </button>
+            <button 
+              className={`${styles.tabButton} ${activeTab === 'ranking' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('ranking')}
+            >
+              🏆 Posiciones y Niveles
+            </button>
           </div>
-          
-          {/* Renderizado de otros componentes de administración */}
-          <div className={styles.gridModules}>
-            <div className={styles.moduleCard}>
-              <ClientTable />
-            </div>
+
+          {/* 📦 RENDERIZADO CONDICIONAL DE TABS INTERNAS */}
+          <div className={styles.tabViewContent}>
+            
+            {/* 👥 Pestaña de Control General (ClientTable) integrada aquí mismo */}
+            {activeTab === 'clientes' && (
+              <div className={styles.viewFadeIn}>
+                <div className={styles.viewDescription}>
+                  <h3>Panel de Control General</h3>
+                  <p>Gestión activa de atletas de la escuela, actualización de información de contacto y membresías.</p>
+                </div>
+                <ClientTable />
+              </div>
+            )}
+
+            {activeTab === 'pagos' && (
+              <div className={styles.viewFadeIn}>
+                <div className={styles.viewDescription}>
+                  <h3>Verificación de Planes y Transferencias</h3>
+                  <p>Revisa los comprobantes, montos cargados y aprueba de forma inmediata el acceso a la app del cliente.</p>
+                </div>
+                <PlanVerificationTable />
+              </div>
+            )}
+
+            {activeTab === 'ranking' && (
+              <div className={styles.viewFadeIn}>
+                <div className={styles.viewDescription}>
+                  <h3>Tabla de Posiciones Interna</h3>
+                  <p>Monitoreo en tiempo real del progreso de fuerza teórica y administración de ascensos reglamentarios.</p>
+                </div>
+                <AdminLeaderboard />
+              </div>
+            )}
           </div>
         </section>
-
       </main>
 
-      {/* MODAL SELECCIÓN DE AVATAR (Lógica idéntica y funcional移植 de DashboardClient) */}
+      {/* MODAL SELECCIÓN DE AVATAR */}
       {showAvatarModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -113,7 +135,6 @@ export default function DashboardAdmin() {
           </div>
         </div>
       )}
-
     </div>
   );
 }
