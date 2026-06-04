@@ -1,33 +1,43 @@
-/* CONTENEDOR PRINCIPAL (Pantalla completa) */
+/* CONTENEDOR RAÍZ DE LA PÁGINA COMPLETA */
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Fuerza a que la app mida exactamente el alto de la pantalla, ni un píxel más */
+  width: 100%;
+  overflow: hidden; /* Corta cualquier intento de meter scroll horizontal o vertical erróneo */
+  box-sizing: border-box;
+}
+
+/* CONTENEDOR DEL CONTENIDO (Logo + Inputs) */
 .container {
+  flex: 1; /* Absorbe de forma inteligente el espacio restante abajo del Navbar */
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 60px;                 
-  min-height: 100vh;
-  width: 100vw;
+  width: 100%;
+  padding: 20px 40px; 
+  box-sizing: border-box;
   font-family: Arial, sans-serif;
-  padding: 40px;
   position: relative;
 }
 
-/* CONTENEDOR DE LA ALERTA: Se encarga del centrado horizontal superior */
+/* CONTENEDOR DE LA ALERTA */
 .alertContainer {
   position: fixed;
-  top: 25px;                 /* Despegado ligeramente del techo */
+  top: 90px;
   left: 0;
-  width: 100vw;
+  width: 100%;
   display: flex;
-  justify-content: center;   /* Centra horizontalmente su contenido */
-  padding: 0 20px;           /* Evita que toque los bordes en pantallas chicas */
+  justify-content: center;   
+  padding: 0 20px;           
   z-index: 1000;
-  pointer-events: none;      /* Permite hacer clics a través del contenedor */
+  pointer-events: none;      
 }
 
-/* LA ALERTA FÍSICA */
 .alert {
-  pointer-events: auto;      /* Devuelve los eventos de mouse solo a la alerta */
-  background-color: #83204b; /* Color morado principal de tu diseño */
+  pointer-events: auto;      
+  background-color: #83204b; 
   color: white;
   padding: 14px 24px;
   border-radius: 8px;
@@ -35,25 +45,13 @@
   font-weight: 500;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   text-align: center;
-  max-width: 500px;          /* Evita que se estire demasiado en pantallas gigantes */
+  max-width: 500px;          
   width: 100%;
   animation: entradaSuperior 0.3s ease-out;
 }
 
-/* Animación de entrada de arriba hacia abajo */
-@keyframes entradaSuperior {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* SECCIÓN IZQUIERDA: EL LOGO */
-.left {
+/* BLOQUE IZQUIERDO Y DERECHO */
+.left, .right {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -61,19 +59,12 @@
 
 .logo {
   width: 100%;
-  max-width: 360px;         
+  max-width: 360px;          
   height: auto;
   object-fit: contain;
 }
 
-/* SECCIÓN DERECHA: TARJETA DEL FORMULARIO */
-.right {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* TARJETA DEL FORMULARIO (Translúcida con tono plomo) */
+/* TARJETA DEL FORMULARIO */
 .formCard {
   display: flex;
   flex-direction: column;
@@ -83,7 +74,8 @@
   background-color: rgba(30, 30, 30, 0.2); 
   backdrop-filter: blur(4px);              
   border: 1px solid rgba(0, 0, 0, 0.08);    
-  border-radius: 12px;                      
+  border-radius: 12px;
+  box-sizing: border-box;                      
 }
 
 .formCard h2 {
@@ -93,7 +85,7 @@
   text-align: center;
 }
 
-/* CAMPOS DE ENTRADA */
+/* INPUTS */
 .input {
   width: 100%;
   padding: 12px;
@@ -102,6 +94,7 @@
   background-color: rgba(255, 255, 255, 0.7); 
   font-size: 14px;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .input:focus {
@@ -110,7 +103,7 @@
   background-color: #ffffff;
 }
 
-/* CONTENEDOR DE BOTONES */
+/* BOTONES */
 .buttons {
   display: flex;
   justify-content: space-between;
@@ -119,11 +112,17 @@
   margin-top: 5px;
 }
 
-/* RESPONSIVE (Ajuste para móviles) */
+/* RESPONSIVE */
 @media (max-width: 768px) {
+  .pageWrapper {
+    height: auto; /* Permite scroll normal si los elementos superan pantallas muy pequeñas */
+    overflow-y: auto;
+  }
+
   .container {
     flex-direction: column;                  
-    padding: 20px;
+    padding: 100px 20px 40px 20px; /* Margen para no chocar con la barra superior */
+    gap: 30px;
   }
 
   .logo {
@@ -132,6 +131,6 @@
 
   .formCard {
     width: 100%;
-    max-width: 300px;
+    max-width: 320px;
   }
 }

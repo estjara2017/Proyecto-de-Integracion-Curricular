@@ -2,9 +2,10 @@ import { useState } from 'react'
 import styles from './DashboardClient.module.css'
 import Profile from './Profile/Profile'
 import Leaderboard from './Leaderboard/Leaderboard'
+import Header2 from '../../components/Header/Header2' 
+import PlanSelector from './PlanSelector/PlanSelector' 
 import Button from '../../components/Button/Button'
-import Header2 from '../../components/Header/Header2' // 🚀 Importamos el nuevo encabezado
-import PlanSelector from './PlanSelector/PlanSelector' // 🚀 Importamos el selector de planes
+import { useAuth } from '../../context/AuthContext' // 🚀 Conectamos al contexto unificado
 
 const AVATARES = [
   '/images/avatars/agua.png',
@@ -14,45 +15,37 @@ const AVATARES = [
 ] 
 
 function DashboardClient() {
-  const [dbUser, setDbUser] = useState({
-    id: "user_05",
-    nombre: 'Esteban Jara',
-    edad: 30,
-    nivel: 'Principiante',
-    posicion: 'N° 5',
-    pesoLevantamiento: 10, 
-    pesoMaxPromedio: 50,   
-    pesoTeoricoMax: 80,
-    avatarIndex: 0 
-  })
+  // 🚀 Traemos directamente el "atleta" ya formateado desde el contexto
+  const { atleta } = useAuth() 
 
+  // Estado local que maneja exclusivamente UI (el modal y la persistencia visual del cambio)
+  const [localAvatarIndex, setLocalAvatarIndex] = useState(null)
   const [showAvatarModal, setShowAvatarModal] = useState(false)
 
+  // Combinamos el objeto global con la selección temporal del avatar
+  const dbUser = {
+    ...atleta,
+    avatarIndex: localAvatarIndex !== null ? localAvatarIndex : atleta.avatarIndex
+  }
+
   const handleSelectAvatar = (index) => {
-    setDbUser(prev => ({
-      ...prev,
-      avatarIndex: index
-    }))
+    setLocalAvatarIndex(index)
     setShowAvatarModal(false)
+    // Aquí meterías a futuro tu: await usuarioService.actualizarAvatar(dbUser.id, index)
   }
 
   return (
     <div className={styles.dashboardContainer}>
-      
-      {/* HIJO 1: Encabezado Global de la aplicación */}
       <Header2 />
-
-      {/* HIJO 2: Tarjeta de Perfil del Atleta */}
+      
       <Profile 
         dbUser={dbUser} 
         avatares={AVATARES} 
         onCambiarAvatar={() => setShowAvatarModal(true)} 
       />
-
-      {/* HIJO 3: Tabla de Posiciones Interna */}
+      
       <Leaderboard dbUser={dbUser} />
-
-      {/* HIJO 4: Desplegable de suscripción (Ocupa el 100% inferior) */}
+      
       <PlanSelector />
 
       {/* MODAL SELECCIÓN DE AVATAR */}
@@ -79,7 +72,6 @@ function DashboardClient() {
           </div>
         </div>
       )}
-
     </div>
   )
 }

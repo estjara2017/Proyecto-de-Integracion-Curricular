@@ -1,0 +1,106 @@
+/* CONTENEDOR DE LA PÁGINA COMPLETA */
+.pageWrapper {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #e6dbdb;
+}
+
+/* CONTENIDO CENTRAL */
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 40px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* BLOQUE DEL TITULAR */
+.codeSection {
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.title {
+  font-size: 26px;
+  margin-bottom: 18px;
+  color: #7a0f2b; 
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: font-size 0.2s ease;
+}
+
+/* CAJA DE LA PALABRA CLAVE CROSSFIT */
+.codeBox {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  padding: 22px 50px;
+  border-radius: 16px;
+  background-color: #7a0f2b; 
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(122, 15, 43, 0.25);
+  text-transform: uppercase;
+  display: inline-block;
+  max-width: 90%;
+  word-wrap: break-word; /* Previene que palabras muy largas rompan la caja */
+  transition: all 0.2s ease;
+}
+
+/* CONTENEDOR DEL LOGIN REUTILIZADO */
+.loginSection {
+  width: 100%;
+  max-width: 450px; 
+  display: flex;
+  justify-content: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.loadingText {
+  font-size: 16px;
+  color: #555;
+  font-style: italic;
+}
+
+.errorMessage {
+  color: #d32f2f;
+  font-weight: 600;
+  background-color: rgba(211, 47, 47, 0.1);
+  padding: 12px 20px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+/* =============================================
+   MEDIAS QUERIES PARA RESPONSIVE (MÓVILES)
+   ============================================= */
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 15px;
+    gap: 25px; /* Reduce la separación en pantallas compactas */
+  }
+
+  .title {
+    font-size: 20px; /* Un poco más pequeño para que no ocupe dos líneas */
+    margin-bottom: 12px;
+  }
+
+  .codeBox {
+    font-size: 32px; /* Reducción de la palabra para que quepa en cualquier teléfono */
+    padding: 15px 30px;
+    letter-spacing: 2px;
+    border-radius: 12px;
+  }
+  
+  .loginSection {
+    max-width: 100%; /* Aprovecha todo el ancho disponible del celular */
+  }
+}

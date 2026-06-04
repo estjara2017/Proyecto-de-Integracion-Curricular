@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import styles from './Profile.module.css'
 import Button from '../../../components/Button/Button'
+import { useAuth } from '../../../context/AuthContext'
 
 function Profile({ dbUser, avatares = [], onCambiarAvatar }) {
   const navigate = useNavigate()
+  const { logoutContext } = useAuth() // 🚀 Extraído correctamente
 
   const porcentajeProgreso = Math.min(
     Math.round((dbUser.pesoMaxPromedio / dbUser.pesoTeoricoMax) * 100),
@@ -13,6 +15,12 @@ function Profile({ dbUser, avatares = [], onCambiarAvatar }) {
   const srcAvatar = (avatares && avatares[dbUser.avatarIndex]) 
     ? avatares[dbUser.avatarIndex] 
     : '/agua.png';
+
+  // Función manejadora para limpiar sesión y redirigir
+  const handleLogout = () => {
+    logoutContext(); // 🚀 Borra LocalStorage y limpia el estado global de React
+    navigate('/');   // Redirige al inicio/login limpito
+  }
 
   return (
     <section className={styles.profileCard}>
@@ -127,7 +135,7 @@ function Profile({ dbUser, avatares = [], onCambiarAvatar }) {
           <Button 
             variant="secondary" 
             type="button" 
-            onClick={() => navigate('/')}
+            onClick={handleLogout} // 🚀 Vinculado al cierre de sesión real
           >
             Salir
           </Button>

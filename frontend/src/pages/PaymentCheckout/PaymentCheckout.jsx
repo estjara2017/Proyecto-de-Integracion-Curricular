@@ -113,10 +113,10 @@ export default function PaymentCheckout({
                   <h4>Datos de Cuenta Oficial</h4>
                   <div className={styles.bankRow}><strong>Banco:</strong> <span>Banco Pichincha</span></div>
                   <div className={styles.bankRow}><strong>Tipo:</strong> <span>Cuenta de Ahorros</span></div>
-                  <div className={styles.bankRow}><strong>Número:</strong> <span>220XXXXXX</span></div>
+                  <div className={styles.bankRow}><strong>Número:</strong> <span>2209030405</span></div>
                   <div className={styles.bankRow}><strong>Titular:</strong> <span>Elemental Cross Training</span></div>
-                  <div className={styles.bankRow}><strong>RUC/CI:</strong> <span>17XXXXXXXX</span></div>
-                  <div className={styles.bankRow}><strong>Email:</strong> <span>pagos@elemental.com</span></div>
+                  <div className={styles.bankRow}><strong>RUC/CI:</strong> <span>1727604884</span></div>
+                  <div className={styles.bankRow}><strong>Email:</strong> <span>elementalcrosstraining@gmail.com</span></div>
                 </div>
               )}
 
