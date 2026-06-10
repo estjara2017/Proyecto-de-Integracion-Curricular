@@ -1,53 +1,51 @@
-import { useState } from "react";
-import styles from "./PaymentCheckout.module.css";
-import Header from "../../components/Header/Header";
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import styles from './PaymentCheckout.module.css';
+import Header from '../../components/Header/Header';
+import { useAuth } from '../../context/AuthContext';
+import { paymentService } from '../../services/paymentService';
 
-export default function PaymentCheckout({
-  planSelected,
-  userProfile,
-  onConfirmPayment,
-}) {
+export default function PaymentCheckout() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { usuario } = useAuth();
+
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // 🏦 GESTIÓN DE TRANSFERENCIAS ALTERNATIVAS
   const [showBankDetails, setShowBankDetails] = useState(false);
-  const [customBank, setCustomBank] = useState("");
+  const [selectedBank, setSelectedBank] = useState('');
+  const [customBank, setCustomBank] = useState('');
 
-  const plan = planSelected || {
-    id: "trimestral",
-    name: "Plan Trimestral",
-    price: 75.0,
-    durationDays: 90,
-    trainingDaysPerWeek: 5,
+  const plan = {
+    id: location.state?.planId || 4,
+    name: location.state?.planNombre || 'Plan Trimestral',
+    price: Number(location.state?.planPrecio || 135),
+    durationDays: location.state?.durationDays || 90,
+    trainingDaysPerWeek: location.state?.trainingDaysPerWeek || 5
   };
+
+  useEffect(() => {}, [navigate]);
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
-    if (!acceptedTerms) return;
-    
-    const metodoPagoFinal = showBankDetails && customBank.trim() 
-      ? `Transf. ${customBank.trim()}` 
-      : "Deuna (Pichincha)";
+    if (!acceptedTerms || !plan.id) return;
+
+    const bancoFinal = selectedBank === 'Otra entidad' ? customBank.trim() : selectedBank;
+    const metodoPagoFinal = showBankDetails
+      ? `Transferencia ${bancoFinal || 'Banco no especificado'}`
+      : 'Deuna (Pichincha)';
 
     setIsSubmitting(true);
     try {
-      await onConfirmPayment({
+      await paymentService.notificarPago({
         planId: plan.id,
-        planName: plan.name,
-        amount: plan.price,
-        userId: userProfile?.id || "unknown",
-        userName: userProfile?.name || "Usuario sin nombre",
-        status: "PENDING", 
-        date: new Date().toISOString(),
-        metodoPago: metodoPagoFinal, 
+        metodoPago: metodoPagoFinal
       });
-      
-      alert("¡Notificación enviada! El administrador verificará tu pago para activar el plan.");
 
+      alert('Notificacion enviada. El administrador verificara tu pago para activar el plan.');
+      navigate('/dashboardClient');
     } catch (error) {
-      console.error("Error al registrar la intención de pago:", error);
-      alert("Hubo un problema al enviar la notificación. Inténtalo de nuevo.");
+      alert(error.message || 'Hubo un problema al enviar la notificacion.');
     } finally {
       setIsSubmitting(false);
     }
@@ -58,16 +56,15 @@ export default function PaymentCheckout({
       <Header />
       <div className={styles.checkoutContainer}>
         <div className={styles.centralSection}>
-          <h2 className={styles.title}>Finalizar tu Suscripción</h2>
-          
+          <h2 className={styles.title}>Finalizar tu Suscripcion</h2>
+
           <div className={styles.cardsGrid}>
-            {/* CARD IZQUIERDA: RESUMEN */}
             <div className={styles.formCard}>
               <h3>Resumen de tu Plan</h3>
 
               <div className={styles.userConfirmation}>
                 <p>Registrando pago para:</p>
-                <strong>{userProfile?.name || "Cargando perfil..."}</strong>
+                <strong>{usuario ? `${usuario.nombre} ${usuario.apellido}` : 'Cargando perfil...'}</strong>
               </div>
 
               <div className={styles.planDetail}>
@@ -76,9 +73,9 @@ export default function PaymentCheckout({
               </div>
 
               <div className={styles.planDetail}>
-                <span className={styles.label}>Días de Entrenamiento:</span>
+                <span className={styles.label}>Dias de Entrenamiento:</span>
                 <span className={styles.value}>
-                  {plan.trainingDaysPerWeek} días a la semana
+                  {plan.trainingDaysPerWeek} dias a la semana
                 </span>
               </div>
 
@@ -88,18 +85,16 @@ export default function PaymentCheckout({
               </div>
             </div>
 
-            {/* CARD DERECHA: PAGO Y QR / DATOS BANCARIOS */}
-            <div className={styles.formCard}>
-              <h3>{showBankDetails ? "Transferencia Bancaria" : "Escanea y Paga con Deuna"}</h3>
+            <div className={`${styles.formCard} ${styles.paymentCard} ${showBankDetails ? styles.scrollablePaymentCard : ''}`}>
+              <h3>{showBankDetails ? 'Transferencia Bancaria' : 'Escanea y Paga con Deuna'}</h3>
 
               <p className={styles.instructions}>
-                {showBankDetails 
-                  ? "Realiza la transferencia interbancaria utilizando los siguientes datos oficiales de la escuela:"
-                  : "Usa el QR para transferir. Una vez realizado, presiona el botón de abajo para que el administrador active tu plan."
+                {showBankDetails
+                  ? 'Realiza la transferencia interbancaria utilizando los siguientes datos oficiales de la escuela:'
+                  : 'Usa el QR para transferir. Una vez realizado, presiona el boton de abajo para que el administrador active tu plan.'
                 }
               </p>
 
-              {/* Contenedor dinámico mejorado */}
               {!showBankDetails ? (
                 <div className={styles.qrWrapper}>
                   <img
@@ -113,38 +108,54 @@ export default function PaymentCheckout({
                   <h4>Datos de Cuenta Oficial</h4>
                   <div className={styles.bankRow}><strong>Banco:</strong> <span>Banco Pichincha</span></div>
                   <div className={styles.bankRow}><strong>Tipo:</strong> <span>Cuenta de Ahorros</span></div>
-                  <div className={styles.bankRow}><strong>Número:</strong> <span>2209030405</span></div>
+                  <div className={styles.bankRow}><strong>Numero:</strong> <span>2209030405</span></div>
                   <div className={styles.bankRow}><strong>Titular:</strong> <span>Elemental Cross Training</span></div>
                   <div className={styles.bankRow}><strong>RUC/CI:</strong> <span>1727604884</span></div>
                   <div className={styles.bankRow}><strong>Email:</strong> <span>elementalcrosstraining@gmail.com</span></div>
                 </div>
               )}
 
-              {/* Botón alternador estilizado */}
-              <button 
+              <button
                 type="button"
                 className={styles.toggleBankButton}
                 onClick={() => {
                   setShowBankDetails(!showBankDetails);
-                  setCustomBank(""); // Limpia si cambia de opinión
+                  setSelectedBank('');
+                  setCustomBank('');
                 }}
               >
-                {showBankDetails ? "◀ Volver a QR Deuna" : "🏦 No tienes de Una - Transfiere desde otros bancos"}
+                {showBankDetails ? 'Volver a QR Deuna' : 'No tienes Deuna - Transfiere desde otros bancos'}
               </button>
 
               <form onSubmit={handlePaymentSubmit} className={styles.form}>
-                
                 {showBankDetails && (
                   <div className={styles.inputGroup}>
-                    <label className={styles.fieldLabel}>¿Desde qué banco envías el dinero?</label>
-                    <input 
-                      type="text"
-                      placeholder="Ej: Banco Guayaquil, Produbanco, Pacifíco..."
+                    <label className={styles.fieldLabel}>Desde que banco o cooperativa envias el dinero?</label>
+                    <select
                       className={styles.textField}
-                      value={customBank}
-                      onChange={(e) => setCustomBank(e.target.value)}
+                      value={selectedBank}
+                      onChange={(e) => setSelectedBank(e.target.value)}
                       required
-                    />
+                    >
+                      <option value="">Selecciona banco o cooperativa</option>
+                      <option value="Produbanco">Produbanco</option>
+                      <option value="Banco Guayaquil">Banco Guayaquil</option>
+                      <option value="Banco Pacifico">Banco Pacifico</option>
+                      <option value="Cooperativa JEP">Cooperativa JEP</option>
+                      <option value="Cooperativa Cooprogreso">Cooperativa Cooprogreso</option>
+                      <option value="Cooperativa Andalucia">Cooperativa Andalucia</option>
+                      <option value="Otra entidad">Otra entidad</option>
+                    </select>
+                    {selectedBank === 'Otra entidad' && (
+                      <input
+                        type="text"
+                        placeholder="Escribe el banco o cooperativa"
+                        className={styles.textField}
+                        value={customBank}
+                        onChange={(e) => setCustomBank(e.target.value)}
+                        required
+                      />
+                    )}
                   </div>
                 )}
 
@@ -155,17 +166,15 @@ export default function PaymentCheckout({
                     onChange={(e) => setAcceptedTerms(e.target.checked)}
                     required
                   />
-                  <span>
-                    Acepto los términos y confirmo que los datos son correctos.
-                  </span>
+                  <span>Acepto los terminos y confirmo que los datos son correctos.</span>
                 </label>
 
                 <button
                   type="submit"
                   className={styles.submitButton}
-                  disabled={!acceptedTerms || isSubmitting || (showBankDetails && !customBank.trim())}
+                  disabled={!acceptedTerms || isSubmitting || (showBankDetails && (!selectedBank || (selectedBank === 'Otra entidad' && !customBank.trim())))}
                 >
-                  {isSubmitting ? "Procesando..." : "Ya transferí, notificar administrador"}
+                  {isSubmitting ? 'Procesando...' : 'Ya transferi, notificar administrador'}
                 </button>
               </form>
             </div>

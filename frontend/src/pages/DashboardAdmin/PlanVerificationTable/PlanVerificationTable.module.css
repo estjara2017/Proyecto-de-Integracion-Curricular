@@ -10,6 +10,7 @@
 /* Tabla base */
 .customTable {
   width: 100%;
+  min-width: 820px;
   border-collapse: collapse;
   text-align: left;
   font-family: system-ui, -apple-system, sans-serif;

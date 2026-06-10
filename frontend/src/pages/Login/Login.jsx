@@ -71,10 +71,10 @@ const manejarEnvio = async (e) => {
   }
 
   return (
-    <div className={styles.pageWrapper}>
+    <div className={`${styles.pageWrapper} ${embedded ? styles.embeddedWrapper : ''}`}>
       {!embedded && <Navbar />}
 
-      <div className={styles.container}>
+      <div className={`${styles.container} ${embedded ? styles.embeddedContainer : ''}`}>
         {mostrarAlerta && (
           <div className={styles.alertContainer}>
             <div className={styles.alert}>

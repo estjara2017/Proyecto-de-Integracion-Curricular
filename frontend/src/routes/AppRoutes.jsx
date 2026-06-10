@@ -10,6 +10,7 @@ import DashboardClient from '../pages/DashboardClient/DashboardClient'
 import DashboardAdmin from '../pages/DashboardAdmin/DashboardAdmin'
 import PaymentCheckout from '../pages/PaymentCheckout/PaymentCheckout'
 import Attendance from '../pages/Attendance/Attendance'
+import AdminAttendance from '../pages/AdminAttendance/AdminAttendance'
 
 
 function AppRoutes() {
@@ -26,6 +27,7 @@ function AppRoutes() {
       <Route path="/dashboardAdmin" element={<DashboardAdmin/>}/>
       <Route path="/payment" element={<PaymentCheckout/>}/>
       <Route path="/attendance" element={<Attendance/>}/>
+      <Route path="/adminAttendance" element={<AdminAttendance/>}/>
     </Routes>
   )
 }

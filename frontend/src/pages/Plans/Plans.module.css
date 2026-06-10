@@ -168,6 +168,25 @@
   justify-content: space-between; 
   align-items: center;
   gap: 20px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, padding-inline 0.2s ease;
+}
+
+.cardPlans:hover {
+  background-color: rgba(131, 32, 75, 0.08);
+  padding-inline: 10px;
+}
+
+.cardPlans:hover p {
+  color: #83204b;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.cardPlans:focus-visible {
+  outline: 2px solid #83204b;
+  outline-offset: 4px;
 }
 
 /* CARD DERECHA: BENEFICIOS (Vertical - En Columna) */
@@ -197,6 +216,12 @@
   border: 1px solid rgba(0, 0, 0, 0.5);
   font-weight: bold;
   white-space: nowrap; /* Evita que el precio se rompa en dos renglones */
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.cardPlans:hover .priceBox {
+  background-color: #d8d8d8;
+  transform: translateY(-1px);
 }
 
 /* ================= GRID IMAGENES REESTRUCTURADO ================= */

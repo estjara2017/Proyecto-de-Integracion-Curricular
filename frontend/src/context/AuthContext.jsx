@@ -1,27 +1,33 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useContext, useCallback } from 'react';
 import { authService } from '../services/authServices';
 
 const AuthContext = createContext(null);
 
+const avatarIndexMap = {
+  agua: 0,
+  fuego: 1,
+  aire: 2,
+  tierra: 3
+};
+
+const calcularEdad = (fechaNacimiento) => {
+  if (!fechaNacimiento) return 30;
+  const nacimiento = new Date(fechaNacimiento);
+  const hoy = new Date();
+  let edad = hoy.getFullYear() - nacimiento.getFullYear();
+  const mes = hoy.getMonth() - nacimiento.getMonth();
+  if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) edad -= 1;
+  return edad;
+};
+
 export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(null);
-  const [rol, setRol] = useState(null);
-  const [autenticado, setAutenticado] = useState(false);
-  const [cargando, setCargando] = useState(true);
+  const usuarioInicial = authService.estaAutenticado() ? authService.obtenerUsuario() : null;
+  const [usuario, setUsuario] = useState(usuarioInicial);
+  const [rol, setRol] = useState(usuarioInicial ? authService.obtenerRol() : null);
+  const [autenticado, setAutenticado] = useState(Boolean(usuarioInicial));
+  const [cargando] = useState(false);
 
-  useEffect(() => {
-    const verificarSesion = () => {
-      if (authService.estaAutenticado()) {
-        setUsuario(authService.obtenerUsuario());
-        setRol(authService.obtenerRol());
-        setAutenticado(true);
-      }
-      setCargando(false);
-    };
-    verificarSesion();
-  }, []);
-
-  const loginContext = (datosUsuario, token) => {
+  const loginContext = useCallback((datosUsuario, token) => {
     localStorage.setItem('token_elemental', token);
     localStorage.setItem('rol_elemental', datosUsuario.rol);
     localStorage.setItem('user_data', JSON.stringify(datosUsuario));
@@ -29,38 +35,46 @@ export function AuthProvider({ children }) {
     setUsuario(datosUsuario);
     setRol(datosUsuario.rol);
     setAutenticado(true);
-  };
+  }, []);
 
-  const logoutContext = () => {
+  const actualizarUsuarioContext = useCallback((datosUsuario) => {
+    localStorage.setItem('user_data', JSON.stringify(datosUsuario));
+    localStorage.setItem('rol_elemental', datosUsuario.rol);
+    setUsuario(datosUsuario);
+    setRol(datosUsuario.rol);
+  }, []);
+
+  const logoutContext = useCallback(() => {
     authService.logout();
     setUsuario(null);
     setRol(null);
     setAutenticado(false);
-  };
+  }, []);
 
-  // 🚀 LOGICA CENTRALIZADA Y REUTILIZABLE:
-  // Construimos el "atleta" perfectamente formateado aquí dentro para toda la app.
-  // Si en el futuro cambian los nombres de la base de datos, solo los corriges aquí una vez.
   const atleta = {
-    id: usuario?.id || "user_05",
-    nombre: usuario?.nombre || 'Cargando atleta...',
-    edad: usuario?.edad || 30,
+    id: usuario?.id || 'user_05',
+    nombre: usuario ? `${usuario.nombre || ''} ${usuario.apellido || ''}`.trim() : 'Cargando atleta...',
+    edad: usuario?.edad || calcularEdad(usuario?.fechaNacimiento),
     nivel: usuario?.nivel || 'Principiante',
     posicion: usuario?.posicion || 'N° --',
-    pesoLevantamiento: usuario?.peso_levantamiento || 0, 
-    pesoMaxPromedio: usuario?.peso_max_promedio || 0,   
-    pesoTeoricoMax: usuario?.peso_teorico_max || 100,
-    avatarIndex: usuario?.avatar_index || 0
+    pesoLevantamiento: usuario?.pesoLevantamientoKg || 0,
+    pesoMaxPromedio: usuario?.pesoMaxPromedioKg || 0,
+    pesoTeoricoMax: usuario?.pesoTeoricoMaxKg || 100,
+    porcentajeProgreso: usuario?.porcentajeProgreso || 0,
+    estado: usuario?.estado || 'inactivo',
+    horarioEntrenamiento: usuario?.horarioEntrenamiento || '',
+    avatarIndex: avatarIndexMap[usuario?.avatar] ?? 0
   };
 
   const valorContexto = {
-    usuario,       // El objeto crudo por si acaso
-    atleta,        // 🚀 El objeto formateado y limpio para tus componentes
+    usuario,
+    atleta,
     rol,
     autenticado,
     cargando,
     loginContext,
-    logoutContext
+    logoutContext,
+    actualizarUsuarioContext
   };
 
   return (

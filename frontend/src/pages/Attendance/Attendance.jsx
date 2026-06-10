@@ -14,6 +14,7 @@ function Attendance() {
       try {
         const palabraClave = await fetchPalabraDelDia();
         setPalabra(palabraClave);
+        localStorage.setItem('elemental_qr_scan_date', new Date().toISOString().slice(0, 10));
       } catch (err) {
         console.error("Error al obtener la palabra del día:", err); // 🚀 Al usar 'err' aquí, el error desaparece
         setError("No se pudo cargar la palabra del día. Inténtalo más tarde.");

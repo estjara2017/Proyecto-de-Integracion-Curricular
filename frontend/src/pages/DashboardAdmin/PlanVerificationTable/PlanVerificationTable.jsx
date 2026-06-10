@@ -1,25 +1,59 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './PlanVerificationTable.module.css';
 import Button from '../../../components/Button/Button';
+import { adminService } from '../../../services/adminService';
 
-const MOCK_PENDING_PLANS = [
-  { id: 1, atleta: "Christian Ruiz", plan: "Mensual Inicial", precio: "$35.00", fecha: "2026-06-01", metodo: "Transferencia Banco Pichincha" },
-  { id: 2, atleta: "Jorge Loor", plan: "Trimestral Pro", precio: "$90.00", fecha: "2026-06-02", metodo: "Transferencia Produbanco" }
-];
+const mapPago = (pago) => {
+  const suscripcion = pago.Suscripcion || {};
+  const usuario = suscripcion.Usuario || {};
+  const plan = suscripcion.Plan || {};
+
+  return {
+    id: pago.id,
+    atleta: `${usuario.nombre || ''} ${usuario.apellido || ''}`.trim(),
+    plan: plan.nombre || 'Plan solicitado',
+    precio: `$${Number(pago.monto || 0).toFixed(2)}`,
+    fecha: pago.fechaNotificacion ? pago.fechaNotificacion.slice(0, 10) : '',
+    metodo: pago.metodoPago || 'Transferencia'
+  };
+};
 
 export default function PlanVerificationTable() {
-  const [solicitudes, setSolicitudes] = useState(MOCK_PENDING_PLANS);
+  const [solicitudes, setSolicitudes] = useState([]);
+  const [error, setError] = useState('');
 
-  const handleActivar = (id, atleta) => {
-    alert(`Plan verificado con éxito. El atleta ${atleta} ahora tiene su membresía ACTIVA.`);
-    setSolicitudes(prev => prev.filter(item => item.id !== id));
+  useEffect(() => {
+    const cargarPagos = async () => {
+      try {
+        const data = await adminService.listarPagosPendientes();
+        setSolicitudes(data.map(mapPago));
+      } catch (err) {
+        setError(err.message || 'No se pudieron cargar los pagos pendientes');
+      }
+    };
+
+    cargarPagos();
+  }, []);
+
+  const handleActivar = async (id, atleta) => {
+    try {
+      await adminService.aprobarPago(id);
+      alert(`Plan verificado con exito. El atleta ${atleta} ahora tiene su membresia ACTIVA.`);
+      setSolicitudes((prev) => prev.filter((item) => item.id !== id));
+    } catch (err) {
+      alert(err.message || 'No se pudo aprobar el pago');
+    }
   };
 
   return (
     <div className={styles.tableWrapper}>
-      {solicitudes.length === 0 ? (
+      {error ? (
         <div className={styles.emptyContainer}>
-          <p className={styles.emptyMessage}>🎉 No hay pagos pendientes por verificar. ¡Todo al día!</p>
+          <p className={styles.emptyMessage}>{error}</p>
+        </div>
+      ) : solicitudes.length === 0 ? (
+        <div className={styles.emptyContainer}>
+          <p className={styles.emptyMessage}>No hay pagos pendientes por verificar. Todo al dia.</p>
         </div>
       ) : (
         <table className={styles.customTable}>
@@ -29,8 +63,8 @@ export default function PlanVerificationTable() {
               <th>Plan Solicitado</th>
               <th>Monto</th>
               <th>Fecha Solicitud</th>
-              <th>Método de Pago</th>
-              <th className={styles.centerText}>Acción</th>
+              <th>Metodo de Pago</th>
+              <th className={styles.centerText}>Accion</th>
             </tr>
           </thead>
           <tbody>

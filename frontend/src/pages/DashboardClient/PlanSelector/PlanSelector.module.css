@@ -110,6 +110,12 @@
   padding: 24px;
 }
 
+@media (max-width: 900px) {
+  .planesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* ==========================================================================
    📱 RESPONSIVE: Optimización estricta para celulares y pantallas pequeñas
    ========================================================================== */

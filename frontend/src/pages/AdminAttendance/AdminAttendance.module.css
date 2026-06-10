@@ -1,0 +1,102 @@
+.page {
+  min-height: 100vh;
+  background-color: #e2dcd9;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 24px auto 0;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  box-sizing: border-box;
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
+}
+
+.headerBlock {
+  border-left: 4px solid #7a1e48;
+  padding-left: 14px;
+  margin-bottom: 18px;
+}
+
+.headerBlock h1 {
+  margin: 0 0 4px;
+  color: #4a2834;
+  font-size: 1.35rem;
+}
+
+.headerBlock p {
+  margin: 0;
+  color: #665c59;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.filters select {
+  height: 40px;
+  border: 1px solid #d7c8cf;
+  border-radius: 5px;
+  padding: 8px 10px;
+}
+
+.message {
+  color: #7a1e48;
+  font-weight: 700;
+}
+
+.tablePanel {
+  overflow: auto;
+  border-radius: 8px;
+  border: 1px solid #eee6ea;
+}
+
+.tablePanel table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.tablePanel th,
+.tablePanel td {
+  padding: 13px 16px;
+  border-bottom: 1px solid #f1ecef;
+  text-align: left;
+}
+
+.tablePanel th {
+  background-color: #f8f4f6;
+  color: #4a2834;
+}
+
+.tablePanel button {
+  border: none;
+  border-radius: 5px;
+  background-color: #7a1e48;
+  color: #ffffff;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 16px;
+    max-height: calc(100vh - 120px);
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+}

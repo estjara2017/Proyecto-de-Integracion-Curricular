@@ -60,6 +60,7 @@
 
 .customTable {
   width: 100%;
+  min-width: 860px;
   border-collapse: collapse;
   text-align: left;
 }

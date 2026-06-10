@@ -67,7 +67,7 @@ const Plan = () => {
   const [activePlan, togglePlan] = useAccordion(null);
   const [activeBenefit, toggleBenefit] = useAccordion(null);
 
-  const handlePriceClick = (e) => {
+  const handleRegisterRedirect = (e) => {
     e.stopPropagation(); 
     navigate('/register', { 
       state: { message: "Para adquirir un plan, primero debes crear una cuenta o iniciar sesión." } 
@@ -94,15 +94,26 @@ const Plan = () => {
                   <div
                     key={plan.id}
                     className={styles.item}
-                    onClick={() => togglePlan(plan.id)}
                   >
-                    <div className={`${styles.header} ${isOpen ? styles.activeHeader : ''}`}>
+                    <div
+                      className={`${styles.header} ${isOpen ? styles.activeHeader : ''}`}
+                      onClick={() => togglePlan(plan.id)}
+                    >
                       <span className={styles.serviceTitleText}>{plan.title}</span>
-                      <span className={styles.icon}>{isOpen ? '−' : '+'}</span>
+                      <span className={styles.icon}>{isOpen ? '-' : '+'}</span>
                     </div>
 
                     <div className={`${styles.content} ${isOpen ? styles.open : ''}`}>
-                      <div className={styles.cardPlans}>
+                      <div
+                        className={styles.cardPlans}
+                        onClick={handleRegisterRedirect}
+                        role="button"
+                        tabIndex={isOpen ? 0 : -1}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') handleRegisterRedirect(e);
+                        }}
+                        title="Haz clic para registrarte"
+                      >
                         <div className={styles.planInfoText}>
                           <p>{plan.description}</p>
                           {plan.highlightRequirement && (
@@ -113,9 +124,6 @@ const Plan = () => {
                         </div>
                         <div 
                           className={styles.priceBox} 
-                          onClick={handlePriceClick}
-                          style={{ cursor: 'pointer' }} 
-                          title="Haz clic para registrarte"
                         >
                           ${plan.price}
                         </div>
@@ -139,10 +147,12 @@ const Plan = () => {
                   <div
                     key={item.id}
                     className={styles.item}
-                    onClick={() => toggleBenefit(item.id)}
                   >
-                    <div className={`${styles.headerInverse} ${isOpen ? styles.activeHeader : ''}`}>
-                      <span className={styles.icon}>{isOpen ? '−' : '+'}</span>
+                    <div
+                      className={`${styles.headerInverse} ${isOpen ? styles.activeHeader : ''}`}
+                      onClick={() => toggleBenefit(item.id)}
+                    >
+                      <span className={styles.icon}>{isOpen ? '-' : '+'}</span>
                       <span className={styles.serviceTitleText}>{item.title}</span>
                     </div>
 

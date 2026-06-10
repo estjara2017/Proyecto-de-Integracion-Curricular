@@ -6,8 +6,43 @@
   border-radius: 8px;
 }
 
+.adminRoleForm {
+  display: grid;
+  grid-template-columns: auto minmax(180px, 260px) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background-color: #f8f4f6;
+  border-bottom: 1px solid #eadde3;
+}
+
+.adminRoleForm span {
+  color: #4a2834;
+  font-weight: 700;
+}
+
+.adminRoleForm input {
+  height: 36px;
+  border: 1px solid #c9b9bf;
+  border-radius: 5px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+}
+
+.adminRoleForm button {
+  height: 36px;
+  border: none;
+  border-radius: 5px;
+  padding: 0 14px;
+  background-color: #7a1e48;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .clientTable {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
   font-family: system-ui, -apple-system, sans-serif;
   background-color: #ffffff;
@@ -139,4 +174,76 @@
 .clientEmail {
   /* Estilos opcionales para el correo */
   color: #495057;
+}
+
+@media (max-width: 768px) {
+  .adminRoleForm {
+    grid-template-columns: 1fr auto;
+  }
+
+  .adminRoleForm span {
+    grid-column: 1 / -1;
+  }
+
+  .infoCell,
+  .statusCell,
+  .actionsCell,
+  .clientTable th {
+    padding: 12px;
+  }
+
+  .mainInfo,
+  .subInfo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .editInput {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.emptyMessage {
+  margin: 0;
+  padding: 16px;
+  color: #7a1e48;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .adminRoleForm {
+    grid-template-columns: 1fr auto;
+  }
+
+  .adminRoleForm span {
+    grid-column: 1 / -1;
+  }
+
+  .tableContainer {
+    margin: 12px 0;
+  }
+
+  .clientTable th {
+    padding: 12px;
+  }
+
+  .infoCell,
+  .statusCell,
+  .actionsCell {
+    padding: 12px;
+  }
+
+  .mainInfo,
+  .subInfo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .editInput {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }

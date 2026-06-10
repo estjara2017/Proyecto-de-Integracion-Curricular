@@ -1,0 +1,190 @@
+.accordionContainer {
+  width: 100%;
+  background-color: #554e4d;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.accordionHeader {
+  width: 100%;
+  padding: 16px 24px;
+  background-color: #554e4d;
+  color: #ffffff;
+  border: none;
+  font-size: 1.05rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.accordionHeader:hover {
+  background-color: #443e3d;
+}
+
+.icon {
+  font-size: 1.6rem;
+}
+
+.accordionContent {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out, padding 0.3s ease;
+  padding: 0 24px;
+  background-color: #bfbfbf;
+}
+
+.accordionContent.show {
+  max-height: 2600px;
+  padding: 22px;
+}
+
+.emptyText {
+  margin: 0;
+  color: #221111;
+  font-weight: 600;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.summaryGrid > div {
+  background-color: #ffffff;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.label {
+  display: block;
+  color: #83204b;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.summaryGrid p {
+  margin: 0;
+  color: #221111;
+  font-weight: 600;
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.dayCard {
+  background-color: #ffffff;
+  border: 1px solid #a69e9d;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.dayCard h3 {
+  margin: 0 0 10px 0;
+  color: #221111;
+  text-transform: uppercase;
+  font-size: 1rem;
+}
+
+.block {
+  border-top: 1px solid #e2dcd9;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.block h4 {
+  margin: 0 0 5px 0;
+  color: #7a1e48;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.block ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #2d2525;
+  font-size: 0.86rem;
+}
+
+.block small {
+  display: block;
+  margin-top: 5px;
+  color: #554e4d;
+  font-style: italic;
+}
+
+.videoSection {
+  margin-top: 18px;
+}
+
+.videoSection h3 {
+  margin: 0 0 10px 0;
+  color: #221111;
+  text-transform: uppercase;
+  font-size: 1rem;
+}
+
+.videoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.videoCard {
+  background-color: #f3e9ed;
+  border-radius: 6px;
+  padding: 12px;
+  text-decoration: none;
+  color: #221111;
+  border: 1px solid rgba(122, 30, 72, 0.15);
+}
+
+.videoCard strong {
+  display: block;
+  color: #7a1e48;
+  margin-bottom: 4px;
+}
+
+.videoCard span {
+  display: block;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 700px) {
+  .accordionHeader {
+    padding: 14px 16px;
+    font-size: 0.9rem;
+  }
+
+  .accordionContent.show {
+    padding: 14px;
+  }
+
+  .summaryGrid,
+  .videoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .daysGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 430px) {
+  .summaryGrid,
+  .videoGrid,
+  .daysGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -3,18 +3,15 @@ import styles from './Profile.module.css'
 import Button from '../../../components/Button/Button'
 import { useAuth } from '../../../context/AuthContext'
 
-function Profile({ dbUser, avatares = [], onCambiarAvatar }) {
+function Profile({ dbUser, avatares = [], onCambiarAvatar, onRegistrarAsistencia }) {
   const navigate = useNavigate()
   const { logoutContext } = useAuth() // 🚀 Extraído correctamente
 
-  const porcentajeProgreso = Math.min(
-    Math.round((dbUser.pesoMaxPromedio / dbUser.pesoTeoricoMax) * 100),
-    100
-  )
+  const porcentajeProgreso = Math.min(Math.round(dbUser.porcentajeProgreso || 0), 100)
 
   const srcAvatar = (avatares && avatares[dbUser.avatarIndex]) 
     ? avatares[dbUser.avatarIndex] 
-    : '/agua.png';
+    : '/images/avatars/agua.png';
 
   // Función manejadora para limpiar sesión y redirigir
   const handleLogout = () => {
@@ -32,7 +29,7 @@ function Profile({ dbUser, avatares = [], onCambiarAvatar }) {
               src={srcAvatar} 
               alt="Avatar de perfil"
               className={styles.avatarImg}
-              onError={(e) => { e.target.src = '/agua.png' }}
+              onError={(e) => { e.target.src = '/images/avatars/agua.png' }}
             />
           </div>
 
@@ -40,7 +37,7 @@ function Profile({ dbUser, avatares = [], onCambiarAvatar }) {
             Cambiar Avatar
           </Button>
 
-          <Button variant="primary">
+          <Button variant="primary" onClick={onRegistrarAsistencia}>
             Asistencia
           </Button>
         </div>

@@ -88,7 +88,31 @@
 .modalActions {
   display: flex;
   justify-content: center;
+  gap: 10px;
   margin-top: 5px;
+}
+
+.attendanceInput {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #c9b9bf;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+}
+
+.attendanceInput:focus {
+  outline: none;
+  border-color: #8a1d4d;
+  box-shadow: 0 0 0 2px rgba(138, 29, 77, 0.12);
+}
+
+.modalMessage {
+  margin: 0 0 14px 0;
+  color: #4a2834;
+  font-size: 0.9rem;
 }
 
 /* ==========================================================================
@@ -96,7 +120,7 @@
    ========================================================================== */
 @media (max-width: 1024px) {
   .dashboardContainer {
-    flex-direction: column; 
+    flex-direction: column;
     align-items: stretch; 
     padding: 15px;
   }
@@ -106,5 +130,32 @@
     flex: none;
     width: 100%;
     max-height: none; 
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboardContainer {
+    padding: 10px;
+    gap: 14px;
+  }
+
+  .modalContent {
+    max-width: 320px;
+    padding: 18px;
+  }
+
+  .avatarOptionsGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .modalAvatarOpt {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .modalActions {
+    flex-wrap: wrap;
   }
 }

@@ -31,7 +31,7 @@ const Services = () => {
                   >
                     <div className={`${styles.serviceHeader} ${isOpen ? styles.activeHeader : ''}`}>
                       <span className={styles.serviceTitleText}>{service.title}</span>
-                      <span className={styles.icon}>{isOpen ? '−' : '+'}</span>
+                      <span className={styles.icon}>{isOpen ? '-' : '+'}</span>
                     </div>
 
                     <div className={`${styles.dropdownContent} ${isOpen ? styles.open : ''}`}>
@@ -39,7 +39,12 @@ const Services = () => {
                         <p className={styles.serviceDescription}>{service.description}</p>
                         <div className={styles.mediaContainer}>
                           {service.imageUrl && (
-                            <img src={service.imageUrl} alt={service.title} className={styles.serviceImage} />
+                            <img
+                              src={service.imageUrl}
+                              alt={service.title}
+                              className={styles.serviceImage}
+                              style={service.imagePosition ? { objectPosition: service.imagePosition } : undefined}
+                            />
                           )}
                           {service.videoUrl && (
                             <video src={service.videoUrl} controls className={styles.serviceVideo} muted />

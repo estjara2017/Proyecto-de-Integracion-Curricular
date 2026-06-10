@@ -15,7 +15,7 @@ function AdminProfile({ dbUser, avatares = [], onCambiarAvatar }) {
 
   const srcAvatar = (avatares && avatares[dbUser.avatarIndex]) 
     ? avatares[dbUser.avatarIndex] 
-    : '/agua.png';
+    : '/images/avatars/agua.png';
 
   // NUEVA FUNCIÓN: Abre la raíz de la plataforma en otra pestaña
   const handleAbrirInicioNuevaPestana = () => {
@@ -39,7 +39,7 @@ function AdminProfile({ dbUser, avatares = [], onCambiarAvatar }) {
               src={srcAvatar} 
               alt="Avatar de perfil de administrador"
               className={styles.avatarImg}
-              onError={(e) => { e.target.src = '/agua.png' }}
+              onError={(e) => { e.target.src = '/images/avatars/agua.png' }}
             />
           </div>
 
@@ -47,7 +47,7 @@ function AdminProfile({ dbUser, avatares = [], onCambiarAvatar }) {
             Cambiar Avatar
           </Button>
 
-          <Button variant="primary">
+          <Button variant="primary" onClick={() => window.open('/adminAttendance', '_blank')}>
             Asistencia
           </Button>
         </div>

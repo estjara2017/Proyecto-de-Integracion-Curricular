@@ -21,6 +21,7 @@
   width: 100%;
   max-width: 1300px;
   gap: 80px;         /* Separación elegante entre columnas */
+  min-width: 0;
 }
 
 /* Envoltura para cada columna independiente */
@@ -29,6 +30,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
+  min-width: 0;
 }
 
 /* Título de la sección izquierda */
@@ -405,6 +407,15 @@
   .mainContent {
     padding: 40px 20px;
   }
+
+  .splitLayoutContainer {
+    flex-direction: column;
+    gap: 42px;
+  }
+
+  .sectionTitleRight {
+    text-align: left;
+  }
   
   .serviceTitleText {
     font-size: 16px;
@@ -414,5 +425,25 @@
   .serviceImage,
   .serviceVideo {
     height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainContent {
+    padding: 28px 14px;
+  }
+
+  .splitLayoutContainer {
+    gap: 34px;
+  }
+
+  .sectionTitle,
+  .sectionTitleRight {
+    font-size: 24px;
+  }
+
+  .serviceHeader,
+  .serviceHeaderInverse {
+    padding: 16px 0;
   }
 }

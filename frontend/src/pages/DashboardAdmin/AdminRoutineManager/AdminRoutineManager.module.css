@@ -1,0 +1,152 @@
+.managerGrid {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.95fr) minmax(320px, 1.05fr);
+  gap: 18px;
+}
+
+.formPanel,
+.listPanel,
+.resourcePanel {
+  background-color: #fbfafb;
+  border: 1px solid #eee6ea;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.resourcePanel {
+  grid-column: 1 / -1;
+}
+
+.formPanel h4,
+.listPanel h4,
+.resourcePanel h4 {
+  margin: 0 0 12px 0;
+  color: #4a2834;
+  text-transform: uppercase;
+}
+
+.formPanel form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formPanel input,
+.formPanel textarea,
+.blockEditor input,
+.blockEditor textarea {
+  width: 100%;
+  border: 1px solid #d7c8cf;
+  border-radius: 5px;
+  padding: 9px 10px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.blocksList {
+  display: grid;
+  gap: 10px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.blockEditor {
+  background-color: #ffffff;
+  border: 1px solid #eee6ea;
+  border-radius: 6px;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.formActions button,
+.routineCard button {
+  border: none;
+  border-radius: 5px;
+  padding: 9px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.formActions button:last-child,
+.routineCard button {
+  background-color: #7a1e48;
+  color: #ffffff;
+}
+
+.formActions button:first-child {
+  background-color: #e8dde3;
+  color: #4a2834;
+}
+
+.scrollList {
+  max-height: 480px;
+  overflow-y: auto;
+  display: grid;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.routineCard {
+  background-color: #ffffff;
+  border: 1px solid #eee6ea;
+  border-radius: 6px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.routineCard strong {
+  color: #4a2834;
+}
+
+.routineCard p {
+  margin: 4px 0 0;
+  color: #665c59;
+  font-size: 0.88rem;
+}
+
+.levelGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.levelCard {
+  background-color: #ffffff;
+  border: 1px solid #eee6ea;
+  border-radius: 6px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.levelCard strong {
+  color: #7a1e48;
+}
+
+.levelCard a {
+  color: #333333;
+  font-size: 0.86rem;
+}
+
+@media (max-width: 820px) {
+  .managerGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .resourcePanel {
+    grid-column: auto;
+  }
+}

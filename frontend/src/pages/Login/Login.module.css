@@ -8,6 +8,13 @@
   box-sizing: border-box;
 }
 
+.embeddedWrapper {
+  height: auto;
+  width: 100%;
+  overflow: visible;
+  background: transparent;
+}
+
 /* CONTENEDOR DEL CONTENIDO (Logo + Inputs) */
 .container {
   flex: 1; /* Absorbe de forma inteligente el espacio restante abajo del Navbar */
@@ -20,6 +27,16 @@
   box-sizing: border-box;
   font-family: Arial, sans-serif;
   position: relative;
+}
+
+.embeddedContainer {
+  padding: 0;
+  gap: 0;
+}
+
+.embeddedContainer .formCard {
+  width: 100%;
+  max-width: 360px;
 }
 
 /* CONTENEDOR DE LA ALERTA */

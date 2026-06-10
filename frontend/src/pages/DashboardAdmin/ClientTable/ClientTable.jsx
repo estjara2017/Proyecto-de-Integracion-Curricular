@@ -1,84 +1,132 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './ClientTable.module.css';
+import { adminService } from '../../../services/adminService';
 
-
-// Simulación de datos que vendrían del Backend
-const MOCK_CLIENTS = [
-  { id: '1', name: 'Esteban Jara', phone: '0243221', address: 'La Floresta', email: 'estjara19958@yahoo.com', active: true },
-  { id: '2', name: 'María Flores', phone: '0998765', address: 'Cumbayá', email: 'mflores@gmail.com', active: false },
-  { id: '3', name: 'Carlos Pérez', phone: '0223456', address: 'Centro Histórico', email: 'cperez@hotmail.com', active: true },
-];
+const mapClient = (client) => ({
+  id: client.id,
+  name: `${client.nombre || ''} ${client.apellido || ''}`.trim(),
+  phone: client.telefono || '',
+  address: client.direccion || '',
+  email: client.correo || '',
+  weight: client.peso || '',
+  height: client.estatura || '',
+  liftWeight: client.pesoLevantamientoKg || 0,
+  maxAverage: client.pesoMaxPromedioKg || 0,
+  progress: client.porcentajeProgreso || 0,
+  active: client.estado === 'activo'
+});
 
 export default function ClientTable() {
   const [clients, setClients] = useState([]);
   const [editingId, setEditingId] = useState(null);
-  const [editFormData, setEditFormData] = useState({ phone: '', address: '', email: '' });
+  const [editFormData, setEditFormData] = useState({ phone: '', address: '', email: '', weight: '', height: '', liftWeight: '', maxAverage: '' });
+  const [error, setError] = useState('');
+  const [cedulaAdmin, setCedulaAdmin] = useState('');
 
-  // Simulación de la carga de datos (aquí irá tu fetch/axios al backend)
-useEffect(() => {
-  const loadMockData = () => {
-    setClients(MOCK_CLIENTS);
+  const cargarClientes = async () => {
+    try {
+      const data = await adminService.listarClientes();
+      setClients(data.map(mapClient));
+    } catch (err) {
+      setError(err.message || 'No se pudieron cargar los clientes');
+    }
   };
-  
-  // Simula un retraso de red de 100ms para que sea asíncrono
-  const timer = setTimeout(loadMockData, 100);
-  
-  return () => clearTimeout(timer); // Limpieza de timer
-}, []);
-  // Activar el modo edición para una fila específica
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      cargarClientes();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleEditClick = (client) => {
     setEditingId(client.id);
     setEditFormData({
       phone: client.phone,
       address: client.address,
-      email: client.email
+      email: client.email,
+      weight: client.weight,
+      height: client.height,
+      liftWeight: client.liftWeight,
+      maxAverage: client.maxAverage
     });
   };
 
-  // Capturar los cambios de los inputs en edición
   const handleEditFormChange = (e) => {
     const { name, value } = e.target;
-    setEditFormData(prev => ({ ...prev, [name]: value }));
+    setEditFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Guardar los cambios (Preparado para PUT/PATCH al backend)
-  const handleSaveClick = (id) => {
-    // BACKEND INTEGRATION: Aquí harías la petición HTTP correspondientes
-    // const updatedClient = { ...clients.find(c => c.id === id), ...editFormData };
-    // await api.put(`/clients/${id}`, updatedClient);
+  const handleSaveClick = async (id) => {
+    try {
+      const updated = await adminService.actualizarCliente(id, {
+        telefono: editFormData.phone,
+        direccion: editFormData.address,
+        correo: editFormData.email,
+        peso: editFormData.weight || null,
+        estatura: editFormData.height || null,
+        pesoLevantamientoKg: editFormData.liftWeight || 0,
+        pesoMaxPromedioKg: editFormData.maxAverage || 0
+      });
 
-    const updatedClients = clients.map((client) => {
-      if (client.id === id) {
-        return { ...client, ...editFormData };
-      }
-      return client;
-    });
-
-    setClients(updatedClients);
-    setEditingId(null); // Cierra el modo edición
+      setClients((prev) => prev.map((client) => (
+        client.id === id ? mapClient(updated) : client
+      )));
+      setEditingId(null);
+    } catch (err) {
+      alert(err.message || 'No se pudo actualizar el cliente');
+    }
   };
 
-  // Cancelar la edición actual
   const handleCancelClick = () => {
     setEditingId(null);
   };
 
-  // Eliminar un cliente (Preparado para DELETE al backend)
-  const handleDeleteClick = (id) => {
-    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este cliente?");
-    if (confirmDelete) {
-      // BACKEND INTEGRATION: await api.delete(`/clients/${id}`);
-      const filteredClients = clients.filter(client => client.id !== id);
-      setClients(filteredClients);
+  const handleDeleteClick = async (id) => {
+    const confirmDelete = window.confirm('Estas seguro de que deseas desactivar este cliente?');
+    if (!confirmDelete) return;
+
+    try {
+      await adminService.desactivarCliente(id);
+      setClients((prev) => prev.map((client) => (
+        client.id === id ? { ...client, active: false } : client
+      )));
+    } catch (err) {
+      alert(err.message || 'No se pudo desactivar el cliente');
+    }
+  };
+
+  const handleAsignarAdmin = async (event) => {
+    event.preventDefault();
+    try {
+      const usuario = await adminService.asignarAdminPorCedula(cedulaAdmin.trim());
+      alert(`${usuario.nombre} ${usuario.apellido} ahora tiene rol de administrador.`);
+      setCedulaAdmin('');
+      await cargarClientes();
+    } catch (err) {
+      alert(err.message || 'No se pudo asignar el rol de administrador');
     }
   };
 
   return (
     <div className={styles.tableContainer}>
+      <form className={styles.adminRoleForm} onSubmit={handleAsignarAdmin}>
+        <span>Asignar administrador por cedula</span>
+        <input
+          type="text"
+          value={cedulaAdmin}
+          onChange={(e) => setCedulaAdmin(e.target.value)}
+          placeholder="Cedula / Identificacion"
+          required
+        />
+        <button type="submit">Asignar</button>
+      </form>
+      {error && <p className={styles.emptyMessage}>{error}</p>}
       <table className={styles.clientTable}>
         <thead>
           <tr>
-            <th>Información del Cliente</th>
+            <th>Informacion del Cliente</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -89,13 +137,12 @@ useEffect(() => {
 
             return (
               <tr key={client.id} className={styles.tableRow}>
-                {/* Columna de Datos Básicos */}
                 <td className={styles.infoCell}>
                   <div className={styles.infoGrid}>
                     <div className={styles.mainInfo}>
                       <span className={styles.clientName}>{client.name}</span>
                       <span className={styles.clientPhone}>
-                        <strong>Teléfono:</strong>{' '}
+                        <strong>Telefono:</strong>{' '}
                         {isEditing ? (
                           <input
                             type="text"
@@ -111,7 +158,7 @@ useEffect(() => {
                     </div>
                     <div className={styles.subInfo}>
                       <span className={styles.clientAddress}>
-                        <strong>Dirección:</strong>{' '}
+                        <strong>Direccion:</strong>{' '}
                         {isEditing ? (
                           <input
                             type="text"
@@ -138,46 +185,92 @@ useEffect(() => {
                           client.email
                         )}
                       </span>
+                      <span className={styles.clientEmail}>
+                        <strong>Peso:</strong>{' '}
+                        {isEditing ? (
+                          <input
+                            type="number"
+                            step="0.1"
+                            name="weight"
+                            value={editFormData.weight}
+                            onChange={handleEditFormChange}
+                            className={styles.editInput}
+                          />
+                        ) : (
+                          `${client.weight || '--'} kg`
+                        )}
+                      </span>
+                      <span className={styles.clientEmail}>
+                        <strong>Estatura:</strong>{' '}
+                        {isEditing ? (
+                          <input
+                            type="number"
+                            step="0.01"
+                            name="height"
+                            value={editFormData.height}
+                            onChange={handleEditFormChange}
+                            className={styles.editInput}
+                          />
+                        ) : (
+                          `${client.height || '--'} m`
+                        )}
+                      </span>
+                      <span className={styles.clientEmail}>
+                        <strong>Prueba:</strong>{' '}
+                        {isEditing ? (
+                          <input
+                            type="number"
+                            step="0.5"
+                            name="liftWeight"
+                            value={editFormData.liftWeight}
+                            onChange={handleEditFormChange}
+                            className={styles.editInput}
+                          />
+                        ) : (
+                          `${client.liftWeight || 0} kg`
+                        )}
+                      </span>
+                      <span className={styles.clientEmail}>
+                        <strong>Max prom.:</strong>{' '}
+                        {isEditing ? (
+                          <input
+                            type="number"
+                            step="0.5"
+                            name="maxAverage"
+                            value={editFormData.maxAverage}
+                            onChange={handleEditFormChange}
+                            className={styles.editInput}
+                          />
+                        ) : (
+                          `${client.maxAverage || 0} kg (${client.progress}%)`
+                        )}
+                      </span>
                     </div>
                   </div>
                 </td>
 
-                {/* Columna de Estado */}
                 <td className={styles.statusCell}>
                   <span className={`${styles.statusBadge} ${client.active ? styles.active : styles.inactive}`}>
                     {client.active ? 'Activo' : 'Inactivo'}
                   </span>
                 </td>
 
-                {/* Columna de Acciones */}
                 <td className={styles.actionsCell}>
                   {isEditing ? (
                     <div className={styles.actionButtons}>
-                      <button 
-                        onClick={() => handleSaveClick(client.id)} 
-                        className={styles.saveBtn}
-                      >
+                      <button onClick={() => handleSaveClick(client.id)} className={styles.saveBtn}>
                         Guardar
                       </button>
-                      <button 
-                        onClick={handleCancelClick} 
-                        className={styles.cancelBtn}
-                      >
+                      <button onClick={handleCancelClick} className={styles.cancelBtn}>
                         Cancelar
                       </button>
                     </div>
                   ) : (
                     <div className={styles.actionButtons}>
-                      <button 
-                        onClick={() => handleEditClick(client)} 
-                        className={styles.editBtn}
-                      >
+                      <button onClick={() => handleEditClick(client)} className={styles.editBtn}>
                         Editar
                       </button>
-                      <button 
-                        onClick={() => handleDeleteClick(client.id)} 
-                        className={styles.deleteBtn}
-                      >
+                      <button onClick={() => handleDeleteClick(client.id)} className={styles.deleteBtn}>
                         Eliminar
                       </button>
                     </div>

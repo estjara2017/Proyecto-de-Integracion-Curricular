@@ -83,6 +83,9 @@
   border-radius: 0 0 8px 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
   border: 1px solid rgba(0, 0, 0, 0.06);
+  min-height: min(620px, calc(100vh - 310px));
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
 }
 
 /* Descripciones superiores de cada espacio de trabajo */
@@ -174,21 +177,25 @@
   }
 
   .tabsHeader {
-    flex-direction: column;
+    flex-direction: row;
+    overflow-x: auto;
     border-radius: 8px;
   }
 
   .tabButton {
-    padding: 12px;
+    flex: 0 0 auto;
+    min-width: 165px;
+    padding: 12px 14px;
     font-size: 0.9rem;
-    border-bottom: none;
-    border-left: 4px solid transparent;
-    text-align: left;
+    border-bottom: 3px solid transparent;
+    border-left: none;
+    text-align: center;
+    white-space: nowrap;
   }
 
   .tabActive {
-    border-left: 4px solid #7a1e48;
-    background-color: #eae6e4;
+    border-bottom: 3px solid #7a1e48;
+    background-color: #ffffff;
   }
 
   .tabViewContent {

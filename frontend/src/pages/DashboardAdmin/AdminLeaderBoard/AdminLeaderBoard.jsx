@@ -1,43 +1,53 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from '../AdminLeaderBoard/AdminLeaderBoard.module.css';
 import Button from '../../../components/Button/Button';
-
-const MOCK_LEADERBOARD_DATA = [
-  { id: 101, posGbl: "N° 3", posFilt: 1, atleta: "Christian Ruiz", nivel: "Principiante", puntos: "902 pts", requiereAscenso: true },
-  { id: 102, posGbl: "N° 6", posFilt: 2, atleta: "Esteban Jara", nivel: "Principiante", puntos: "675 pts", requiereAscenso: true },
-  { id: 103, posGbl: "N° 7", posFilt: 3, atleta: "Roberto Gómez", nivel: "Intermedio", puntos: "550 pts", requiereAscenso: false },
-  { id: 104, posGbl: "N° 8", posFilt: 4, atleta: "Jorge Loor", nivel: "Principiante", puntos: "519 pts", requiereAscenso: false }
-];
+import { adminService } from '../../../services/adminService';
 
 export default function AdminLeaderboard() {
-  const [atletas, setAtletas] = useState(MOCK_LEADERBOARD_DATA);
+  const [atletas, setAtletas] = useState([]);
+  const [error, setError] = useState('');
 
-  const handlePromoverNivel = (id, nombre, nivelActual) => {
-    const siguienteNivel = nivelActual === "Principiante" ? "Intermedio" : "Avanzado / RX";
-    alert(`¡Atleta ${nombre} promovido exitosamente a nivel ${siguienteNivel}!`);
-    setAtletas(prev => prev.map(atl => 
-      atl.id === id ? { ...atl, nivel: siguienteNivel, requiereAscenso: false } : atl
-    ));
+  const cargarRanking = async () => {
+    try {
+      const data = await adminService.obtenerRanking();
+      setAtletas(data);
+    } catch (err) {
+      setError(err.message || 'No se pudo cargar el ranking');
+    }
   };
 
-  // Función para renderizar las medallas exactas de la imagen
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      cargarRanking();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handlePromoverNivel = async (id, nombre) => {
+    try {
+      await adminService.promoverCliente(id);
+      alert(`Atleta ${nombre} promovido exitosamente.`);
+      await cargarRanking();
+    } catch (err) {
+      alert(err.message || 'No se pudo promover al atleta');
+    }
+  };
+
   const renderMedal = (pos) => {
-    if (pos === 1) return <span>🥇 1</span>;
-    if (pos === 2) return <span>🥈 2</span>;
-    if (pos === 3) return <span>🥉 3</span>;
+    if (pos === 1) return <span>1</span>;
+    if (pos === 2) return <span>2</span>;
+    if (pos === 3) return <span>3</span>;
     return pos;
   };
 
   return (
     <div className={styles.leaderboardCard}>
-      
-      {/* Encabezado Vinotinto exacto a la imagen del cliente */}
       <div className={styles.cardHeader}>
         <h3>TABLA DE POSICIONES INTERNA</h3>
-        <p>Clasificación Basada en Rendimiento y Constancia</p>
+        <p>Clasificacion Basada en Rendimiento y Constancia</p>
       </div>
 
-      {/* Barra de Filtros decorativa superior */}
       <div className={styles.filterBar}>
         <label className={styles.checkboxLabel}>
           <input type="checkbox" defaultChecked disabled />
@@ -49,7 +59,6 @@ export default function AdminLeaderboard() {
         </label>
       </div>
 
-      {/* Contenedor de la Tabla */}
       <div className={styles.tableWrapper}>
         <table className={styles.customTable}>
           <thead>
@@ -63,22 +72,24 @@ export default function AdminLeaderboard() {
             </tr>
           </thead>
           <tbody>
-            {atletas.map((atl) => (
+            {error ? (
+              <tr><td colSpan="6" className={styles.normalBadge}>{error}</td></tr>
+            ) : atletas.map((atl, index) => (
               <tr key={atl.id}>
-                <td className={styles.posGblText}>{atl.posGbl}</td>
-                <td className={styles.medalCell}>{renderMedal(atl.posFilt)}</td>
+                <td className={styles.posGblText}>N° {atl.posicionGlobal}</td>
+                <td className={styles.medalCell}>{renderMedal(index + 1)}</td>
                 <td className={styles.atletaName}>{atl.atleta}</td>
                 <td>
-                  <span className={`${styles.nivelBadge} ${styles[atl.nivel.toLowerCase().split(' ')[0]]}`}>
+                  <span className={`${styles.nivelBadge} ${styles[atl.nivel.toLowerCase().split(' ')[0]] || ''}`}>
                     {atl.nivel}
                   </span>
                 </td>
-                <td className={styles.pointsText}>{atl.puntos}</td>
+                <td className={styles.pointsText}>{atl.puntos} pts</td>
                 <td className={styles.actionsCell}>
-                  {atl.requiereAscenso ? (
+                  {atl.listoParaAscenso ? (
                     <div className={styles.actionGroup}>
-                      <span className={styles.alertBadge}>⚡ Listo para Ascenso</span>
-                      <Button variant="dark" onClick={() => handlePromoverNivel(atl.id, atl.atleta, atl.nivel)}>
+                      <span className={styles.alertBadge}>Listo para Ascenso</span>
+                      <Button variant="dark" onClick={() => handlePromoverNivel(atl.id, atl.atleta)}>
                         Promover
                       </Button>
                     </div>

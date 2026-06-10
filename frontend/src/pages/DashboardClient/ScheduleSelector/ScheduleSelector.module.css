@@ -1,0 +1,60 @@
+.schedulePanel {
+  width: 100%;
+  background-color: rgba(48, 24, 24, 0.16);
+  border: 1px solid rgba(58, 54, 54, 0.08);
+  border-radius: 6px;
+  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: 1fr minmax(180px, 240px) auto;
+  gap: 12px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.schedulePanel span {
+  display: block;
+  color: #57275c;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.schedulePanel p {
+  margin: 3px 0 0;
+  color: #333333;
+  font-size: 0.86rem;
+}
+
+.schedulePanel select {
+  height: 40px;
+  border: 1px solid #bfa0a0;
+  border-radius: 5px;
+  padding: 8px 10px;
+  background-color: #ffffff;
+}
+
+.schedulePanel button {
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  padding: 0 16px;
+  background-color: #8a1d4d;
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.schedulePanel button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .schedulePanel {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .schedulePanel > div {
+    grid-column: 1 / -1;
+  }
+}
