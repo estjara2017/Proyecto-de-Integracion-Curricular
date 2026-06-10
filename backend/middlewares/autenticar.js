@@ -19,7 +19,8 @@ const verificarToken = (req, res, next) => {
         const verificado = jwt.verify(token, JWT_SECRET);
         
         // Inyectamos los datos decodificados (id y rol) en la petición 'req'
-        req.usuarioLogueado = verificado; 
+        req.usuarioLogueado = verificado;
+        req.user = verificado;
         
         next(); // ¡Todo bien! Le da paso al controlador
     } catch (error) {

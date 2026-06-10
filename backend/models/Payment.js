@@ -8,6 +8,7 @@ const Pago = sequelize.define('Pago', {
         type: DataTypes.STRING, 
         defaultValue: 'pendiente' // 'pendiente', 'aprobado', 'rechazado'
     },
+    metodoPago: { type: DataTypes.STRING, defaultValue: 'Transferencia' },
     fechaNotificacion: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 });
 

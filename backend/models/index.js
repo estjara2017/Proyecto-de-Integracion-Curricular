@@ -9,6 +9,10 @@ const Pago = require('./Payment');
 const Attendance = require('./Attendance');
 const DailyCode = require('./DailyCode');
 const OtpModel = require('./otpModel');
+const Level = require('./Level');
+const LevelResource = require('./LevelResource');
+const RoutineTemplate = require('./RoutineTemplate');
+const AdminWorkoutTemplate = require('./AdminWorkoutTemplate');
 
 // 2. Definir las relaciones (Aquí se estructuran las llaves foráneas en Postgres)
 Usuario.hasMany(Suscripcion, { foreignKey: 'usuarioId' });
@@ -23,6 +27,12 @@ Pago.belongsTo(Suscripcion, { foreignKey: 'suscripcionId' });
 Usuario.hasMany(Attendance, { foreignKey: 'usuarioId' });
 Attendance.belongsTo(Usuario, { foreignKey: 'usuarioId' });
 
+Level.hasMany(LevelResource, { foreignKey: 'levelId' });
+LevelResource.belongsTo(Level, { foreignKey: 'levelId' });
+
+Level.hasMany(RoutineTemplate, { foreignKey: 'levelId' });
+RoutineTemplate.belongsTo(Level, { foreignKey: 'levelId' });
+
 // 3. Exportar todo unificado
 module.exports = {
     sequelize,
@@ -32,5 +42,9 @@ module.exports = {
     Pago,
     Attendance,
     DailyCode,
-    OtpModel
+    OtpModel,
+    Level,
+    LevelResource,
+    RoutineTemplate,
+    AdminWorkoutTemplate
 };

@@ -1,13 +1,20 @@
-// src/routes/usuarioRoutes.js
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
+const authController = require('../controllers/userController');
+const autenticar = require('../middlewares/autenticar');
 
-// Ruta de registro (Formulario de la captura)
 router.post('/register', authController.registrarUsuario);
+router.post('/registrar', authController.registrarUsuario);
 
-// Rutas de Login sin contraseña (Ventana /attendance)
-router.post('/login-request', authController.solicitarOtp); // Envía el OTP al correo
-router.post('/login-verify', authController.verificarOtp);   // Valida el OTP y da acceso
+router.post('/login-request', authController.solicitarOtp);
+router.post('/login-verify', authController.verificarOtp);
+router.post('/login/solicitar-otp', authController.solicitarOtp);
+router.post('/login/verificar-otp', authController.verificarOtp);
+
+router.get('/me', autenticar, authController.obtenerPerfil);
+router.patch('/me/avatar', autenticar, authController.actualizarAvatar);
+router.patch('/me/horario', autenticar, authController.actualizarHorario);
+router.get('/ranking', autenticar, authController.obtenerRanking);
+router.get('/me/rutinas', autenticar, authController.obtenerRutinasDelNivel);
 
 module.exports = router;

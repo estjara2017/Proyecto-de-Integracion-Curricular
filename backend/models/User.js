@@ -19,7 +19,11 @@ const Usuario = sequelize.define('Usuario', {
     
     // Configuración por defecto
     avatar: { type: DataTypes.STRING, defaultValue: 'agua' },
-    nivel: { type: DataTypes.STRING, defaultValue: 'Principiante' }, 
+    nivel: { type: DataTypes.STRING, defaultValue: 'Principiante' },
+    pesoLevantamientoKg: { type: DataTypes.FLOAT, defaultValue: 0 },
+    pesoMaxPromedioKg: { type: DataTypes.FLOAT, defaultValue: 0 },
+    porcentajeProgreso: { type: DataTypes.FLOAT, defaultValue: 0 },
+    horarioEntrenamiento: { type: DataTypes.STRING },
     puntos: { type: DataTypes.INTEGER, defaultValue: 0 },
     rol: { type: DataTypes.STRING, defaultValue: 'cliente' }, 
     estado: { type: DataTypes.STRING, defaultValue: 'inactivo' } 
