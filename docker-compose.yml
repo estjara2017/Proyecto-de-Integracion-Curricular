@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 1. BASE DE DATOS (PostgreSQL)
   postgres_db:
@@ -49,10 +47,9 @@ services:
       - DB_USER=estmk1995
       - DB_PASS=est19952030
       - DB_NAME=elemental_database
+      - JWT_SECRET=ElementalCrossTraining_Secret_Key_2026
       - PORT=4000
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+    command: pnpm start
     depends_on:
       postgres_db:
         condition: service_healthy # Espera obligatoriamente a que la BD esté lista
@@ -66,9 +63,7 @@ services:
     restart: always
     ports:
       - "5173:5173"
-    volumes:
-      - ./frontend:/main
-      - /main/node_modules
+    command: pnpm dev -- --host 0.0.0.0
     environment:
       - VITE_API_URL=http://localhost:4000/api
     depends_on:
