@@ -47,6 +47,11 @@ const EquipmentItem = ({ item, isOpen, onToggle }) => {
                   />
                 ))}
               </div>
+              {item.videoUrl && (
+                <div className={styles.standaloneVideoContainer}>
+                  <video src={item.videoUrl} controls className={styles.serviceVideo} muted />
+                </div>
+              )}
             </div>
           )}
 

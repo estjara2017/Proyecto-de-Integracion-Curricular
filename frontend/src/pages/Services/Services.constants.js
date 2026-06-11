@@ -55,7 +55,7 @@ export const EQUIPMENT_DATA = [
     title: 'Nuestro Local',
     description:
       'Espacios equipados para entrenamientos funcionales, fuerza, tecnica y preparacion fisica.',
-    videoUrl: null,
+    videoUrl: videoWeightlifting,
     carouselSections: [
       { images: [localExtraImage, localMainImage] },
       { images: ['/images/equipos/extra4.jpeg'] }

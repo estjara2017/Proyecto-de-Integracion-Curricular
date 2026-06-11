@@ -1,14 +1,14 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
-WORKDIR /app
+WORKDIR /main
 
-COPY package*.json ./
+RUN corepack enable
 
-RUN npm install
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
 EXPOSE 5173
 
-# Vite necesita el flag --host para que los puertos se mapeen correctamente fuera del contenedor
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["pnpm", "dev", "--", "--host", "0.0.0.0"]

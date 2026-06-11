@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Header2 from '../../components/Header/Header2';
 import styles from './AdminAttendance.module.css';
 import { adminService } from '../../services/adminService';
+import AttendanceQr from '../DashboardAdmin/AttendanceQr/AttendanceQr';
 
 const HORARIOS = ['', '05:00', '06:00', '07:00', '16:00', '17:00', '18:00', '19:00', 'Sabado 07:00', 'Sabado 08:00'];
 const RANGOS = ['', '12-18', '18-30', '30-50', '50+'];
@@ -11,6 +12,7 @@ export default function AdminAttendance() {
   const [filters, setFilters] = useState({ horario: '', genero: '', rangoEdad: '' });
   const [clientes, setClientes] = useState([]);
   const [message, setMessage] = useState('');
+  const [showQrPanel, setShowQrPanel] = useState(false);
 
   const cargarClientes = useCallback(async () => {
     const data = await adminService.listarClientesParaAsistencia(filters);
@@ -37,6 +39,20 @@ export default function AdminAttendance() {
     <div className={styles.page}>
       <Header2 />
       <main className={styles.container}>
+        <section className={styles.qrAccordion}>
+          <button
+            type="button"
+            className={styles.qrAccordionHeader}
+            onClick={() => setShowQrPanel((prev) => !prev)}
+          >
+            <span>QR Asistencia</span>
+            <span>{showQrPanel ? '-' : '+'}</span>
+          </button>
+          <div className={`${styles.qrAccordionContent} ${showQrPanel ? styles.qrAccordionOpen : ''}`}>
+            <AttendanceQr />
+          </div>
+        </section>
+
         <section className={styles.headerBlock}>
           <h1>Registro Manual de Asistencia</h1>
           <p>Filtra por horario, genero o rango de edad para registrar asistencia de apoyo.</p>

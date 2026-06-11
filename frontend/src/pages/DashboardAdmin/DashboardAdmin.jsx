@@ -30,6 +30,7 @@ export default function DashboardAdmin() {
   const [adminUser, setAdminUser] = useState(MOCK_ADMIN_DB);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [activeTab, setActiveTab] = useState('clientes');
+  const [showRoutinePanel, setShowRoutinePanel] = useState(false);
 
   const handleSelectAvatar = (index) => {
     setAdminUser((prev) => ({ ...prev, avatarIndex: index }));
@@ -47,6 +48,24 @@ export default function DashboardAdmin() {
             avatares={AVATARES}
             onCambiarAvatar={() => setShowAvatarModal(true)}
           />
+        </section>
+
+        <section className={styles.adminAccordion}>
+          <button
+            type="button"
+            className={styles.adminAccordionHeader}
+            onClick={() => setShowRoutinePanel((prev) => !prev)}
+          >
+            <span>Rutinas y Enlaces</span>
+            <span>{showRoutinePanel ? '-' : '+'}</span>
+          </button>
+          <div className={`${styles.adminAccordionContent} ${showRoutinePanel ? styles.adminAccordionOpen : ''}`}>
+            <div className={styles.viewDescription}>
+              <h3>Plantillas de Rutinas y Enlaces</h3>
+              <p>Crea rutinas generales, revisa plantillas visuales y organiza enlaces de apoyo.</p>
+            </div>
+            <AdminRoutineManager />
+          </div>
         </section>
 
         <section className={styles.tabsContainer}>
@@ -68,12 +87,6 @@ export default function DashboardAdmin() {
               onClick={() => setActiveTab('ranking')}
             >
               Posiciones y Niveles
-            </button>
-            <button
-              className={`${styles.tabButton} ${activeTab === 'rutinas' ? styles.tabActive : ''}`}
-              onClick={() => setActiveTab('rutinas')}
-            >
-              Rutinas y Enlaces
             </button>
           </div>
 
@@ -108,15 +121,6 @@ export default function DashboardAdmin() {
               </div>
             )}
 
-            {activeTab === 'rutinas' && (
-              <div className={styles.viewFadeIn}>
-                <div className={styles.viewDescription}>
-                  <h3>Plantillas de Rutinas y Enlaces</h3>
-                  <p>Planifica rutinas generales reutilizables y consulta material complementario por nivel.</p>
-                </div>
-                <AdminRoutineManager />
-              </div>
-            )}
           </div>
         </section>
       </main>
