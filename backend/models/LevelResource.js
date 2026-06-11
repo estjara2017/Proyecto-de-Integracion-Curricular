@@ -10,6 +10,7 @@ const LevelResource = sequelize.define('LevelResource', {
         defaultValue: 'video'
     },
     url: { type: DataTypes.TEXT, allowNull: false },
+    subtitulo: { type: DataTypes.STRING },
     descripcion: { type: DataTypes.TEXT }
 });
 

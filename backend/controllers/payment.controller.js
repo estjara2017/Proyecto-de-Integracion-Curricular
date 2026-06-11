@@ -1,8 +1,128 @@
+const { Op } = require('sequelize');
 const { Plan, Suscripcion, Pago, Usuario } = require('../models/index');
 
 const calcularDiasEntrenamiento = (plan) => {
     if (plan.duracionDias <= 7) return plan.duracionDias;
     return Math.ceil((plan.duracionDias / 7) * plan.diasPorSemana);
+};
+
+const sumarDias = (fecha, dias) => {
+    const resultado = new Date(fecha);
+    resultado.setDate(resultado.getDate() + dias);
+    return resultado;
+};
+
+const normalizarFecha = (fecha) => new Date(`${fecha}T00:00:00`);
+
+const diasEntre = (desde, hasta) => {
+    const msPorDia = 24 * 60 * 60 * 1000;
+    return Math.ceil((normalizarFecha(hasta) - normalizarFecha(desde)) / msPorDia);
+};
+
+const construirEstadoMembresia = (suscripcion, hoy) => {
+    if (!suscripcion) {
+        return {
+            estado: 'sin_plan',
+            mensaje: 'No tienes un plan activo. Selecciona un plan para solicitar tu activacion.'
+        };
+    }
+
+    const plan = suscripcion.Plan;
+    const diasRestantes = suscripcion.fechaFin ? Math.max(diasEntre(hoy, suscripcion.fechaFin), 0) : null;
+    const diasDisponibles = Number(suscripcion.diasTotalesDisponibles || 0);
+
+    if (suscripcion.estado === 'pendiente') {
+        return {
+            estado: 'pendiente',
+            suscripcion,
+            plan,
+            diasRestantes,
+            diasDisponibles,
+            mensaje: 'Tu solicitud de plan esta pendiente de aprobacion por administracion.'
+        };
+    }
+
+    if (suscripcion.estado === 'activo' && diasRestantes !== null && diasRestantes <= 5) {
+        return {
+            estado: 'por_vencer',
+            suscripcion,
+            plan,
+            diasRestantes,
+            diasDisponibles,
+            mensaje: `Tu plan ${plan?.nombre || ''} termina en ${diasRestantes} dia(s). Renueva para no perder el acceso.`
+        };
+    }
+
+    if (suscripcion.estado === 'activo' && diasDisponibles <= 2) {
+        return {
+            estado: 'pocos_dias',
+            suscripcion,
+            plan,
+            diasRestantes,
+            diasDisponibles,
+            mensaje: `Te quedan ${diasDisponibles} asistencia(s) disponibles. Considera renovar tu plan.`
+        };
+    }
+
+    if (suscripcion.estado === 'activo') {
+        return {
+            estado: 'activo',
+            suscripcion,
+            plan,
+            diasRestantes,
+            diasDisponibles,
+            mensaje: 'Tu plan esta activo.'
+        };
+    }
+
+    return {
+        estado: suscripcion.estado || 'vencido',
+        suscripcion,
+        plan,
+        diasRestantes,
+        diasDisponibles,
+        mensaje: 'Tu ultimo plan vencio. Puedes renovar desde la seccion de planes.'
+    };
+};
+
+exports.actualizarEstadosDeMembresias = async () => {
+    const hoy = new Date().toISOString().split('T')[0];
+    const haceTresMeses = sumarDias(new Date(), -90).toISOString().split('T')[0];
+
+    await Suscripcion.update(
+        { estado: 'vencido' },
+        {
+            where: {
+                estado: 'activo',
+                [Op.or]: [
+                    { fechaFin: { [Op.lt]: hoy } },
+                    { diasTotalesDisponibles: { [Op.lte]: 0 } }
+                ]
+            }
+        }
+    );
+
+    const usuarios = await Usuario.findAll({ where: { estado: 'activo' } });
+
+    for (const usuario of usuarios) {
+        const suscripcionVigente = await Suscripcion.findOne({
+            where: {
+                usuarioId: usuario.id,
+                estado: { [Op.in]: ['activo', 'pendiente'] }
+            }
+        });
+
+        if (suscripcionVigente) continue;
+
+        const ultimaSuscripcion = await Suscripcion.findOne({
+            where: { usuarioId: usuario.id },
+            order: [['fechaFin', 'DESC'], ['updatedAt', 'DESC']]
+        });
+
+        if (ultimaSuscripcion?.fechaFin && ultimaSuscripcion.fechaFin <= haceTresMeses) {
+            await usuario.update({ estado: 'inactivo' });
+        }
+    }
 };
 
 exports.listarPlanes = async (req, res) => {
@@ -31,6 +151,31 @@ exports.obtenerResumenPlan = async (req, res) => {
                 diasPorSemana: plan.diasPorSemana,
                 diasTotalesDeEntrenamiento: calcularDiasEntrenamiento(plan)
             }
+        });
+    } catch (error) {
+        return res.status(500).json({ status: 'error', error: error.message });
+    }
+};
+
+exports.obtenerMiMembresia = async (req, res) => {
+    try {
+        await exports.actualizarEstadosDeMembresias();
+
+        const hoy = new Date().toISOString().split('T')[0];
+        const usuarioId = req.user.id;
+        const suscripcion = await Suscripcion.findOne({
+            where: { usuarioId },
+            include: [Plan],
+            order: [
+                ['estado', 'ASC'],
+                ['fechaFin', 'DESC'],
+                ['updatedAt', 'DESC']
+            ]
+        });
+
+        return res.status(200).json({
+            status: 'success',
+            data: construirEstadoMembresia(suscripcion, hoy)
         });
     } catch (error) {
         return res.status(500).json({ status: 'error', error: error.message });

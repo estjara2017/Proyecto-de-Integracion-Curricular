@@ -74,14 +74,28 @@ function Profile({ dbUser, avatares = [], onCambiarAvatar, onRegistrarAsistencia
 
           <div className={styles.infoGroup}>
             <div className={styles.labelContainer}>
-              <span className={styles.label}>PESO DE LEVANTAMIENTO</span>
+              <span className={styles.label}>PESO CORPORAL</span>
+            </div>
+            <p className={styles.value}>{dbUser.pesoCorporal || '--'} kg</p>
+          </div>
+
+          <div className={styles.infoGroup}>
+            <div className={styles.labelContainer}>
+              <span className={styles.label}>ESTATURA</span>
+            </div>
+            <p className={styles.value}>{dbUser.estatura || '--'} m</p>
+          </div>
+
+          <div className={styles.infoGroup}>
+            <div className={styles.labelContainer}>
+              <span className={styles.label}>PESO DE PRUEBA ACTUAL</span>
             </div>
             <p className={styles.value}>{dbUser.pesoLevantamiento} kg</p>
           </div>
 
           <div className={styles.infoGroup}>
             <div className={styles.labelContainer}>
-              <span className={styles.label}>PESO MÁX PROMEDIO ACTUAL</span>
+              <span className={styles.label}>PESO OBJETIVO / REFERENCIA</span>
             </div>
             <p className={styles.value}>{dbUser.pesoMaxPromedio} kg</p>
           </div>
@@ -100,8 +114,8 @@ function Profile({ dbUser, avatares = [], onCambiarAvatar, onRegistrarAsistencia
               ></div>
             </div>
             <small className={styles.progressSub}>
-              Cargas {dbUser.pesoMaxPromedio} kg de un máximo estimado de{' '}
-              {dbUser.pesoTeoricoMax} kg para tu estructura.
+              Tu prueba actual es {dbUser.pesoLevantamiento} kg frente a un objetivo de{' '}
+              {dbUser.pesoMaxPromedio || dbUser.pesoTeoricoMax} kg.
             </small>
           </div>
         </div>
@@ -123,7 +137,7 @@ function Profile({ dbUser, avatares = [], onCambiarAvatar, onRegistrarAsistencia
           <Button 
             variant="primary" 
             type="button" 
-            onClick={() => navigate('/contacts')}
+            onClick={() => window.open('/contacts', '_blank')}
           >
             Contactos
           </Button>

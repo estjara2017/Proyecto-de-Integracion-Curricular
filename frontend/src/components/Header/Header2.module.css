@@ -44,3 +44,20 @@
     font-size: 1.1rem;
   }
 }
+
+@media (min-width: 769px) {
+  .brandBanner {
+    padding: 21px 24px;
+    min-height: 82px;
+    margin-bottom: 4px;
+  }
+
+  .logoImg {
+    height: 52px;
+  }
+
+  .logoText {
+    font-size: 1.45rem;
+    letter-spacing: 2.2px;
+  }
+}

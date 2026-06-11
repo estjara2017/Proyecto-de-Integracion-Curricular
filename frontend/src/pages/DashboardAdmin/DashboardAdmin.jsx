@@ -7,6 +7,8 @@ import PlanVerificationTable from './PlanVerificationTable/PlanVerificationTable
 import AdminLeaderboard from './AdminLeaderBoard/AdminLeaderBoard';
 import AdminRoutineManager from './AdminRoutineManager/AdminRoutineManager';
 import Button from '../../components/Button/Button';
+import { useAuth } from '../../context/AuthContext';
+import { profileService } from '../../services/profileService';
 
 const MOCK_ADMIN_DB = {
   nombre: 'Esteban Jara',
@@ -26,15 +28,35 @@ const AVATARES = [
   '/images/avatars/tierra.png'
 ];
 
+const AVATAR_KEYS = ['agua', 'fuego', 'aire', 'tierra'];
+
 export default function DashboardAdmin() {
-  const [adminUser, setAdminUser] = useState(MOCK_ADMIN_DB);
+  const { usuario, atleta, actualizarUsuarioContext } = useAuth();
+  const [avatarIndex, setAvatarIndex] = useState(atleta.avatarIndex || 0);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [activeTab, setActiveTab] = useState('clientes');
   const [showRoutinePanel, setShowRoutinePanel] = useState(false);
 
-  const handleSelectAvatar = (index) => {
-    setAdminUser((prev) => ({ ...prev, avatarIndex: index }));
-    setShowAvatarModal(false);
+  const handleSelectAvatar = async (index) => {
+    try {
+      const usuarioActualizado = await profileService.actualizarAvatar(AVATAR_KEYS[index]);
+      actualizarUsuarioContext(usuarioActualizado);
+      setAvatarIndex(index);
+      setShowAvatarModal(false);
+    } catch (error) {
+      alert(error.message || 'No se pudo actualizar el avatar');
+    }
+  };
+
+  const adminUser = {
+    nombre: atleta.nombre || 'Administrador',
+    nivel: usuario?.rol === 'admin' ? 'Administrador / Staff' : atleta.nivel,
+    edad: atleta.edad || 0,
+    posicion: usuario?.rol === 'admin' ? 'Staff' : atleta.posicion,
+    pesoLevantamiento: atleta.pesoLevantamiento || 0,
+    pesoMaxPromedio: atleta.pesoMaxPromedio || 0,
+    pesoTeoricoMax: atleta.pesoTeoricoMax || 100,
+    avatarIndex
   };
 
   return (

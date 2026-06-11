@@ -1,27 +1,28 @@
 .schedulePanel {
   width: 100%;
-  background-color: rgba(48, 24, 24, 0.16);
+  background-color: #8a1d4d;
   border: 1px solid rgba(58, 54, 54, 0.08);
   border-radius: 6px;
   padding: 14px 18px;
   display: grid;
-  grid-template-columns: 1fr minmax(180px, 240px) auto;
+  grid-template-columns: 1fr minmax(170px, 230px) auto;
   gap: 12px;
   align-items: center;
   box-sizing: border-box;
+  min-height: 86px;
 }
 
 .schedulePanel span {
   display: block;
-  color: #57275c;
+  color: #ffffff;
   font-weight: 800;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
 }
 
 .schedulePanel p {
   margin: 3px 0 0;
-  color: #333333;
+  color: rgba(255, 255, 255, 0.86);
   font-size: 0.86rem;
 }
 
@@ -33,12 +34,18 @@
   background-color: #ffffff;
 }
 
+.schedulePanel select:disabled {
+  background-color: #eeeeee;
+  color: #777777;
+  cursor: not-allowed;
+}
+
 .schedulePanel button {
   height: 40px;
   border: none;
   border-radius: 5px;
   padding: 0 16px;
-  background-color: #8a1d4d;
+  background-color: #1d1d1d;
   color: #ffffff;
   font-weight: 800;
   cursor: pointer;
@@ -49,12 +56,26 @@
   cursor: not-allowed;
 }
 
+.message {
+  grid-column: 1 / -1;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
 @media (max-width: 700px) {
   .schedulePanel {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 
   .schedulePanel > div {
     grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 701px) {
+  .schedulePanel {
+    min-height: 80px;
+    padding: 14px 20px;
   }
 }

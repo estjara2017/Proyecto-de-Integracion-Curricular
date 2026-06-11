@@ -53,54 +53,56 @@ export default function AdminAttendance() {
           </div>
         </section>
 
-        <section className={styles.headerBlock}>
-          <h1>Registro Manual de Asistencia</h1>
-          <p>Filtra por horario, genero o rango de edad para registrar asistencia de apoyo.</p>
-        </section>
+        <section className={styles.manualPanel}>
+          <div className={styles.headerBlock}>
+            <h1>Registro Manual de Asistencia</h1>
+            <p>Filtra por horario, genero o rango de edad para registrar asistencia de apoyo.</p>
+          </div>
 
-        <section className={styles.filters}>
-          <select value={filters.horario} onChange={(e) => setFilters((prev) => ({ ...prev, horario: e.target.value }))}>
-            {HORARIOS.map((item) => <option key={item || 'all'} value={item}>{item || 'Todos los horarios'}</option>)}
-          </select>
-          <select value={filters.genero} onChange={(e) => setFilters((prev) => ({ ...prev, genero: e.target.value }))}>
-            {GENEROS.map((item) => <option key={item || 'all'} value={item}>{item || 'Todos los generos'}</option>)}
-          </select>
-          <select value={filters.rangoEdad} onChange={(e) => setFilters((prev) => ({ ...prev, rangoEdad: e.target.value }))}>
-            {RANGOS.map((item) => <option key={item || 'all'} value={item}>{item || 'Todos los rangos'}</option>)}
-          </select>
-        </section>
+          <div className={styles.filters}>
+            <select value={filters.horario} onChange={(e) => setFilters((prev) => ({ ...prev, horario: e.target.value }))}>
+              {HORARIOS.map((item) => <option key={item || 'all'} value={item}>{item || 'Todos los horarios'}</option>)}
+            </select>
+            <select value={filters.genero} onChange={(e) => setFilters((prev) => ({ ...prev, genero: e.target.value }))}>
+              {GENEROS.map((item) => <option key={item || 'all'} value={item}>{item || 'Todos los generos'}</option>)}
+            </select>
+            <select value={filters.rangoEdad} onChange={(e) => setFilters((prev) => ({ ...prev, rangoEdad: e.target.value }))}>
+              {RANGOS.map((item) => <option key={item || 'all'} value={item}>{item || 'Todos los rangos'}</option>)}
+            </select>
+          </div>
 
-        {message && <p className={styles.message}>{message}</p>}
+          {message && <p className={styles.message}>{message}</p>}
 
-        <section className={styles.tablePanel}>
-          <table>
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Horario</th>
-                <th>Genero</th>
-                <th>Edad</th>
-                <th>Nivel</th>
-                <th>Accion</th>
-              </tr>
-            </thead>
-            <tbody>
-              {clientes.map((cliente) => (
-                <tr key={cliente.id}>
-                  <td>{cliente.nombre}</td>
-                  <td>{cliente.horarioEntrenamiento || '--'}</td>
-                  <td>{cliente.genero || '--'}</td>
-                  <td>{cliente.edad} ({cliente.rangoEdad})</td>
-                  <td>{cliente.nivel}</td>
-                  <td>
-                    <button type="button" onClick={() => registrar(cliente.id, cliente.nombre)}>
-                      Registrar
-                    </button>
-                  </td>
+          <div className={styles.tablePanel}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Horario</th>
+                  <th>Genero</th>
+                  <th>Edad</th>
+                  <th>Nivel</th>
+                  <th>Accion</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {clientes.map((cliente) => (
+                  <tr key={cliente.id}>
+                    <td>{cliente.nombre}</td>
+                    <td>{cliente.horarioEntrenamiento || '--'}</td>
+                    <td>{cliente.genero || '--'}</td>
+                    <td>{cliente.edad} ({cliente.rangoEdad})</td>
+                    <td>{cliente.nivel}</td>
+                    <td>
+                      <button type="button" onClick={() => registrar(cliente.id, cliente.nombre)}>
+                        Registrar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
       </main>
     </div>

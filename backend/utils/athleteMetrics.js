@@ -42,13 +42,14 @@ const calcularPesoTeoricoMaxKg = (usuario, nivel) => {
 };
 
 const calcularPorcentajeProgreso = (usuario, nivel) => {
-    const pesoMaxPromedio = Number(usuario.pesoMaxPromedioKg || 0);
     const pesoTeoricoMaxKg = calcularPesoTeoricoMaxKg(usuario, nivel);
-    const porcentaje = pesoTeoricoMaxKg > 0
-        ? Math.min(Math.round((pesoMaxPromedio / pesoTeoricoMaxKg) * 100), 100)
+    const pesoPruebaActual = Number(usuario.pesoLevantamientoKg || 0);
+    const pesoObjetivoKg = Number(usuario.pesoMaxPromedioKg || 0) || pesoTeoricoMaxKg;
+    const porcentaje = pesoObjetivoKg > 0
+        ? Math.min(Math.round((pesoPruebaActual / pesoObjetivoKg) * 100), 100)
         : 0;
 
-    return { pesoTeoricoMaxKg, porcentajeProgreso: porcentaje };
+    return { pesoTeoricoMaxKg: pesoObjetivoKg, porcentajeProgreso: porcentaje };
 };
 
 const calcularSemanaCiclo = (ciclos = 4) => {

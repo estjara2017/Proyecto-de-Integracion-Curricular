@@ -4,6 +4,7 @@ import styles from './PaymentCheckout.module.css';
 import Header from '../../components/Header/Header';
 import { useAuth } from '../../context/AuthContext';
 import { paymentService } from '../../services/paymentService';
+import { profileService } from '../../services/profileService';
 
 export default function PaymentCheckout() {
   const location = useLocation();
@@ -11,6 +12,7 @@ export default function PaymentCheckout() {
   const { usuario } = useAuth();
 
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [usuarioPago, setUsuarioPago] = useState(usuario);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showBankDetails, setShowBankDetails] = useState(false);
   const [selectedBank, setSelectedBank] = useState('');
@@ -24,7 +26,20 @@ export default function PaymentCheckout() {
     trainingDaysPerWeek: location.state?.trainingDaysPerWeek || 5
   };
 
-  useEffect(() => {}, [navigate]);
+  const requiereMinimoSemanal = plan.durationDays >= 30;
+
+  useEffect(() => {
+    const cargarUsuarioPago = async () => {
+      try {
+        const response = await profileService.obtenerPerfil();
+        setUsuarioPago(response.usuario);
+      } catch {
+        setUsuarioPago(usuario);
+      }
+    };
+
+    cargarUsuarioPago();
+  }, [usuario]);
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
@@ -64,7 +79,8 @@ export default function PaymentCheckout() {
 
               <div className={styles.userConfirmation}>
                 <p>Registrando pago para:</p>
-                <strong>{usuario ? `${usuario.nombre} ${usuario.apellido}` : 'Cargando perfil...'}</strong>
+                <strong>{usuarioPago ? `${usuarioPago.nombre} ${usuarioPago.apellido}` : 'Cargando perfil...'}</strong>
+                {usuarioPago?.correo && <p>{usuarioPago.correo}</p>}
               </div>
 
               <div className={styles.planDetail}>
@@ -73,11 +89,20 @@ export default function PaymentCheckout() {
               </div>
 
               <div className={styles.planDetail}>
-                <span className={styles.label}>Dias de Entrenamiento:</span>
+                <span className={styles.label}>Duracion del Plan:</span>
                 <span className={styles.value}>
-                  {plan.trainingDaysPerWeek} dias a la semana
+                  {plan.durationDays} dias
                 </span>
               </div>
+
+              {requiereMinimoSemanal && (
+                <div className={styles.planDetail}>
+                  <span className={styles.label}>Condicion semanal:</span>
+                  <span className={styles.value}>
+                    Minimo {plan.trainingDaysPerWeek} dias a la semana
+                  </span>
+                </div>
+              )}
 
               <div className={styles.totalDetail}>
                 <span className={styles.totalLabel}>Total a transferir:</span>

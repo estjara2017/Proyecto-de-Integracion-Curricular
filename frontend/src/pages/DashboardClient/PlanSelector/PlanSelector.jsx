@@ -13,7 +13,7 @@ const FALLBACK_PLANS = [
 ];
 
 function PlanSelector() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [listadoPlanes, setListadoPlanes] = useState([]);
   const [error, setError] = useState('');
   const navigate = useNavigate();

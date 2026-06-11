@@ -5,18 +5,21 @@ const fallbackVideos = [
   {
     id: 'video-demo-1',
     titulo: 'Tecnica de levantamiento',
-    descripcion: 'Referencia visual hasta registrar el enlace real de YouTube.',
+    subtitulo: 'Clase demostrativa',
+    descripcion: 'Referencia visual hasta registrar el enlace real de YouTube o un video local.',
     url: 'https://www.youtube.com/results?search_query=weightlifting+technique+crossfit'
   },
   {
     id: 'video-demo-2',
     titulo: 'Movilidad y calentamiento',
+    subtitulo: 'Preparacion de clase',
     descripcion: 'Busqueda temporal relacionada con movilidad para entrenamiento.',
     url: 'https://www.youtube.com/results?search_query=crossfit+mobility+warm+up'
   },
   {
     id: 'video-demo-3',
     titulo: 'Metcon y acondicionamiento',
+    subtitulo: 'Tecnica y ritmo',
     descripcion: 'Busqueda temporal hasta cargar videos oficiales del gimnasio.',
     url: 'https://www.youtube.com/results?search_query=crossfit+metcon+workout'
   }
@@ -44,6 +47,8 @@ const getYoutubeEmbedUrl = (url) => {
   return '';
 };
 
+const isLocalVideo = (url = '') => /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
+
 const rotateDaysByDate = (days = []) => {
   if (!days.length) return [];
   const today = new Date();
@@ -53,6 +58,8 @@ const rotateDaysByDate = (days = []) => {
 
 function RoutinePanel({ nivel = 'Principiante', rutinas = [], recursos = [] }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [routineOpen, setRoutineOpen] = useState(true);
+  const [videosOpen, setVideosOpen] = useState(true);
   const rutina = rutinas[0];
   const days = rotateDaysByDate(rutina?.diasSemana || []);
   const videos = recursos.length ? recursos : fallbackVideos;
@@ -71,23 +78,23 @@ function RoutinePanel({ nivel = 'Principiante', rutinas = [], recursos = [] }) {
       <div className={`${styles.accordionContent} ${isOpen ? styles.show : ''}`}>
         <div className={styles.routineWorkspace}>
           <section className={styles.routineColumn}>
-            <div className={styles.columnTitle}>
+            <button
+              type="button"
+              className={styles.columnTitle}
+              onClick={() => setRoutineOpen((prev) => !prev)}
+            >
               <span>Rutinas y ejercicios</span>
-              <button type="button" aria-label="Agregar rutina">+</button>
-            </div>
+              <span className={styles.columnIcon}>{routineOpen ? '-' : '+'}</span>
+            </button>
 
-            {!rutina ? (
+            {routineOpen && !rutina ? (
               <p className={styles.emptyText}>Aun no hay rutinas asignadas para este nivel.</p>
-            ) : (
+            ) : routineOpen ? (
               <>
                 <div className={styles.summaryGrid}>
                   <div>
                     <span className={styles.label}>Objetivo</span>
                     <p>{rutina.objetivo}</p>
-                  </div>
-                  <div>
-                    <span className={styles.label}>Ciclo automatico</span>
-                    <p>Los dias se intercalan segun la fecha si no hay cambios del administrador.</p>
                   </div>
                 </div>
 
@@ -110,29 +117,42 @@ function RoutinePanel({ nivel = 'Principiante', rutinas = [], recursos = [] }) {
                   ))}
                 </div>
               </>
-            )}
+            ) : null}
           </section>
 
           <section className={styles.videoColumn}>
-            <div className={styles.columnTitle}>
-              <span>Enlaces</span>
-              <button type="button" aria-label="Agregar enlace">+</button>
-            </div>
+            <button
+              type="button"
+              className={styles.columnTitle}
+              onClick={() => setVideosOpen((prev) => !prev)}
+            >
+              <span>Videos y enlaces</span>
+              <span className={styles.columnIcon}>{videosOpen ? '-' : '+'}</span>
+            </button>
 
+            {videosOpen && (
             <div className={styles.videoList}>
               {videos.map((recurso) => {
                 const embedUrl = getYoutubeEmbedUrl(recurso.url);
                 const isPlaceholder = recurso.url === '#';
-                const Tag = isPlaceholder || embedUrl ? 'div' : 'a';
+                const localVideo = isLocalVideo(recurso.url);
+                const Tag = isPlaceholder || embedUrl || localVideo ? 'div' : 'a';
                 return (
                   <Tag
                     key={recurso.id}
-                    href={isPlaceholder || embedUrl ? undefined : recurso.url}
-                    target={isPlaceholder || embedUrl ? undefined : '_blank'}
-                    rel={isPlaceholder || embedUrl ? undefined : 'noreferrer'}
+                    href={isPlaceholder || embedUrl || localVideo ? undefined : recurso.url}
+                    target={isPlaceholder || embedUrl || localVideo ? undefined : '_blank'}
+                    rel={isPlaceholder || embedUrl || localVideo ? undefined : 'noreferrer'}
                     className={`${styles.videoCard} ${isPlaceholder ? styles.placeholderVideo : ''}`}
                   >
-                    {embedUrl ? (
+                    {localVideo ? (
+                      <video
+                        className={styles.videoFrame}
+                        src={recurso.url}
+                        controls
+                        preload="metadata"
+                      />
+                    ) : embedUrl ? (
                       <iframe
                         className={styles.videoFrame}
                         src={embedUrl}
@@ -145,12 +165,27 @@ function RoutinePanel({ nivel = 'Principiante', rutinas = [], recursos = [] }) {
                         <span />
                       </div>
                     )}
+                    {(recurso.subtitulo || recurso.tipo) && (
+                      <small className={styles.videoSubtitle}>
+                        {recurso.subtitulo || recurso.tipo}
+                      </small>
+                    )}
                     <strong>{recurso.titulo}</strong>
                     <span>{recurso.descripcion}</span>
+                    {embedUrl ? (
+                      <a className={styles.videoLink} href={recurso.url} target="_blank" rel="noreferrer">
+                        Abrir en YouTube
+                      </a>
+                    ) : !isPlaceholder && !localVideo ? (
+                      <em className={styles.videoHint}>Abrir recurso</em>
+                    ) : localVideo ? (
+                      <em className={styles.videoHint}>Video cargado desde la plataforma</em>
+                    ) : null}
                   </Tag>
                 );
               })}
             </div>
+            )}
           </section>
         </div>
       </div>

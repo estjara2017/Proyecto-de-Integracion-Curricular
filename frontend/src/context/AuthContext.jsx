@@ -57,6 +57,8 @@ export function AuthProvider({ children }) {
     edad: usuario?.edad || calcularEdad(usuario?.fechaNacimiento),
     nivel: usuario?.nivel || 'Principiante',
     posicion: usuario?.posicion || 'N° --',
+    pesoCorporal: usuario?.peso || 0,
+    estatura: usuario?.estatura || 0,
     pesoLevantamiento: usuario?.pesoLevantamientoKg || 0,
     pesoMaxPromedio: usuario?.pesoMaxPromedioKg || 0,
     pesoTeoricoMax: usuario?.pesoTeoricoMaxKg || 100,

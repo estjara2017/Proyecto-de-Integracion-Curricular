@@ -11,6 +11,11 @@ export const paymentService = {
     return response.data;
   },
 
+  obtenerMiMembresia: async () => {
+    const response = await apiRequest('/pagos/mi-membresia');
+    return response.data;
+  },
+
   notificarPago: async ({ planId, metodoPago }) => {
     return apiRequest('/pagos/notificar', {
       method: 'POST',

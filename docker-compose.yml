@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: est19952030
       POSTGRES_DB: elemental_database
     ports:
-      - "5432:5432"
+      - "${POSTGRES_HOST_PORT:-5433}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -63,7 +63,7 @@ services:
     restart: always
     ports:
       - "5173:5173"
-    command: pnpm dev -- --host 0.0.0.0
+    command: pnpm dev --host 0.0.0.0
     environment:
       - VITE_API_URL=http://localhost:4000/api
     depends_on:

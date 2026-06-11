@@ -1,43 +1,96 @@
 .dashboardContainer {
-  max-width: 1350px; 
+  max-width: 1350px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 24px;
+  width: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
-  gap: 25px;
-  flex-wrap: wrap; 
-  align-items: flex-start; 
+  flex-direction: column;
+  gap: 28px;
 }
 
-/* ==========================================================================
-    LAYOUT RESTANTE (Control estricto de alturas independientes y Scroll)
-   ========================================================================== */
-.dashboardContainer > :not(header):not(.modalOverlay):not([class*="accordionContainer"]) {
-  min-width: 0; 
+.dashboardTopGrid {
+  display: grid;
+  grid-template-columns: 690px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  width: 100%;
 }
 
-/* El hijo 2 es <Profile /> */
-.dashboardContainer > :nth-child(2) {
-  flex: 1.5; 
+.leftColumn,
+.rightColumn {
+  min-width: 0;
 }
 
-/* El hijo 3 es <Leaderboard /> */
-.dashboardContainer > :nth-child(3) {
-  flex: 1.5;         
-  max-height: 550px; 
-  overflow-y: auto;  
-  border-radius: 8px; 
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-/* ==========================================================================
-    MODAL SELECCIÓN DE AVATAR
-   ========================================================================== */
+.rightColumn {
+  display: flex;
+  align-items: flex-start;
+  justify-content: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.rightColumn > section {
+  width: 100%;
+  max-width: none;
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+}
+
+/* Si tienes una tarjeta de membresía arriba del perfil */
+.membershipCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 13px 18px;
+  border-radius: 6px;
+  border: 1px solid #8a1d4d;
+  background-color: #8a1d4d;
+  color: #ffffff;
+  font-size: 0.92rem;
+  min-height: 86px;
+  box-sizing: border-box;
+}
+
+.membershipCard strong {
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.membershipCard small {
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 600;
+}
+
+.activo {
+  border-color: #7a1e48;
+  background-color: #8a1d4d;
+}
+
+.por_vencer,
+.pocos_dias,
+.pendiente {
+  border-color: #aa7b25;
+  background-color: #946915;
+}
+
+.vencido,
+.sin_plan {
+  border-color: #9b2b2b;
+  background-color: #8d3030;
+}
+
+/* MODAL */
 .modalOverlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
@@ -115,28 +168,43 @@
   font-size: 0.9rem;
 }
 
-/* ==========================================================================
-    RESPONSIVE
-   ========================================================================== */
-@media (max-width: 1024px) {
-  .dashboardContainer {
-    flex-direction: column;
-    align-items: stretch; 
-    padding: 15px;
-  }
-
-  .dashboardContainer > :nth-child(2),
-  .dashboardContainer > :nth-child(3) {
-    flex: none;
-    width: 100%;
-    max-height: none; 
+/* DESKTOP */
+@media (min-width: 1025px) {
+  .dashboardTopGrid {
+    grid-template-columns: 690px minmax(0, 1fr);
   }
 }
 
+/* TABLET */
+@media (max-width: 1024px) {
+  .dashboardContainer {
+    padding: 15px;
+    gap: 18px;
+  }
+
+  .dashboardTopGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .rightColumn > section {
+    max-height: 520px;
+  }
+}
+
+/* MÓVIL */
 @media (max-width: 640px) {
   .dashboardContainer {
     padding: 10px;
     gap: 14px;
+  }
+
+  .dashboardTopGrid {
+    gap: 14px;
+  }
+
+  .membershipCard {
+    min-height: auto;
+    padding: 12px 14px;
   }
 
   .modalContent {

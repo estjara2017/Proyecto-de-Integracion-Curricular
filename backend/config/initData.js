@@ -120,18 +120,21 @@ const videosPorNivel = (nivel) => [
     {
         titulo: `${nivel} - tecnica de sentadilla y levantamientos`,
         tipo: 'video',
+        subtitulo: 'Clase demostrativa',
         url: `https://www.youtube.com/results?search_query=crossfit+${encodeURIComponent(nivel)}+squat+clean+snatch+technique`,
         descripcion: 'Busqueda guiada para tecnica de fuerza y weightlifting.'
     },
     {
         titulo: `${nivel} - progresiones gimnasticas`,
         tipo: 'video',
+        subtitulo: 'Como se hace el movimiento',
         url: `https://www.youtube.com/results?search_query=crossfit+${encodeURIComponent(nivel)}+gymnastics+progressions`,
         descripcion: 'Busqueda guiada para pull-ups, HSPU, BMU/RMU y habilidades.'
     },
     {
         titulo: `${nivel} - metcon y acondicionamiento`,
         tipo: 'video',
+        subtitulo: 'Ritmo y estrategia',
         url: `https://www.youtube.com/results?search_query=crossfit+${encodeURIComponent(nivel)}+metcon+conditioning`,
         descripcion: 'Busqueda guiada para metcons, pacing y resistencia.'
     }

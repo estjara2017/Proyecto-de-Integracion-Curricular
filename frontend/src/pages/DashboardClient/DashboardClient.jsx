@@ -10,6 +10,7 @@ import Button from '../../components/Button/Button';
 import { useAuth } from '../../context/AuthContext';
 import { profileService } from '../../services/profileService';
 import { registrarAsistenciaCliente } from '../../services/attendanceService';
+import { paymentService } from '../../services/paymentService';
 
 const AVATARES = [
   '/images/avatars/agua.png',
@@ -32,6 +33,7 @@ function DashboardClient() {
   const [rutinasNivel, setRutinasNivel] = useState([]);
   const [recursosNivel, setRecursosNivel] = useState([]);
   const [nombreNivelRutina, setNombreNivelRutina] = useState(atleta.nivel);
+  const [membresia, setMembresia] = useState(null);
 
   useEffect(() => {
     const cargarPerfil = async () => {
@@ -45,6 +47,8 @@ function DashboardClient() {
         setRutinasNivel(response.nivel?.RoutineTemplates || []);
         setRecursosNivel(response.nivel?.LevelResources || []);
         setNombreNivelRutina(response.nivel?.nombre || response.usuario.nivel);
+        const estadoMembresia = await paymentService.obtenerMiMembresia();
+        setMembresia(estadoMembresia);
       } catch (error) {
         console.error('No se pudo actualizar el perfil:', error);
       }
@@ -57,6 +61,16 @@ function DashboardClient() {
     ...atleta,
     avatarIndex: localAvatarIndex !== null ? localAvatarIndex : atleta.avatarIndex
   };
+
+  const membershipTitle = (() => {
+    if (!membresia) return 'Membresia';
+    if (membresia.estado === 'activo' || membresia.estado === 'por_vencer' || membresia.estado === 'pocos_dias') {
+      const duracion = membresia.suscripcion?.Plan?.duracionDias || membresia.plan?.duracionDias;
+      const restantes = membresia.diasRestantes ?? 0;
+      return `Tu plan es de ${duracion || '--'} dias - dias restantes ${restantes}`;
+    }
+    return membresia.plan?.nombre || 'Membresia';
+  })();
 
   const handleSelectAvatar = async (index) => {
     try {
@@ -104,23 +118,38 @@ function DashboardClient() {
     <div className={styles.dashboardContainer}>
       <Header2 />
 
-      <Profile
-        dbUser={dbUser}
-        avatares={AVATARES}
-        onCambiarAvatar={() => setShowAvatarModal(true)}
-        onRegistrarAsistencia={handleOpenAttendance}
-      />
+      <section className={styles.dashboardTopGrid}>
+        <div className={styles.leftColumn}>
+          <Profile
+            dbUser={dbUser}
+            avatares={AVATARES}
+            onCambiarAvatar={() => setShowAvatarModal(true)}
+            onRegistrarAsistencia={handleOpenAttendance}
+          />
 
-      <Leaderboard dbUser={dbUser} />
+          <section className={`${styles.membershipCard} ${styles[membresia?.estado] || ''}`}>
+            <strong>{membershipTitle}</strong>
+            <span>{membresia?.mensaje || 'Selecciona un plan para activar tu membresia.'}</span>
+            {membresia?.diasDisponibles !== undefined && (
+              <small>{membresia.diasDisponibles} asistencia(s) disponibles.</small>
+            )}
+          </section>
 
-      <ScheduleSelector
-        visible={dbUser.estado === 'activo'}
-        horarioActual={dbUser.horarioEntrenamiento}
-        onGuardar={async (horario) => {
-          const usuarioActualizado = await profileService.actualizarHorario(horario);
-          actualizarUsuarioContext(usuarioActualizado);
-        }}
-      />
+          <ScheduleSelector
+            visible
+            disabled={dbUser.estado !== 'activo'}
+            horarioActual={dbUser.horarioEntrenamiento}
+            onGuardar={async (horario) => {
+              const usuarioActualizado = await profileService.actualizarHorario(horario);
+              actualizarUsuarioContext(usuarioActualizado);
+            }}
+          />
+        </div>
+
+        <div className={styles.rightColumn}>
+          <Leaderboard dbUser={dbUser} />
+        </div>
+      </section>
 
       <PlanSelector />
 

@@ -20,6 +20,13 @@ export async function apiRequest(path, options = {}) {
   const data = contentType.includes('application/json') ? await response.json() : null;
 
   if (!response.ok) {
+    if (response.status === 401 || response.status === 403) {
+      localStorage.removeItem('token_elemental');
+      localStorage.removeItem('rol_elemental');
+      localStorage.removeItem('user_data');
+      window.location.href = '/login';
+    }
+
     throw new Error(data?.message || data?.error || 'Error de comunicacion con el servidor');
   }
 

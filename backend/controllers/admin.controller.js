@@ -28,6 +28,15 @@ exports.listarClientes = async (req, res) => {
             order: [['apellido', 'ASC'], ['nombre', 'ASC']]
         });
 
+        for (const cliente of clientes) {
+            const nivel = await Level.findOne({ where: { nombre: cliente.nivel } });
+            const metricas = calcularPorcentajeProgreso(cliente, nivel);
+            if (cliente.porcentajeProgreso !== metricas.porcentajeProgreso) {
+                cliente.porcentajeProgreso = metricas.porcentajeProgreso;
+                await cliente.save();
+            }
+        }
+
         return res.status(200).json({ status: 'success', data: clientes });
     } catch (error) {
         return res.status(500).json({ status: 'error', error: error.message });

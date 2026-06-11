@@ -1,4 +1,6 @@
 // src/app.js (o index.js en la raíz de tu backend)
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 
@@ -13,10 +15,28 @@ const usuarioRoutes = require('./routes/usuarioRoutes');
 const paymentRoutes = require('./routes/payment.routes');
 const attendanceRoutes = require('./routes/attendance.routes');
 const adminRoutes = require('./routes/admin.routes');
+const { actualizarEstadosDeMembresias } = require('./controllers/payment.controller');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.get('/api/health', async (req, res) => {
+    try {
+        await sequelize.authenticate();
+        res.json({
+            status: 'ok',
+            database: 'connected',
+            environment: process.env.NODE_ENV || 'development'
+        });
+    } catch (error) {
+        res.status(503).json({
+            status: 'error',
+            database: 'disconnected',
+            message: error.message
+        });
+    }
+});
 
 // Las rutas solo se encargan de asignar los Prefijos de las URLs
 app.use('/api/usuarios', usuarioRoutes);
@@ -24,7 +44,7 @@ app.use('/api/pagos', paymentRoutes);
 app.use('/api/asistencias', attendanceRoutes);
 app.use('/api/admin', adminRoutes);
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || process.env.BACKEND_PORT || 4000;
 
 // Sincronización con PostgreSQL al encender el contenedor
 sequelize.sync({ alter: process.env.NODE_ENV !== 'production' })
@@ -33,6 +53,7 @@ sequelize.sync({ alter: process.env.NODE_ENV !== 'production' })
         
         // Ejecutamos la semilla aquí, justo después de sincronizar las tablas
         await cargarPlanesIniciales();
+        await actualizarEstadosDeMembresias();
         iniciarGeneradorPalabraDiaria();
         
         app.listen(PORT, () => {

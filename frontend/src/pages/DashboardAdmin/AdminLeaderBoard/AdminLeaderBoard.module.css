@@ -52,6 +52,20 @@
   height: 15px;
 }
 
+.checkboxLabel select {
+  height: 32px;
+  border: 1px solid #d5c7cd;
+  border-radius: 4px;
+  padding: 4px 8px;
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.checkboxLabel select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 /* Estructura de la Tabla */
 .tableWrapper {
   width: 100%;

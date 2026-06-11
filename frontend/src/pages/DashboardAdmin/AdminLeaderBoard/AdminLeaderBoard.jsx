@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from '../AdminLeaderBoard/AdminLeaderBoard.module.css';
 import Button from '../../../components/Button/Button';
 import { adminService } from '../../../services/adminService';
@@ -6,6 +6,10 @@ import { adminService } from '../../../services/adminService';
 export default function AdminLeaderboard() {
   const [atletas, setAtletas] = useState([]);
   const [error, setError] = useState('');
+  const [filtrarNivel, setFiltrarNivel] = useState(false);
+  const [filtrarEdad, setFiltrarEdad] = useState(false);
+  const [nivelSeleccionado, setNivelSeleccionado] = useState('Principiante');
+  const [rangoSeleccionado, setRangoSeleccionado] = useState('25-40');
 
   const cargarRanking = async () => {
     try {
@@ -41,6 +45,31 @@ export default function AdminLeaderboard() {
     return pos;
   };
 
+  const obtenerRangoEdad = (edad) => {
+    if (edad >= 12 && edad < 18) return '12-18';
+    if (edad >= 18 && edad < 25) return '18-25';
+    if (edad >= 25 && edad < 40) return '25-40';
+    if (edad >= 40 && edad < 50) return '40-50';
+    return '50+';
+  };
+
+  const nivelesDisponibles = useMemo(() => (
+    [...new Set(atletas.map((atleta) => atleta.nivel).filter(Boolean))]
+  ), [atletas]);
+
+  const atletasFiltrados = useMemo(() => {
+    const filtrados = atletas.filter((atleta) => {
+      if (filtrarNivel && atleta.nivel !== nivelSeleccionado) return false;
+      if (filtrarEdad && obtenerRangoEdad(atleta.edad) !== rangoSeleccionado) return false;
+      return true;
+    });
+
+    return filtrados.map((atleta, index) => ({
+      ...atleta,
+      posicionFiltrada: index + 1
+    }));
+  }, [atletas, filtrarNivel, filtrarEdad, nivelSeleccionado, rangoSeleccionado]);
+
   return (
     <div className={styles.leaderboardCard}>
       <div className={styles.cardHeader}>
@@ -50,12 +79,38 @@ export default function AdminLeaderboard() {
 
       <div className={styles.filterBar}>
         <label className={styles.checkboxLabel}>
-          <input type="checkbox" defaultChecked disabled />
-          <span>Filtrar mi nivel: <strong>Principiante</strong></span>
+          <input
+            type="checkbox"
+            checked={filtrarNivel}
+            onChange={(event) => setFiltrarNivel(event.target.checked)}
+          />
+          <span>Filtrar nivel:</span>
+          <select
+            value={nivelSeleccionado}
+            onChange={(event) => setNivelSeleccionado(event.target.value)}
+            disabled={!filtrarNivel}
+          >
+            {nivelesDisponibles.map((nivel) => (
+              <option key={nivel} value={nivel}>{nivel}</option>
+            ))}
+          </select>
         </label>
         <label className={styles.checkboxLabel}>
-          <input type="checkbox" defaultChecked disabled />
-          <span>Filtrar mi rango de edad: <strong>25-40</strong></span>
+          <input
+            type="checkbox"
+            checked={filtrarEdad}
+            onChange={(event) => setFiltrarEdad(event.target.checked)}
+          />
+          <span>Filtrar rango de edad:</span>
+          <select
+            value={rangoSeleccionado}
+            onChange={(event) => setRangoSeleccionado(event.target.value)}
+            disabled={!filtrarEdad}
+          >
+            {['12-18', '18-25', '25-40', '40-50', '50+'].map((rango) => (
+              <option key={rango} value={rango}>{rango}</option>
+            ))}
+          </select>
         </label>
       </div>
 
@@ -74,10 +129,12 @@ export default function AdminLeaderboard() {
           <tbody>
             {error ? (
               <tr><td colSpan="6" className={styles.normalBadge}>{error}</td></tr>
-            ) : atletas.map((atl, index) => (
+            ) : atletasFiltrados.length === 0 ? (
+              <tr><td colSpan="6" className={styles.normalBadge}>No hay atletas para los filtros seleccionados.</td></tr>
+            ) : atletasFiltrados.map((atl) => (
               <tr key={atl.id}>
                 <td className={styles.posGblText}>N° {atl.posicionGlobal}</td>
-                <td className={styles.medalCell}>{renderMedal(index + 1)}</td>
+                <td className={styles.medalCell}>{renderMedal(atl.posicionFiltrada)}</td>
                 <td className={styles.atletaName}>{atl.atleta}</td>
                 <td>
                   <span className={`${styles.nivelBadge} ${styles[atl.nivel.toLowerCase().split(' ')[0]] || ''}`}>

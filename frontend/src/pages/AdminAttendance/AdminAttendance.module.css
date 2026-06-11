@@ -8,16 +8,13 @@
 .container {
   max-width: 1180px;
   margin: 24px auto 0;
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   box-sizing: border-box;
-  max-height: calc(100vh - 150px);
-  overflow-y: auto;
 }
 
 .qrAccordion {
-  margin-bottom: 22px;
   border-radius: 8px;
   background-color: #554e4d;
   overflow: hidden;
@@ -61,6 +58,15 @@
   max-height: min(620px, calc(100vh - 180px));
   overflow-y: auto;
   padding: 22px;
+}
+
+.manualPanel {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  box-sizing: border-box;
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
 }
 
 .headerBlock {
@@ -140,8 +146,7 @@
   }
 
   .container {
-    padding: 16px;
-    max-height: calc(100vh - 120px);
+    gap: 14px;
   }
 
   .qrAccordionHeader {
@@ -155,6 +160,11 @@
   .qrAccordionOpen {
     padding: 16px;
     max-height: min(650px, calc(100vh - 140px));
+  }
+
+  .manualPanel {
+    padding: 16px;
+    max-height: none;
   }
 
   .filters {

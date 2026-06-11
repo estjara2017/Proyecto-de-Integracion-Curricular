@@ -186,7 +186,7 @@ export default function ClientTable() {
                         )}
                       </span>
                       <span className={styles.clientEmail}>
-                        <strong>Peso:</strong>{' '}
+                        <strong>Peso corporal:</strong>{' '}
                         {isEditing ? (
                           <input
                             type="number"
@@ -216,7 +216,7 @@ export default function ClientTable() {
                         )}
                       </span>
                       <span className={styles.clientEmail}>
-                        <strong>Prueba:</strong>{' '}
+                        <strong>Prueba actual:</strong>{' '}
                         {isEditing ? (
                           <input
                             type="number"
@@ -231,7 +231,7 @@ export default function ClientTable() {
                         )}
                       </span>
                       <span className={styles.clientEmail}>
-                        <strong>Max prom.:</strong>{' '}
+                        <strong>Objetivo:</strong>{' '}
                         {isEditing ? (
                           <input
                             type="number"
