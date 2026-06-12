@@ -27,7 +27,7 @@ function AppRoutes() {
       <Route path="/dashboardClient" element={<ProtectedRoute roles={['cliente']}><DashboardClient/></ProtectedRoute>}/>
       <Route path="/dashboardAdmin" element={<ProtectedRoute roles={['admin']}><DashboardAdmin/></ProtectedRoute>}/>
       <Route path="/payment" element={<ProtectedRoute roles={['cliente']}><PaymentCheckout/></ProtectedRoute>}/>
-      <Route path="/attendance" element={<ProtectedRoute roles={['cliente']}><Attendance/></ProtectedRoute>}/>
+      <Route path="/attendance" element={<Attendance/>}/>
       <Route path="/adminAttendance" element={<ProtectedRoute roles={['admin']}><AdminAttendance/></ProtectedRoute>}/>
     </Routes>
   )

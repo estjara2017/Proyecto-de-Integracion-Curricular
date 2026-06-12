@@ -9,6 +9,7 @@ const Pago = require('./Payment');
 const Attendance = require('./Attendance');
 const DailyCode = require('./DailyCode');
 const OtpModel = require('./otpModel');
+const AttendanceQrToken = require('./AttendanceQrToken');
 const Level = require('./Level');
 const LevelResource = require('./LevelResource');
 const RoutineTemplate = require('./RoutineTemplate');
@@ -43,6 +44,7 @@ module.exports = {
     Attendance,
     DailyCode,
     OtpModel,
+    AttendanceQrToken,
     Level,
     LevelResource,
     RoutineTemplate,

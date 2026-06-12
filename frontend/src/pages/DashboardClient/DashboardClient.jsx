@@ -20,6 +20,7 @@ const AVATARES = [
 ];
 
 const AVATAR_KEYS = ['agua', 'fuego', 'aire', 'tierra'];
+const ATTENDANCE_HELP_TEXT = 'Por favor escanea el QR del local e ingresa la palabra clave.';
 
 function DashboardClient() {
   const { atleta, actualizarUsuarioContext } = useAuth();
@@ -89,7 +90,8 @@ function DashboardClient() {
     setAttendanceMessage('');
 
     try {
-      const response = await registrarAsistenciaCliente(palabraIngresada);
+      const qrToken = localStorage.getItem('elemental_attendance_qr_token');
+      const response = await registrarAsistenciaCliente(palabraIngresada, qrToken);
       setAttendanceMessage(response.message || 'Asistencia registrada.');
       setPalabraIngresada('');
     } catch (error) {
@@ -100,16 +102,6 @@ function DashboardClient() {
   };
 
   const handleOpenAttendance = () => {
-    const scanDate = localStorage.getItem('elemental_qr_scan_date');
-    const today = new Date().toISOString().slice(0, 10);
-
-    if (scanDate !== today) {
-      setAttendanceMessage('Primero escanea el QR del local. Se abrira la pagina de asistencia en otra pestana.');
-      setShowAttendanceModal(true);
-      window.open('/attendance', '_blank');
-      return;
-    }
-
     setAttendanceMessage('');
     setShowAttendanceModal(true);
   };
@@ -195,6 +187,7 @@ function DashboardClient() {
               onChange={(e) => setPalabraIngresada(e.target.value)}
               required
             />
+            <p className={styles.attendanceHelp}>{ATTENDANCE_HELP_TEXT}</p>
             {attendanceMessage && <p className={styles.modalMessage}>{attendanceMessage}</p>}
             <div className={styles.modalActions}>
               <Button variant="primary" type="submit" disabled={isRegisteringAttendance}>

@@ -1,16 +1,37 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { FiDownload, FiExternalLink, FiPrinter } from 'react-icons/fi';
+import { fetchQrActivo } from '../../../services/attendanceService';
 import styles from './AttendanceQr.module.css';
 
 const QR_SIZE = 320;
 
 export default function AttendanceQr() {
   const canvasRef = useRef(null);
+  const [qrData, setQrData] = useState(null);
+  const [error, setError] = useState('');
 
   const attendanceUrl = useMemo(() => {
-    if (typeof window === 'undefined') return '/attendance';
-    return `${window.location.origin}/attendance`;
+    const token = qrData?.token || '';
+    if (!token) return '';
+    if (typeof window === 'undefined') return `/attendance?qr=${token}`;
+    return `${window.location.origin}/attendance?qr=${token}`;
+  }, [qrData]);
+
+  useEffect(() => {
+    const cargarQr = async () => {
+      try {
+        const data = await fetchQrActivo();
+        setQrData(data);
+        setError('');
+      } catch (err) {
+        setError(err.message || 'No se pudo generar el QR de asistencia.');
+      }
+    };
+
+    cargarQr();
+    const interval = setInterval(cargarQr, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const getQrImage = () => {
@@ -20,7 +41,7 @@ export default function AttendanceQr() {
 
   const handleDownload = () => {
     const qrImage = getQrImage();
-    if (!qrImage) return;
+    if (!qrImage || !attendanceUrl) return;
 
     const link = document.createElement('a');
     link.href = qrImage;
@@ -30,7 +51,7 @@ export default function AttendanceQr() {
 
   const handlePrint = () => {
     const qrImage = getQrImage();
-    if (!qrImage) return;
+    if (!qrImage || !attendanceUrl) return;
 
     const printWindow = window.open('', '_blank', 'width=720,height=900');
     if (!printWindow) return;
@@ -93,22 +114,35 @@ export default function AttendanceQr() {
     <section className={styles.panel}>
       <div className={styles.info}>
         <h3>QR de asistencia</h3>
-        <p>Publica este codigo en recepcion para que los clientes abran la pagina de asistencia.</p>
-        <a className={styles.url} href={attendanceUrl} target="_blank" rel="noreferrer">
-          <FiExternalLink aria-hidden="true" />
-          {attendanceUrl}
-        </a>
+        <p>Muestra este QR en recepcion. El codigo cambia automaticamente y solo sirve mientras esta vigente.</p>
+        {qrData && (
+          <div className={styles.qrMeta}>
+            <span>Palabra: <strong>{qrData.palabra}</strong></span>
+            <span>Vigente hasta: {new Date(qrData.expiraEn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+        )}
+        {attendanceUrl && (
+          <a className={styles.url} href={attendanceUrl} target="_blank" rel="noreferrer">
+            <FiExternalLink aria-hidden="true" />
+            Abrir QR actual
+          </a>
+        )}
+        {error && <p className={styles.errorText}>{error}</p>}
       </div>
 
       <div className={styles.qrArea}>
         <div className={styles.qrFrame}>
-          <QRCodeCanvas
-            ref={canvasRef}
-            value={attendanceUrl}
-            size={QR_SIZE}
-            level="H"
-            includeMargin
-          />
+          {attendanceUrl ? (
+            <QRCodeCanvas
+              ref={canvasRef}
+              value={attendanceUrl}
+              size={QR_SIZE}
+              level="H"
+              includeMargin
+            />
+          ) : (
+            <p className={styles.loadingText}>Generando QR...</p>
+          )}
         </div>
 
         <div className={styles.actions}>

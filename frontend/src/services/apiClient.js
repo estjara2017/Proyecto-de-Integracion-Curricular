@@ -20,7 +20,8 @@ export async function apiRequest(path, options = {}) {
   const data = contentType.includes('application/json') ? await response.json() : null;
 
   if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
+    const errorMessage = data?.message?.toLowerCase() || '';
+    if (response.status === 401 || (response.status === 403 && errorMessage.includes('token inv'))) {
       localStorage.removeItem('token_elemental');
       localStorage.removeItem('rol_elemental');
       localStorage.removeItem('user_data');
