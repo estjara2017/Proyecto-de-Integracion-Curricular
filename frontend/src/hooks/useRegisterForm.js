@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { usuarioService } from '../services/usuarioService';
+import { normalizeUserPayload } from '../utils/inputNormalization';
 
 export function useRegisterForm() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export function useRegisterForm() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const userData = {
+    const userData = normalizeUserPayload({
       nombre: firstName,
       apellido: lastName,
       cedula: idCard,
@@ -51,7 +52,7 @@ export function useRegisterForm() {
       genero: gender,
       poseeLesion: tieneLesion === 'si' ? 'SI' : 'NO',
       detalleLesion: descripcionLesion
-    };
+    });
 
     try {
       await usuarioService.registrar(userData);

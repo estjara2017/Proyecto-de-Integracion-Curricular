@@ -1,4 +1,6 @@
-const { Plan, Level, LevelResource, RoutineTemplate, AdminWorkoutTemplate, Usuario } = require('../models/index');
+const { Op } = require('sequelize');
+const { Plan, Level, LevelResource, RoutineTemplate, AdminWorkoutTemplate, Usuario, sequelize } = require('../models/index');
+const { normalizeEmail } = require('../utils/textNormalization');
 
 const crearDiasRutina = ({ carga, reps, rondas, metcon, tecnica, variacion = 1 }) => ([
     {
@@ -205,21 +207,34 @@ const cargarPlanesIniciales = async () => {
             }
         }
 
-        await Usuario.findOrCreate({
-            where: { correo: 'admin@elemental.local' },
-            defaults: {
-                nombre: 'Administrador',
-                apellido: 'Elemental',
-                cedula: 'ADMIN-001',
-                correo: 'admin@elemental.local',
-                telefono: '0000000000',
-                direccion: 'Elemental Cross Training',
-                fechaNacimiento: '1995-01-01',
-                genero: 'Masculino',
-                rol: 'admin',
-                estado: 'activo'
+        const adminCorreo = normalizeEmail('admin@elemental.local');
+        const adminDefaults = {
+            nombre: 'Administrador',
+            apellido: 'Elemental',
+            cedula: 'ADMIN-001',
+            correo: adminCorreo,
+            telefono: '0000000000',
+            direccion: 'Elemental Cross Training',
+            fechaNacimiento: '1995-01-01',
+            genero: 'Masculino',
+            rol: 'admin',
+            estado: 'activo'
+        };
+
+        const adminExistente = await Usuario.findOne({
+            where: {
+                [Op.or]: [
+                    { correo: adminCorreo },
+                    sequelize.where(sequelize.fn('lower', sequelize.col('correo')), adminCorreo)
+                ]
             }
         });
+
+        if (adminExistente) {
+            await adminExistente.update(adminDefaults);
+        } else {
+            await Usuario.create(adminDefaults);
+        }
 
         const rutinasAdmin = [
             {

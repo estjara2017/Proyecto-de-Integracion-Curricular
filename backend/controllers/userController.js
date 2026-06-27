@@ -1,9 +1,25 @@
-const { Usuario, OtpModel, Level, LevelResource, RoutineTemplate } = require('../models/index');
+const { Usuario, OtpModel, Level, LevelResource, RoutineTemplate, sequelize } = require('../models/index');
 const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const { calcularEdad, obtenerRangoEdad, calcularPorcentajeProgreso, calcularSemanaCiclo } = require('../utils/athleteMetrics');
+const { isValidPhone, normalizeEmail, normalizeUserTextFields } = require('../utils/textNormalization');
+const { getAssignedRoutinesForUser } = require('../utils/routineAssignments');
+const { enviarCodigoOtp } = require('../services/emailService');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'ElementalCrossTraining_Secret_Key_2026';
+const isProduction = process.env.NODE_ENV === 'production';
+
+const buscarUsuarioPorCorreo = (correo) => {
+    const correoNormalizado = normalizeEmail(correo);
+    return Usuario.findOne({
+        where: {
+            [Op.or]: [
+                { correo: correoNormalizado },
+                sequelize.where(sequelize.fn('lower', sequelize.col('correo')), correoNormalizado)
+            ]
+        }
+    });
+};
 
 exports.registrarUsuario = async (req, res) => {
     try {
@@ -13,21 +29,21 @@ exports.registrarUsuario = async (req, res) => {
             genero, poseeLesion, detalleLesion
         } = req.body;
 
-        const existeCorreo = await Usuario.findOne({ where: { correo } });
+        const correoNormalizado = normalizeEmail(correo);
+        const existeCorreo = await buscarUsuarioPorCorreo(correoNormalizado);
         if (existeCorreo) {
             return res.status(400).json({ status: 'error', message: 'El correo electronico ya esta registrado.' });
         }
 
-        const existeCedula = await Usuario.findOne({ where: { cedula } });
-        if (existeCedula) {
-            return res.status(400).json({ status: 'error', message: 'La cedula o identificacion ya esta registrada.' });
+        if (!isValidPhone(telefono)) {
+            return res.status(400).json({ status: 'error', message: 'El telefono solo debe contener numeros.' });
         }
 
-        const nuevoUsuario = await Usuario.create({
+        const usuarioNormalizado = normalizeUserTextFields({
             nombre,
             apellido,
             cedula,
-            correo,
+            correo: correoNormalizado,
             telefono,
             peso: peso || null,
             estatura: estatura || null,
@@ -35,8 +51,15 @@ exports.registrarUsuario = async (req, res) => {
             fechaNacimiento,
             genero,
             poseeLesion: poseeLesion || 'NO',
-            detalleLesion: poseeLesion === 'SI' ? detalleLesion : null
+            detalleLesion: poseeLesion === 'SI' || poseeLesion === 'si' ? detalleLesion : null
         });
+
+        const existeCedula = await Usuario.findOne({ where: { cedula: usuarioNormalizado.cedula } });
+        if (existeCedula) {
+            return res.status(400).json({ status: 'error', message: 'La cedula o identificacion ya esta registrada.' });
+        }
+
+        const nuevoUsuario = await Usuario.create(usuarioNormalizado);
 
         return res.status(201).json({
             status: 'success',
@@ -51,16 +74,34 @@ exports.registrarUsuario = async (req, res) => {
 exports.solicitarOtp = async (req, res) => {
     try {
         const { correo } = req.body;
-        const usuario = await Usuario.findOne({ where: { correo } });
+        const correoNormalizado = normalizeEmail(correo);
+        const usuario = await buscarUsuarioPorCorreo(correoNormalizado);
         if (!usuario) {
             return res.status(404).json({ status: 'error', message: 'El correo no corresponde a ningun usuario registrado.' });
         }
 
         const codigoOtp = Math.floor(1000 + Math.random() * 9000).toString();
-        await OtpModel.destroy({ where: { correo } });
-        await OtpModel.create({ correo, codigo: codigoOtp });
+        await OtpModel.destroy({ where: { correo: correoNormalizado } });
+        await OtpModel.create({ correo: correoNormalizado, codigo: codigoOtp });
 
-        console.log(`[OTP Elemental] ${correo}: ${codigoOtp}`);
+        if (!isProduction) {
+            console.log(`[OTP Elemental - desarrollo] ${correoNormalizado}: ${codigoOtp}`);
+        }
+
+        try {
+            await enviarCodigoOtp({
+                para: correoNormalizado,
+                codigo: codigoOtp,
+                nombre: usuario.nombre
+            });
+        } catch (emailError) {
+            await OtpModel.destroy({ where: { correo: correoNormalizado, codigo: codigoOtp } });
+            return res.status(500).json({
+                status: 'error',
+                message: 'No se pudo enviar el codigo OTP al correo electronico.',
+                error: emailError.message
+            });
+        }
 
         return res.status(200).json({
             status: 'success',
@@ -74,11 +115,12 @@ exports.solicitarOtp = async (req, res) => {
 exports.verificarOtp = async (req, res) => {
     try {
         const { correo, codigo, codigoOtp } = req.body;
+        const correoNormalizado = normalizeEmail(correo);
         const codigoIngresado = codigo || codigoOtp;
 
         const otpRecord = await OtpModel.findOne({
             where: {
-                correo,
+                correo: correoNormalizado,
                 usado: false,
                 expiraEn: { [Op.gt]: new Date() }
             }
@@ -98,9 +140,13 @@ exports.verificarOtp = async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'El codigo es incorrecto o ya ha expirado.' });
         }
 
-        const usuario = await Usuario.findOne({ where: { correo } });
+        const usuario = await buscarUsuarioPorCorreo(correoNormalizado);
+        if (usuario.correo !== correoNormalizado) {
+            usuario.correo = correoNormalizado;
+            await usuario.save();
+        }
         const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, JWT_SECRET, { expiresIn: '24h' });
-        await OtpModel.destroy({ where: { correo } });
+        await OtpModel.destroy({ where: { correo: correoNormalizado } });
 
         return res.status(200).json({
             status: 'success',
@@ -122,15 +168,21 @@ exports.obtenerPerfil = async (req, res) => {
 
         const nivel = await Level.findOne({
             where: { nombre: usuario.nivel },
-            include: [LevelResource, {
+            include: [{ model: LevelResource, where: { activo: true }, required: false }, {
                 model: RoutineTemplate,
                 where: { activo: true, semanaCiclo: calcularSemanaCiclo() },
                 required: false
             }]
         });
 
+        const rutinasAsignadas = await getAssignedRoutinesForUser(usuario);
+        const nivelData = nivel ? nivel.toJSON() : null;
+        if (nivelData) {
+            nivelData.RoutineTemplates = rutinasAsignadas.length ? rutinasAsignadas : (nivelData.RoutineTemplates || []);
+        }
+
         const metricas = calcularPorcentajeProgreso(usuario, nivel);
-        return res.status(200).json({ status: 'success', usuario, nivel, metricas });
+        return res.status(200).json({ status: 'success', usuario, nivel: nivelData, metricas });
     } catch (error) {
         return res.status(500).json({ status: 'error', error: error.message });
     }
@@ -147,15 +199,18 @@ exports.obtenerRutinasDelNivel = async (req, res) => {
             where: { nombre: usuario.nivel },
             include: [
                 { model: RoutineTemplate, where: { activo: true, semanaCiclo: calcularSemanaCiclo() }, required: false },
-                { model: LevelResource, required: false }
+                { model: LevelResource, where: { activo: true }, required: false }
             ]
         });
+
+        const rutinasAsignadas = await getAssignedRoutinesForUser(usuario);
+        const rutinasBase = nivel ? nivel.RoutineTemplates : [];
 
         return res.status(200).json({
             status: 'success',
             nivel: nivel ? nivel.nombre : usuario.nivel,
             semanaCiclo: calcularSemanaCiclo(),
-            rutinas: nivel ? nivel.RoutineTemplates : [],
+            rutinas: rutinasAsignadas.length ? rutinasAsignadas : rutinasBase,
             recursos: nivel ? nivel.LevelResources : []
         });
     } catch (error) {

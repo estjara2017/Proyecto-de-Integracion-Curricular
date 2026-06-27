@@ -185,6 +185,17 @@
   padding-right: 6px;
 }
 
+.injuryNotice {
+  background-color: #ffffff;
+  border-left: 4px solid #7a1e48;
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: #221111;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 .videoCard {
   background-color: #ffffff;
   border-radius: 8px;
@@ -221,6 +232,7 @@
   font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
+  text-decoration: none;
 }
 
 .videoHint {
@@ -250,6 +262,23 @@
   border: 1px solid #3f3f3f;
   border-radius: 4px;
   background-color: #111111;
+}
+
+.invalidVideoBox {
+  min-height: 150px;
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  border: 1px solid #efb4b4;
+  border-radius: 4px;
+  background-color: #fff0f0;
+  color: #a22222;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 .videoPreview::after {

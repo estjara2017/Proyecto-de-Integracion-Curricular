@@ -8,6 +8,7 @@ const esAdmin = require('../middlewares/esAdmin');     // Middleware para verifi
 // Ruta que consulta el cliente al escanear el QR en /attendance
 router.get('/palabra-dia', attendanceController.obtenerPalabraDelDia);
 router.get('/qr-activo', [autenticar, esAdmin], attendanceController.obtenerQrActivo);
+router.post('/qr-activo/generar', [autenticar, esAdmin], attendanceController.generarNuevoQr);
 
 // Acción del botón flotante en el panel del usuario
 router.post('/auto-registro', autenticar, attendanceController.registrarAutoAsistencia);

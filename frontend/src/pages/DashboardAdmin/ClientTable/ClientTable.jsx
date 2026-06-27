@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import styles from './ClientTable.module.css';
 import { adminService } from '../../../services/adminService';
+import { formatFullName, toPascalCaseText } from '../../../utils/displayFormatters';
+import { normalizeUserPayload, onlyDigits, toLowerInput } from '../../../utils/inputNormalization';
 
 const mapClient = (client) => ({
   id: client.id,
-  name: `${client.nombre || ''} ${client.apellido || ''}`.trim(),
+  name: formatFullName(client.nombre, client.apellido),
   phone: client.telefono || '',
-  address: client.direccion || '',
+  address: toPascalCaseText(client.direccion),
   email: client.correo || '',
   weight: client.peso || '',
   height: client.estatura || '',
@@ -55,12 +57,13 @@ export default function ClientTable() {
 
   const handleEditFormChange = (e) => {
     const { name, value } = e.target;
-    setEditFormData((prev) => ({ ...prev, [name]: value }));
+    const nextValue = name === 'phone' ? onlyDigits(value) : value;
+    setEditFormData((prev) => ({ ...prev, [name]: nextValue }));
   };
 
   const handleSaveClick = async (id) => {
     try {
-      const updated = await adminService.actualizarCliente(id, {
+      const updated = await adminService.actualizarCliente(id, normalizeUserPayload({
         telefono: editFormData.phone,
         direccion: editFormData.address,
         correo: editFormData.email,
@@ -68,7 +71,7 @@ export default function ClientTable() {
         estatura: editFormData.height || null,
         pesoLevantamientoKg: editFormData.liftWeight || 0,
         pesoMaxPromedioKg: editFormData.maxAverage || 0
-      });
+      }));
 
       setClients((prev) => prev.map((client) => (
         client.id === id ? mapClient(updated) : client
@@ -101,7 +104,7 @@ export default function ClientTable() {
     event.preventDefault();
     try {
       const usuario = await adminService.asignarAdminPorCedula(cedulaAdmin.trim());
-      alert(`${usuario.nombre} ${usuario.apellido} ahora tiene rol de administrador.`);
+      alert(`${formatFullName(usuario.nombre, usuario.apellido)} ahora tiene rol de administrador.`);
       setCedulaAdmin('');
       await cargarClientes();
     } catch (err) {
@@ -149,6 +152,8 @@ export default function ClientTable() {
                             name="phone"
                             value={editFormData.phone}
                             onChange={handleEditFormChange}
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             className={styles.editInput}
                           />
                         ) : (
@@ -178,7 +183,7 @@ export default function ClientTable() {
                             type="email"
                             name="email"
                             value={editFormData.email}
-                            onChange={handleEditFormChange}
+                            onChange={(event) => setEditFormData((prev) => ({ ...prev, email: toLowerInput(event.target.value) }))}
                             className={styles.editInput}
                           />
                         ) : (

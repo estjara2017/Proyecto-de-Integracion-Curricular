@@ -11,7 +11,10 @@ const LevelResource = sequelize.define('LevelResource', {
     },
     url: { type: DataTypes.TEXT, allowNull: false },
     subtitulo: { type: DataTypes.STRING },
-    descripcion: { type: DataTypes.TEXT }
+    descripcion: { type: DataTypes.TEXT },
+    canalUrl: { type: DataTypes.TEXT },
+    orden: { type: DataTypes.INTEGER, defaultValue: 1 },
+    activo: { type: DataTypes.BOOLEAN, defaultValue: true }
 });
 
 module.exports = LevelResource;

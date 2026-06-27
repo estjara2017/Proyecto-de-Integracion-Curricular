@@ -48,6 +48,13 @@ export const adminService = {
     });
   },
 
+  rechazarPago: async (pagoId) => {
+    return apiRequest('/admin/pagos/rechazar', {
+      method: 'PATCH',
+      body: JSON.stringify({ pagoId })
+    });
+  },
+
   obtenerRanking: async () => {
     const response = await apiRequest('/admin/ranking');
     return response.data || [];
@@ -55,6 +62,13 @@ export const adminService = {
 
   promoverCliente: async (id, nivelDestino = null) => {
     return apiRequest(`/admin/clientes/${id}/promover`, {
+      method: 'PATCH',
+      body: JSON.stringify(nivelDestino ? { nivelDestino } : {})
+    });
+  },
+
+  descenderCliente: async (id, nivelDestino = null) => {
+    return apiRequest(`/admin/clientes/${id}/descender`, {
       method: 'PATCH',
       body: JSON.stringify(nivelDestino ? { nivelDestino } : {})
     });
@@ -80,8 +94,24 @@ export const adminService = {
     return response.data;
   },
 
+  eliminarRutinaAdmin: async (id) => {
+    return apiRequest(`/admin/rutinas/${id}`, { method: 'DELETE' });
+  },
+
   listarRecursosPorNivel: async () => {
     const response = await apiRequest('/admin/recursos-nivel');
     return response.data || [];
+  },
+
+  guardarRecursoNivel: async (recurso) => {
+    const response = await apiRequest('/admin/recursos-nivel', {
+      method: 'POST',
+      body: JSON.stringify(recurso)
+    });
+    return response.data;
+  },
+
+  eliminarRecursoNivel: async (id) => {
+    return apiRequest(`/admin/recursos-nivel/${id}`, { method: 'DELETE' });
   }
 };

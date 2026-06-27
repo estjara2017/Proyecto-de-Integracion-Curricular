@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import styles from './Leaderboard.module.css';
 import { profileService } from '../../../services/profileService';
+import { toPascalCaseText } from '../../../utils/displayFormatters';
 
 function Leaderboard({ dbUser = { nivel: 'Principiante', edad: 30, id: 'user_05' } }) {
   const [filtrarPorNivel, setFiltrarPorNivel] = useState(true);
@@ -145,7 +146,7 @@ function Leaderboard({ dbUser = { nivel: 'Principiante', edad: 30, id: 'user_05'
                     </td>
                     <td className={`${styles.rankCell} ${styles.centerText}`}>{medallaFilt}</td>
                     <td>
-                      {atleta.nombre}
+                      {toPascalCaseText(atleta.nombre)}
                       {esTuFila && <span className={styles.youBadge}> (Tu)</span>}
                     </td>
                     <td><span className={styles.nivelBadge}>{atleta.nivel}</span></td>

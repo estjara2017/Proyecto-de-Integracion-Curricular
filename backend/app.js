@@ -9,6 +9,8 @@ const { sequelize } = require('./models/index');
 const cargarPlanesIniciales = require('./config/initData'); // La semilla
 
 const { iniciarGeneradorPalabraDiaria } = require('./jobs/generateDailyCode');
+const installUserNormalizationTrigger = require('./utils/installUserNormalizationTrigger');
+const normalizeExistingUsers = require('./utils/normalizeExistingUsers');
 
 // Importamos tus rutas (que solo redirigen tráfico)
 const usuarioRoutes = require('./routes/usuarioRoutes');
@@ -52,7 +54,9 @@ sequelize.sync({ alter: process.env.NODE_ENV !== 'production' })
         console.log('PostgreSQL conectado y relaciones mapeadas con éxito.');
         
         // Ejecutamos la semilla aquí, justo después de sincronizar las tablas
+        await installUserNormalizationTrigger();
         await cargarPlanesIniciales();
+        await normalizeExistingUsers();
         await actualizarEstadosDeMembresias();
         iniciarGeneradorPalabraDiaria();
         

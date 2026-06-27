@@ -6,7 +6,8 @@
     "build": "node --check app.js",
     "dev": "nodemon app.js",
     "start": "node app.js",
-    "test": "node --check app.js"
+    "test": "node --check app.js",
+    "normalize-users": "node scripts/normalizeUsers.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^9.0.0",
     "pg": "^8.20.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.8"

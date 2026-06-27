@@ -2,6 +2,7 @@ import styles from './Register.module.css'
 import Button from '../../components/Button/Button'
 import logo from '../../assets/logo1.png'
 import { useRegisterForm } from '../../hooks/useRegisterForm' // Comprueba que la ruta apunte bien a src/hooks
+import { onlyDigits, toLowerInput } from '../../utils/inputNormalization'
 
 function Register() {
   // 🚀 Asegúrate de incluir setDescripcionLesion aquí en la destructuración:
@@ -77,7 +78,9 @@ function Register() {
                 placeholder="Teléfono de contacto" 
                 className={styles.input}
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(onlyDigits(e.target.value))}
+                inputMode="numeric"
+                pattern="[0-9]*"
                 required 
               />
             </div>
@@ -88,7 +91,7 @@ function Register() {
                 placeholder="Correo electrónico" 
                 className={styles.input}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(toLowerInput(e.target.value))}
                 required 
               />
             </div>

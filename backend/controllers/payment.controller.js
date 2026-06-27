@@ -1,6 +1,8 @@
 const { Op } = require('sequelize');
 const { Plan, Suscripcion, Pago, Usuario } = require('../models/index');
 
+const PENDING_PAYMENT_TTL_MS = 24 * 60 * 60 * 1000;
+
 const calcularDiasEntrenamiento = (plan) => {
     if (plan.duracionDias <= 7) return plan.duracionDias;
     return Math.ceil((plan.duracionDias / 7) * plan.diasPorSemana);
@@ -85,6 +87,47 @@ const construirEstadoMembresia = (suscripcion, hoy) => {
     };
 };
 
+const obtenerFechaLimitePendiente = () => new Date(Date.now() - PENDING_PAYMENT_TTL_MS);
+
+const expirarPagosPendientesVencidos = async () => {
+    const fechaLimite = obtenerFechaLimitePendiente();
+
+    const pagosVencidos = await Pago.findAll({
+        where: {
+            estado: 'pendiente',
+            fechaNotificacion: { [Op.lt]: fechaLimite }
+        },
+        include: [Suscripcion]
+    });
+
+    for (const pago of pagosVencidos) {
+        pago.estado = 'expirado';
+        await pago.save();
+
+        if (pago.Suscripcion && pago.Suscripcion.estado === 'pendiente') {
+            pago.Suscripcion.estado = 'expirado';
+            await pago.Suscripcion.save();
+        }
+    }
+};
+
+const cancelarSolicitudesPendientesDelUsuario = async (usuarioId, estado = 'reemplazado') => {
+    const suscripcionesPendientes = await Suscripcion.findAll({
+        where: { usuarioId, estado: 'pendiente' },
+        include: [{ model: Pago, where: { estado: 'pendiente' }, required: false }]
+    });
+
+    for (const suscripcion of suscripcionesPendientes) {
+        suscripcion.estado = estado;
+        await suscripcion.save();
+
+        for (const pago of suscripcion.Pagos || []) {
+            pago.estado = estado;
+            await pago.save();
+        }
+    }
+};
+
 exports.actualizarEstadosDeMembresias = async () => {
     const hoy = new Date().toISOString().split('T')[0];
     const haceTresMeses = sumarDias(new Date(), -90).toISOString().split('T')[0];
@@ -160,6 +203,7 @@ exports.obtenerResumenPlan = async (req, res) => {
 exports.obtenerMiMembresia = async (req, res) => {
     try {
         await exports.actualizarEstadosDeMembresias();
+        await expirarPagosPendientesVencidos();
 
         const hoy = new Date().toISOString().split('T')[0];
         const usuarioId = req.user.id;
@@ -186,6 +230,9 @@ exports.notificarPagoSuscripcion = async (req, res) => {
     try {
         const { planId, metodoPago } = req.body;
         const usuarioId = req.user.id;
+
+        await expirarPagosPendientesVencidos();
+        await cancelarSolicitudesPendientesDelUsuario(usuarioId);
 
         const plan = await Plan.findByPk(planId);
         if (!plan) return res.status(404).json({ status: 'error', message: 'Plan no encontrado.' });
@@ -214,13 +261,45 @@ exports.notificarPagoSuscripcion = async (req, res) => {
     }
 };
 
+exports.listarPagosPendientesAdmin = async (req, res) => {
+    try {
+        await expirarPagosPendientesVencidos();
+
+        const pagos = await Pago.findAll({
+            where: { estado: 'pendiente' },
+            include: [{
+                model: Suscripcion,
+                where: { estado: 'pendiente' },
+                include: [Usuario, Plan]
+            }],
+            order: [['fechaNotificacion', 'ASC']]
+        });
+
+        return res.status(200).json({ status: 'success', data: pagos });
+    } catch (error) {
+        return res.status(500).json({ status: 'error', error: error.message });
+    }
+};
+
 exports.aprobarPagoAdmin = async (req, res) => {
     try {
         const { pagoId } = req.body;
 
+        await expirarPagosPendientesVencidos();
+
         const pago = await Pago.findByPk(pagoId, { include: { model: Suscripcion, include: [Plan] } });
         if (!pago) return res.status(404).json({ status: 'error', message: 'Registro de pago no encontrado.' });
         if (pago.estado === 'aprobado') return res.status(400).json({ status: 'error', message: 'Este pago ya fue aprobado previamente.' });
+        if (pago.estado !== 'pendiente' || pago.Suscripcion?.estado !== 'pendiente') {
+            return res.status(400).json({ status: 'error', message: 'Esta solicitud ya no esta pendiente o fue reemplazada.' });
+        }
+        if (new Date(pago.fechaNotificacion) < obtenerFechaLimitePendiente()) {
+            pago.estado = 'expirado';
+            await pago.save();
+            pago.Suscripcion.estado = 'expirado';
+            await pago.Suscripcion.save();
+            return res.status(400).json({ status: 'error', message: 'Esta solicitud expiro tras 24 horas. El cliente debe enviar una nueva solicitud.' });
+        }
 
         pago.estado = 'aprobado';
         await pago.save();
@@ -240,6 +319,33 @@ exports.aprobarPagoAdmin = async (req, res) => {
         return res.status(200).json({
             status: 'success',
             message: 'Pago aprobado. Suscripcion y cuenta del cliente activas.'
+        });
+    } catch (error) {
+        return res.status(500).json({ status: 'error', error: error.message });
+    }
+};
+
+exports.rechazarPagoAdmin = async (req, res) => {
+    try {
+        const { pagoId } = req.body;
+
+        const pago = await Pago.findByPk(pagoId, { include: Suscripcion });
+        if (!pago) return res.status(404).json({ status: 'error', message: 'Registro de pago no encontrado.' });
+        if (pago.estado !== 'pendiente') {
+            return res.status(400).json({ status: 'error', message: 'Solo se pueden rechazar solicitudes pendientes.' });
+        }
+
+        pago.estado = 'rechazado';
+        await pago.save();
+
+        if (pago.Suscripcion && pago.Suscripcion.estado === 'pendiente') {
+            pago.Suscripcion.estado = 'rechazado';
+            await pago.Suscripcion.save();
+        }
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'Solicitud rechazada. El cliente puede enviar una nueva solicitud de plan.'
         });
     } catch (error) {
         return res.status(500).json({ status: 'error', error: error.message });

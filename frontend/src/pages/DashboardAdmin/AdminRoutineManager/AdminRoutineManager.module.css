@@ -118,6 +118,77 @@
   font-family: inherit;
 }
 
+.assignmentPanel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #eee6ea;
+  border-radius: 6px;
+}
+
+.assignmentPanel label,
+.checkGrid label,
+.clientPicker label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4a2834;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.assignmentPanel input,
+.checkGrid input,
+.clientPicker input {
+  width: auto;
+}
+
+.checkGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #eee6ea;
+  border-radius: 6px;
+}
+
+.clientPicker {
+  display: grid;
+  gap: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #eee6ea;
+  border-radius: 6px;
+}
+
+.dayTabs {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.dayTabs button {
+  border: 1px solid #d7c8cf;
+  border-radius: 5px;
+  min-height: 34px;
+  background-color: #ffffff;
+  color: #4a2834;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.dayTabs .activeDayTab {
+  background-color: #7a1e48;
+  border-color: #7a1e48;
+  color: #ffffff;
+}
+
 .blocksList {
   display: grid;
   gap: 10px;
@@ -181,6 +252,25 @@
   align-items: center;
 }
 
+.routineCard small {
+  display: block;
+  margin-top: 6px;
+  color: #7a1e48;
+  font-weight: 700;
+}
+
+.routineActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.routineActions button:last-child {
+  background-color: #f8e9e9;
+  color: #c92a2a;
+}
+
 .routineCard strong {
   color: #4a2834;
 }
@@ -195,6 +285,99 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 12px;
+}
+
+.resourceForm {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.resourceForm input,
+.resourceForm select,
+.resourceForm textarea {
+  width: 100%;
+  border: 1px solid #d7c8cf;
+  border-radius: 5px;
+  padding: 9px 10px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.fieldWithLabel {
+  display: grid;
+  gap: 4px;
+}
+
+.fieldWithLabel span {
+  color: #4a2834;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.resourceForm textarea,
+.resourcePreview,
+.resourceError,
+.resourceActions {
+  grid-column: 1 / -1;
+}
+
+.resourcePreview,
+.resourceError {
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.resourcePreview {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  background-color: #edf7ef;
+  border: 1px solid #b9dfc1;
+  color: #235b2d;
+}
+
+.resourcePreview a {
+  color: #235b2d;
+  text-decoration: underline;
+}
+
+.resourceError {
+  background-color: #fff0f0;
+  border: 1px solid #efb4b4;
+  color: #a22222;
+}
+
+.resourceActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.resourceActions button,
+.resourceItem button {
+  border: none;
+  border-radius: 5px;
+  padding: 8px 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.resourceActions button:first-child {
+  background-color: #e8dde3;
+  color: #4a2834;
+}
+
+.resourceActions button:last-child,
+.resourceItem button:first-child {
+  background-color: #7a1e48;
+  color: #ffffff;
 }
 
 .levelCard {
@@ -214,6 +397,34 @@
 .levelCard a {
   color: #333333;
   font-size: 0.86rem;
+}
+
+.resourceItem {
+  display: grid;
+  gap: 5px;
+  padding-top: 8px;
+  border-top: 1px solid #eee6ea;
+}
+
+.resourceItem:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.resourceItem span {
+  color: #665c59;
+  font-size: 0.8rem;
+}
+
+.resourceItem div {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.resourceItem button:last-child {
+  background-color: #f8e9e9;
+  color: #c92a2a;
 }
 
 .emptyText {
@@ -298,6 +509,14 @@
   }
 
   .templateGallery {
+    grid-template-columns: 1fr;
+  }
+
+  .dayTabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .resourceForm {
     grid-template-columns: 1fr;
   }
 

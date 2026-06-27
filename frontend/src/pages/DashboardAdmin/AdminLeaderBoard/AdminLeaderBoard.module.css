@@ -168,6 +168,16 @@
   white-space: nowrap;
 }
 
+.warningBadge {
+  background-color: #f8e9e9;
+  color: #b42318;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .normalBadge {
   color: #777777;
   font-size: 0.82rem;

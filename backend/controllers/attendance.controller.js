@@ -7,25 +7,45 @@ const crypto = require('crypto');
 
 const PALABRAS_QR = [
     'WOD', 'BURPEE', 'AMRAP', 'THRUSTER', 'SNATCH',
-    'CLEAN', 'JERK', 'SQUAT', 'ROW', 'BIKE'
+    'CLEAN', 'JERK', 'SQUAT', 'ROW', 'BIKE',
+    'BOXJUMP', 'KETTLEBELL', 'PULLUP', 'DEADLIFT', 'EMOM',
+    'HOLLOW', 'WALLBALL', 'DOUBLEUNDER', 'LUNGE', 'PLANK'
 ];
 
-const QR_DURATION_MS = 5 * 60 * 1000;
+const obtenerFinDelDiaEcuador = () => {
+    const partes = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Guayaquil',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).formatToParts(new Date());
 
-const generarTokenQr = async () => {
+    const fecha = Object.fromEntries(partes.map((parte) => [parte.type, parte.value]));
+    return new Date(Date.UTC(Number(fecha.year), Number(fecha.month) - 1, Number(fecha.day) + 1, 4, 59, 59, 999));
+};
+
+const elegirPalabraQr = (palabraAnterior = null) => {
+    const opciones = PALABRAS_QR.filter((palabra) => palabra !== palabraAnterior);
+    return opciones[Math.floor(Math.random() * opciones.length)];
+};
+
+const generarTokenQr = async ({ forzarNuevo = false } = {}) => {
     const ahora = new Date();
     const tokenActivo = await AttendanceQrToken.findOne({
         where: { expiraEn: { [Op.gt]: ahora } },
         order: [['expiraEn', 'DESC']]
     });
 
-    if (tokenActivo) return tokenActivo;
+    if (tokenActivo && !forzarNuevo) return tokenActivo;
 
     await AttendanceQrToken.destroy({ where: { expiraEn: { [Op.lte]: ahora } } });
+    if (forzarNuevo) {
+        await AttendanceQrToken.destroy({ where: { expiraEn: { [Op.gt]: ahora } } });
+    }
 
     const token = crypto.randomBytes(18).toString('hex');
-    const palabra = PALABRAS_QR[Math.floor(Math.random() * PALABRAS_QR.length)];
-    const expiraEn = new Date(Date.now() + QR_DURATION_MS);
+    const palabra = elegirPalabraQr(tokenActivo?.palabra);
+    const expiraEn = obtenerFinDelDiaEcuador();
 
     return AttendanceQrToken.create({ token, palabra, expiraEn });
 };
@@ -46,6 +66,21 @@ exports.obtenerQrActivo = async (req, res) => {
         const registro = await generarTokenQr();
 
         return res.status(200).json({
+            status: 'success',
+            token: registro.token,
+            palabra: registro.palabra,
+            expiraEn: registro.expiraEn
+        });
+    } catch (error) {
+        return res.status(500).json({ status: 'error', error: error.message });
+    }
+};
+
+exports.generarNuevoQr = async (req, res) => {
+    try {
+        const registro = await generarTokenQr({ forzarNuevo: true });
+
+        return res.status(201).json({
             status: 'success',
             token: registro.token,
             palabra: registro.palabra,

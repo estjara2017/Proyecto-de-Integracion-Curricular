@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useCallback } from 'react';
 import { authService } from '../services/authServices';
+import { formatFullName } from '../utils/displayFormatters';
 
 const AuthContext = createContext(null);
 
@@ -53,7 +54,7 @@ export function AuthProvider({ children }) {
 
   const atleta = {
     id: usuario?.id || 'user_05',
-    nombre: usuario ? `${usuario.nombre || ''} ${usuario.apellido || ''}`.trim() : 'Cargando atleta...',
+    nombre: usuario ? formatFullName(usuario.nombre, usuario.apellido) : 'Cargando atleta...',
     edad: usuario?.edad || calcularEdad(usuario?.fechaNacimiento),
     nivel: usuario?.nivel || 'Principiante',
     posicion: usuario?.posicion || 'N° --',

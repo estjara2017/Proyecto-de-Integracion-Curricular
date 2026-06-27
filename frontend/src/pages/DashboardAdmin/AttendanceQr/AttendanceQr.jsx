@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
-import { FiDownload, FiExternalLink, FiPrinter } from 'react-icons/fi';
-import { fetchQrActivo } from '../../../services/attendanceService';
+import { FiDownload, FiExternalLink, FiEye, FiEyeOff, FiPrinter, FiRefreshCw } from 'react-icons/fi';
+import { fetchQrActivo, generarNuevoQrActivo } from '../../../services/attendanceService';
 import styles from './AttendanceQr.module.css';
 
 const QR_SIZE = 320;
@@ -10,6 +10,8 @@ export default function AttendanceQr() {
   const canvasRef = useRef(null);
   const [qrData, setQrData] = useState(null);
   const [error, setError] = useState('');
+  const [showKeyword, setShowKeyword] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const attendanceUrl = useMemo(() => {
     const token = qrData?.token || '';
@@ -23,6 +25,7 @@ export default function AttendanceQr() {
       try {
         const data = await fetchQrActivo();
         setQrData(data);
+        setShowKeyword(false);
         setError('');
       } catch (err) {
         setError(err.message || 'No se pudo generar el QR de asistencia.');
@@ -30,9 +33,15 @@ export default function AttendanceQr() {
     };
 
     cargarQr();
-    const interval = setInterval(cargarQr, 15000);
+    const interval = setInterval(cargarQr, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (!showKeyword) return undefined;
+    const timeout = setTimeout(() => setShowKeyword(false), 8000);
+    return () => clearTimeout(timeout);
+  }, [showKeyword, qrData?.palabra]);
 
   const getQrImage = () => {
     const canvas = canvasRef.current;
@@ -110,14 +119,37 @@ export default function AttendanceQr() {
     printWindow.document.close();
   };
 
+  const handleGenerateNewQr = async () => {
+    setIsGenerating(true);
+    try {
+      const data = await generarNuevoQrActivo();
+      setQrData(data);
+      setShowKeyword(false);
+      setError('');
+    } catch (err) {
+      setError(err.message || 'No se pudo generar un nuevo QR de asistencia.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <section className={styles.panel}>
       <div className={styles.info}>
         <h3>QR de asistencia</h3>
-        <p>Muestra este QR en recepcion. El codigo cambia automaticamente y solo sirve mientras esta vigente.</p>
+        <p>Muestra este QR en recepcion. El codigo queda vigente durante el dia y puedes generar uno nuevo cuando sea necesario.</p>
         {qrData && (
           <div className={styles.qrMeta}>
-            <span>Palabra: <strong>{qrData.palabra}</strong></span>
+            <div className={styles.keywordRow}>
+              <span>Palabra:</span>
+              <strong className={showKeyword ? styles.keywordVisible : styles.keywordHidden}>
+                {showKeyword ? qrData.palabra : '••••••'}
+              </strong>
+              <button type="button" className={styles.revealButton} onClick={() => setShowKeyword((prev) => !prev)}>
+                {showKeyword ? <FiEyeOff aria-hidden="true" /> : <FiEye aria-hidden="true" />}
+                {showKeyword ? 'Ocultar' : 'Mostrar'}
+              </button>
+            </div>
             <span>Vigente hasta: {new Date(qrData.expiraEn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
         )}
@@ -146,6 +178,15 @@ export default function AttendanceQr() {
         </div>
 
         <div className={styles.actions}>
+          <button
+            type="button"
+            className={`${styles.actionButton} ${styles.generateButton}`}
+            onClick={handleGenerateNewQr}
+            disabled={isGenerating}
+          >
+            <FiRefreshCw aria-hidden="true" />
+            {isGenerating ? 'Generando...' : 'Generar nuevo QR'}
+          </button>
           <button type="button" className={styles.actionButton} onClick={handleDownload}>
             <FiDownload aria-hidden="true" />
             Descargar PNG

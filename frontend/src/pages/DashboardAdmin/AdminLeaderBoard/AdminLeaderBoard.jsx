@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from '../AdminLeaderBoard/AdminLeaderBoard.module.css';
 import Button from '../../../components/Button/Button';
 import { adminService } from '../../../services/adminService';
+import { toPascalCaseText } from '../../../utils/displayFormatters';
 
 export default function AdminLeaderboard() {
   const [atletas, setAtletas] = useState([]);
@@ -35,6 +36,19 @@ export default function AdminLeaderboard() {
       await cargarRanking();
     } catch (err) {
       alert(err.message || 'No se pudo promover al atleta');
+    }
+  };
+
+  const handleDescenderNivel = async (id, nombre) => {
+    const confirmar = window.confirm(`Deseas descender a ${nombre} al nivel anterior?`);
+    if (!confirmar) return;
+
+    try {
+      await adminService.descenderCliente(id);
+      alert(`Atleta ${nombre} descendido exitosamente.`);
+      await cargarRanking();
+    } catch (err) {
+      alert(err.message || 'No se pudo descender al atleta');
     }
   };
 
@@ -135,7 +149,7 @@ export default function AdminLeaderboard() {
               <tr key={atl.id}>
                 <td className={styles.posGblText}>N° {atl.posicionGlobal}</td>
                 <td className={styles.medalCell}>{renderMedal(atl.posicionFiltrada)}</td>
-                <td className={styles.atletaName}>{atl.atleta}</td>
+                <td className={styles.atletaName}>{toPascalCaseText(atl.atleta)}</td>
                 <td>
                   <span className={`${styles.nivelBadge} ${styles[atl.nivel.toLowerCase().split(' ')[0]] || ''}`}>
                     {atl.nivel}
@@ -148,6 +162,15 @@ export default function AdminLeaderboard() {
                       <span className={styles.alertBadge}>Listo para Ascenso</span>
                       <Button variant="dark" onClick={() => handlePromoverNivel(atl.id, atl.atleta)}>
                         Promover
+                      </Button>
+                    </div>
+                  ) : atl.listoParaDescenso ? (
+                    <div className={styles.actionGroup}>
+                      <span className={styles.warningBadge}>
+                        Bajo minimo: {atl.puntosMinimosNivelActual} pts
+                      </span>
+                      <Button variant="secondary" onClick={() => handleDescenderNivel(atl.id, atl.atleta)}>
+                        Descender
                       </Button>
                     </div>
                   ) : (

@@ -84,7 +84,7 @@
 
 .actionCell {
   text-align: center;
-  min-width: 150px;
+  min-width: 190px;
 }
 
 /* Ajuste compacto para los botones dentro de las celdas */
@@ -93,6 +93,27 @@
   font-size: 0.82rem !important;
   font-weight: 600 !important;
   width: auto !important;
+}
+
+.actionGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.rejectButton {
+  border: 1px solid #b3263e;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #b3263e;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.rejectButton:hover {
+  background-color: #b3263e;
+  color: #ffffff;
 }
 
 /* Contenedor de estado vacío */

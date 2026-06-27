@@ -39,11 +39,14 @@ services:
       dockerfile: Dockerfile
     container_name: gym_backend
     restart: always
+    env_file:
+      - ./backend/.env
     ports:
       - "4000:4000"
     environment:
       - NODE_ENV=development
       - DB_HOST=postgres_db # Se usa el nombre del servicio de arriba como HOST
+      - DB_PORT=5432
       - DB_USER=estmk1995
       - DB_PASS=est19952030
       - DB_NAME=elemental_database
