@@ -207,15 +207,15 @@ const cargarPlanesIniciales = async () => {
             }
         }
 
-        const adminCorreo = normalizeEmail('admin@elemental.local');
+        const adminCorreo = normalizeEmail('elementalcrosstrainig@gmail.com');
         const adminDefaults = {
-            nombre: 'Administrador',
-            apellido: 'Elemental',
-            cedula: 'ADMIN-001',
+            nombre: 'Daniel',
+            apellido: 'Cordova',
+            cedula: '1727604884',
             correo: adminCorreo,
-            telefono: '0000000000',
-            direccion: 'Elemental Cross Training',
-            fechaNacimiento: '1995-01-01',
+            telefono: '0987192799',
+            direccion: 'Conocoto',
+            fechaNacimiento: '1994-06-08',
             genero: 'Masculino',
             rol: 'admin',
             estado: 'activo'

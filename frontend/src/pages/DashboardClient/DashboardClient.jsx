@@ -128,6 +128,7 @@ function DashboardClient() {
           </section>
 
           <ScheduleSelector
+            key={dbUser.horarioEntrenamiento || 'sin-horario'}
             visible
             disabled={dbUser.estado !== 'activo'}
             horarioActual={dbUser.horarioEntrenamiento}

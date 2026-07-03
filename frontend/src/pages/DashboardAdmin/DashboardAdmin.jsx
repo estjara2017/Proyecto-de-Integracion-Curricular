@@ -10,17 +10,6 @@ import Button from '../../components/Button/Button';
 import { useAuth } from '../../context/AuthContext';
 import { profileService } from '../../services/profileService';
 
-const MOCK_ADMIN_DB = {
-  nombre: 'Esteban Jara',
-  nivel: 'Coach / Certificado',
-  edad: 30,
-  posicion: 'N° 1 (Staff)',
-  pesoLevantamiento: 85,
-  pesoMaxPromedio: 95,
-  pesoTeoricoMax: 120,
-  avatarIndex: 0
-};
-
 const AVATARES = [
   '/images/avatars/agua.png',
   '/images/avatars/fuego.png',

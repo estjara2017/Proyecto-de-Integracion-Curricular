@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styles from './ScheduleSelector.module.css';
 
 const HORARIOS = ['05:00', '06:00', '07:00', '16:00', '17:00', '18:00', '19:00', 'Sabado 07:00', 'Sabado 08:00'];
@@ -7,10 +7,6 @@ function ScheduleSelector({ visible, disabled = false, horarioActual, onGuardar 
   const [horario, setHorario] = useState(horarioActual || '');
   const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState('');
-
-  useEffect(() => {
-    setHorario(horarioActual || '');
-  }, [horarioActual]);
 
   if (!visible) return null;
 
