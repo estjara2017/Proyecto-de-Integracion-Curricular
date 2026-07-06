@@ -20,7 +20,21 @@ const adminRoutes = require('./routes/admin.routes');
 const { actualizarEstadosDeMembresias } = require('./controllers/payment.controller');
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = (process.env.CORS_ORIGIN || '')
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(Boolean);
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error('Origen no permitido por CORS'));
+    }
+}));
 app.use(express.json());
 
 app.get('/api/health', async (req, res) => {

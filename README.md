@@ -20,12 +20,13 @@ normal de la cuenta.
 ## Despliegue en Hostinger
 
 1. Sube el repositorio a GitHub sin archivos `.env`.
-2. En Hostinger, configura las variables de entorno del backend usando los
-   nombres de `backend/.env.example`.
+2. En Hostinger/Coolify, configura las variables de entorno del backend usando
+   los nombres de `backend/.env.example`.
 3. Configura `NODE_ENV=production`.
-4. Configura `VITE_API_URL` en el frontend con la URL publica del backend, por
-   ejemplo `https://tu-dominio.com/api`.
-5. Ejecuta la instalacion y build del frontend:
+4. Configura `CORS_ORIGIN` en el backend con el dominio publico del frontend.
+5. Configura `VITE_API_URL` en el frontend con la URL publica del backend, por
+   ejemplo `https://api.elementalcrosstraining.com/api`.
+6. Ejecuta la instalacion y build del frontend:
 
 ```bash
 cd frontend
@@ -33,7 +34,7 @@ npm install
 npm run build
 ```
 
-6. Ejecuta el backend con:
+7. Ejecuta el backend con:
 
 ```bash
 cd backend
@@ -43,3 +44,23 @@ npm start
 
 Si usas Docker en el servidor, revisa tambien `docker-compose.yml` y reemplaza
 las credenciales de ejemplo por variables seguras del entorno del servidor.
+
+## Dominios de produccion
+
+Con el dominio `elementalcrosstraining.com`, una configuracion recomendada es:
+
+```text
+elementalcrosstraining.com      -> pagina principal o redireccion
+app.elementalcrosstraining.com  -> frontend React
+api.elementalcrosstraining.com  -> backend Express
+```
+
+Variables para esa configuracion:
+
+```env
+# Backend
+CORS_ORIGIN=https://app.elementalcrosstraining.com
+
+# Frontend
+VITE_API_URL=https://api.elementalcrosstraining.com/api
+```
