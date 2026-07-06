@@ -1,21 +1,4 @@
 services:
-  postgres_db:
-    image: postgres:15-alpine
-    container_name: gym_postgres_db
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${DB_USER:?DB_USER is required}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
-      POSTGRES_DB: ${DB_NAME:?DB_NAME is required}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
-
   backend:
     build:
       context: ./backend
@@ -27,8 +10,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      DB_HOST: postgres_db
-      DB_PORT: 5432
+      DB_HOST: ${DB_HOST:?DB_HOST is required}
+      DB_PORT: ${DB_PORT:-5432}
       DB_USER: ${DB_USER:?DB_USER is required}
       DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
       DB_NAME: ${DB_NAME:?DB_NAME is required}
@@ -46,15 +29,12 @@ services:
       ADMIN_FECHA_NACIMIENTO: ${ADMIN_FECHA_NACIMIENTO:?ADMIN_FECHA_NACIMIENTO is required}
       ADMIN_GENERO: ${ADMIN_GENERO:?ADMIN_GENERO is required}
     command: pnpm start
-    depends_on:
-      postgres_db:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:4000/api/health || exit 1"]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 40s
+      retries: 5
+      start_period: 60s
 
   frontend:
     build:
@@ -69,21 +49,3 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: elemental_pgadmin
-    restart: unless-stopped
-    profiles:
-      - admin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:?PGADMIN_EMAIL is required}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:?PGADMIN_PASSWORD is required}
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    depends_on:
-      postgres_db:
-        condition: service_healthy
-
-volumes:
-  postgres_data:
