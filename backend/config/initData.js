@@ -207,16 +207,16 @@ const cargarPlanesIniciales = async () => {
             }
         }
 
-        const adminCorreo = normalizeEmail('elementalcrosstrainig@gmail.com');
+        const adminCorreo = normalizeEmail(process.env.ADMIN_EMAIL || 'elementalcrosstraining@gmail.com');
         const adminDefaults = {
-            nombre: 'Daniel',
-            apellido: 'Cordova',
-            cedula: '1727604884',
+            nombre: process.env.ADMIN_NOMBRE || 'Administrador',
+            apellido: process.env.ADMIN_APELLIDO || 'Elemental',
+            cedula: process.env.ADMIN_CEDULA || '0000000000',
             correo: adminCorreo,
-            telefono: '0987192799',
-            direccion: 'Conocoto',
-            fechaNacimiento: '1994-06-08',
-            genero: 'Masculino',
+            telefono: process.env.ADMIN_TELEFONO || '0999999999',
+            direccion: process.env.ADMIN_DIRECCION || 'Sin direccion',
+            fechaNacimiento: process.env.ADMIN_FECHA_NACIMIENTO || '1990-01-01',
+            genero: process.env.ADMIN_GENERO || 'No especificado',
             rol: 'admin',
             estado: 'activo'
         };

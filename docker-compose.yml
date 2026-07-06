@@ -5,15 +5,15 @@ services:
     container_name: gym_postgres_db
     restart: always
     environment:
-      POSTGRES_USER: estmk1995     # Cambia esto por tus credenciales
-      POSTGRES_PASSWORD: est19952030
-      POSTGRES_DB: elemental_database
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U estmk1995 -d elemental_database"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -24,10 +24,10 @@ services:
     container_name: elemental_pgadmin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: ecjarac@puce.edu.ec # Credenciales para entrar al navegador
-      PGADMIN_DEFAULT_PASSWORD: est19952030
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     ports:
-      - "5050:80"
+      - "${PGADMIN_PORT:-5050}:80"
     depends_on:
       postgres_db:
         condition: service_healthy
@@ -39,18 +39,28 @@ services:
       dockerfile: Dockerfile
     container_name: gym_backend
     restart: always
-    env_file:
-      - ./backend/.env
     ports:
       - "4000:4000"
     environment:
-      - NODE_ENV=development
-      - DB_HOST=postgres_db # Se usa el nombre del servicio de arriba como HOST
+      - NODE_ENV=${NODE_ENV:-production}
+      - DB_HOST=postgres_db
       - DB_PORT=5432
-      - DB_USER=estmk1995
-      - DB_PASS=est19952030
-      - DB_NAME=elemental_database
-      - JWT_SECRET=ElementalCrossTraining_Secret_Key_2026
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_FROM_NAME=${EMAIL_FROM_NAME}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_NOMBRE=${ADMIN_NOMBRE}
+      - ADMIN_APELLIDO=${ADMIN_APELLIDO}
+      - ADMIN_CEDULA=${ADMIN_CEDULA}
+      - ADMIN_TELEFONO=${ADMIN_TELEFONO}
+      - ADMIN_DIRECCION=${ADMIN_DIRECCION}
+      - ADMIN_FECHA_NACIMIENTO=${ADMIN_FECHA_NACIMIENTO}
+      - ADMIN_GENERO=${ADMIN_GENERO}
       - PORT=4000
     command: pnpm start
     depends_on:
@@ -69,7 +79,7 @@ services:
     ports:
       - "5173:80"
     environment:
-      - VITE_API_URL=http://localhost:4000/api
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:4000/api}
     depends_on:
       - backend # Espera a que el backend esté arriba
 

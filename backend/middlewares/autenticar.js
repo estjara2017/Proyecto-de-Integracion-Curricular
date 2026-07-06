@@ -1,6 +1,6 @@
 // src/middlewares/autenticar.js
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'ElementalCrossTraining_Secret_Key_2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'ElementalCrossTraining_Secret_Key_2026';
 
 const verificarToken = (req, res, next) => {
     // Capturamos el token que viene desde el frontend en los encabezados (Headers)
