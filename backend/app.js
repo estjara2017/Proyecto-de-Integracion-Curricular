@@ -61,9 +61,31 @@ app.use('/api/asistencias', attendanceRoutes);
 app.use('/api/admin', adminRoutes);
 
 const PORT = process.env.PORT || process.env.BACKEND_PORT || 4000;
+const DB_MAX_RETRIES = Number(process.env.DB_MAX_RETRIES || 30);
+const DB_RETRY_DELAY_MS = Number(process.env.DB_RETRY_DELAY_MS || 5000);
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const syncDatabaseWithRetry = async () => {
+    for (let intento = 1; intento <= DB_MAX_RETRIES; intento += 1) {
+        try {
+            await sequelize.authenticate();
+            await sequelize.sync({ alter: process.env.NODE_ENV !== 'production' });
+            return;
+        } catch (error) {
+            console.error(`Intento ${intento}/${DB_MAX_RETRIES}: PostgreSQL no esta listo.`, error.message);
+
+            if (intento === DB_MAX_RETRIES) {
+                throw error;
+            }
+
+            await delay(DB_RETRY_DELAY_MS);
+        }
+    }
+};
 
 // Sincronización con PostgreSQL al encender el contenedor
-sequelize.sync({ alter: process.env.NODE_ENV !== 'production' })
+syncDatabaseWithRetry()
     .then(async () => {
         console.log('PostgreSQL conectado y relaciones mapeadas con éxito.');
         
