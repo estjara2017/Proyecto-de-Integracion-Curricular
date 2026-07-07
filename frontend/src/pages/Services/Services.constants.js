@@ -3,6 +3,7 @@ import videoLocal from '../../assets/local.mp4';
 import weightliftingImage from '../../assets/servicio1.png';
 import localExtraImage from '../../assets/extra1.jpeg';
 import localMainImage from '../../assets/imagen1.png';
+import localEquipmentImage from '../../assets/equipos3.jpeg';
 
 const crossfitImage =
   'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1200&q=80';
@@ -59,7 +60,7 @@ export const EQUIPMENT_DATA = [
     videoUrl: videoLocal,
     carouselSections: [
       { images: [localExtraImage, localMainImage] },
-      { images: ['/images/equipos/extra4.jpeg'] }
+      { images: ['/images/equipos/extra4.jpeg', localEquipmentImage] }
     ]
   },
   {

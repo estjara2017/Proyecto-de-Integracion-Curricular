@@ -10,6 +10,9 @@ import img2 from '../../assets/imagen2.png';
 import img3 from '../../assets/imagen3.png';
 import img4 from '../../assets/imagen4.png';
 import img5 from '../../assets/imagen5.png';
+import producto3 from '../../assets/producto3.jpeg';
+import extra4 from '../../assets/extra4.jpeg';
+import extra1 from '../../assets/extra1.jpeg';
 
 const AboutUs = () => {
 
@@ -27,7 +30,9 @@ const AboutUs = () => {
       id: 'seccion-dos',
       items: [
         { id: 's2-i1', type: 'IMAGE', src: img5 },
-        { id: 's2-i2', type: 'IMAGE', src: img4 },
+        { id: 's2-i2', type: 'IMAGE', src: producto3 },
+        { id: 's2-i3', type: 'IMAGE', src: extra4 },
+        { id: 's2-i4', type: 'IMAGE', src: extra1 },
       ]
     }
   ];
