@@ -1,4 +1,5 @@
 import videoWeightlifting from '../../assets/weightlifting.mp4';
+import videoLocal from '../../assets/local.mp4';
 import weightliftingImage from '../../assets/servicio1.png';
 import localExtraImage from '../../assets/extra1.jpeg';
 import localMainImage from '../../assets/imagen1.png';
@@ -55,7 +56,7 @@ export const EQUIPMENT_DATA = [
     title: 'Nuestro Local',
     description:
       'Espacios equipados para entrenamientos funcionales, fuerza, tecnica y preparacion fisica.',
-    videoUrl: videoWeightlifting,
+    videoUrl: videoLocal,
     carouselSections: [
       { images: [localExtraImage, localMainImage] },
       { images: ['/images/equipos/extra4.jpeg'] }
