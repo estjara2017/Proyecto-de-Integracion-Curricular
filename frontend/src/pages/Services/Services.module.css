@@ -166,15 +166,6 @@
   object-position: center 30%;
 }
 
-.serviceVideo {
-  width: 100%;          /* Fuerza al video a ocupar todo el ancho disponible */
-  height: auto;         /* Permite que la altura se calcule proporcionalmente sin deformarse */
-  max-height: 350px;    /* Opcional: un tope para que no se haga gigantón en pantallas grandes */
-  object-fit: cover;    /* Opción A: Llena la card (puede recortar un poco los bordes de manera estética) */
-  /* object-fit: contain;  Opción B: Si no quieres que se pierda NI UN pixel del video (deja barras negras a los lados) */
-  border-radius: 8px;   /* Para que combine si las esquinas de tus cards son redondeadas */
-}
-
 /* --- HOJA DE ESTILOS ADAPTADA PARA LOS CARRUSELES DINÁMICOS --- */
 
 .openCarousel {
@@ -300,9 +291,23 @@
 .standaloneVideoContainer {
   margin-top: 20px;
   width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #111111;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.localVideo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+  object-position: center center;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 /* (Conserva todo tu código CSS anterior intacto e integra estas nuevas líneas al final) */
@@ -425,6 +430,14 @@
   .serviceImage,
   .serviceVideo {
     height: 200px;
+  }
+
+  .standaloneVideoContainer {
+    aspect-ratio: 4 / 3;
+  }
+
+  .localVideo {
+    height: 100%;
   }
 }
 

@@ -49,7 +49,7 @@ const EquipmentItem = ({ item, isOpen, onToggle }) => {
               </div>
               {item.videoUrl && (
                 <div className={styles.standaloneVideoContainer}>
-                  <video src={item.videoUrl} controls className={styles.serviceVideo} muted />
+                  <video src={item.videoUrl} controls className={`${styles.serviceVideo} ${styles.localVideo}`} muted />
                 </div>
               )}
             </div>
