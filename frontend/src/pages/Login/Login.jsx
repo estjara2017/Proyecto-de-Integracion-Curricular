@@ -1,74 +1,77 @@
-import { useState, useEffect } from 'react'
-import styles from './Login.module.css'
-import Button from '../../components/Button/Button'
-import { useNavigate } from 'react-router-dom'
-import logo from '../../assets/logo1.png' 
-import Navbar from '../../components/Navbar/Navbar'
-import { useAuth } from '../../context/AuthContext' // <-- Hook del contexto
-import { usuarioService } from '../../services/usuarioService' // <-- Peticiones API
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from './Login.module.css';
+import Button from '../../components/Button/Button';
+import logo from '../../assets/logo1.png';
+import Navbar from '../../components/Navbar/Navbar';
+import { useAuth } from '../../context/AuthContext';
+import { usuarioService } from '../../services/usuarioService';
 
-function Login({ embedded = false }) {
-  const navigate = useNavigate()
-  const { loginContext } = useAuth() // <-- Extraemos la función global del contexto
-  
-  const [paso, setPaso] = useState(1) 
-  const [mostrarAlerta, setMostrarAlerta] = useState(false)
-  const [correo, setCorreo] = useState('') // <-- Guardamos el correo para el Paso 2
-  const [inputValue, setInputValue] = useState('') // Código OTP o Correo temporalmente
+function Login({ embedded = false, openDashboardInNewTab = false }) {
+  const navigate = useNavigate();
+  const { loginContext } = useAuth();
+
+  const [paso, setPaso] = useState(1);
+  const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const [correo, setCorreo] = useState('');
+  const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
-    if (mostrarAlerta) {
-      const timer = setTimeout(() => {
-        setMostrarAlerta(false)
-      }, 6000)
-      return () => clearTimeout(timer)
-    }
-  }, [mostrarAlerta])
+    if (!mostrarAlerta) return undefined;
 
-  // Lógica de Envío Real integrada con el Backend y el Contexto
-  // Dentro de tu Login.jsx actual, cambia solo la función manejarEnvio:
+    const timer = setTimeout(() => {
+      setMostrarAlerta(false);
+    }, 6000);
 
-const manejarEnvio = async (e) => {
-  e.preventDefault();
-  if (paso === 1) {
-    try {
-      await usuarioService.solicitarOtp(inputValue); // Petición real al backend
-      setCorreo(inputValue);
-      setMostrarAlerta(true);
-      setPaso(2);
-      setInputValue(''); 
-    } catch (error) {
-      alert(error.message || 'Error al enviar el código');
+    return () => clearTimeout(timer);
+  }, [mostrarAlerta]);
+
+  const manejarEnvio = async (e) => {
+    e.preventDefault();
+
+    if (paso === 1) {
+      try {
+        await usuarioService.solicitarOtp(inputValue);
+        setCorreo(inputValue);
+        setMostrarAlerta(true);
+        setPaso(2);
+        setInputValue('');
+      } catch (error) {
+        alert(error.message || 'Error al enviar el codigo');
+      }
+
+      return;
     }
-  } else {
+
+    const dashboardTab = openDashboardInNewTab ? window.open('', '_blank') : null;
+
     try {
-      // Petición real para verificar el código OTP
       const respuesta = await usuarioService.verificarOtp(correo, inputValue);
-      
-      // Guardamos la información real en el contexto global
       loginContext(respuesta.usuario, respuesta.token);
-      
-      // Redirección a tus rutas exactas basadas en el rol del negocio
-      if (respuesta.usuario.rol === 'admin') {
-        navigate('/dashboardAdmin');
+
+      const dashboardPath = respuesta.usuario.rol === 'admin' ? '/dashboardAdmin' : '/dashboardClient';
+
+      if (openDashboardInNewTab && dashboardTab) {
+        dashboardTab.location.href = dashboardPath;
+        dashboardTab.focus();
       } else {
-        navigate('/dashboardClient'); // Tu ruta del panel de cliente
+        navigate(dashboardPath);
       }
     } catch (error) {
-      alert(error.message || 'Código incorrecto');
+      if (dashboardTab) dashboardTab.close();
+      alert(error.message || 'Codigo incorrecto');
     }
-  }
-}
+  };
 
   const manejarBotonSecundario = () => {
     if (paso === 2) {
-      setPaso(1)
-      setMostrarAlerta(false)
-      setInputValue(correo) // Le devolvemos el correo que digitó originalmente por comodidad
+      setPaso(1);
+      setMostrarAlerta(false);
+      setInputValue(correo);
     } else {
-      navigate('/')
+      navigate('/');
     }
-  }
+  };
 
   return (
     <div className={`${styles.pageWrapper} ${embedded ? styles.embeddedWrapper : ''}`}>
@@ -78,11 +81,11 @@ const manejarEnvio = async (e) => {
         {mostrarAlerta && (
           <div className={styles.alertContainer}>
             <div className={styles.alert}>
-              Se ha enviado un código OTP al correo para verificar. Por favor, ingréselo.
+              Se ha enviado un codigo OTP al correo para verificar. Por favor, ingreselo.
             </div>
           </div>
         )}
-        
+
         {!embedded && (
           <div className={styles.left}>
             <img src={logo} alt="Logo" className={styles.logo} />
@@ -91,26 +94,26 @@ const manejarEnvio = async (e) => {
 
         <div className={styles.right || styles.formCard}>
           <form className={styles.formCard} onSubmit={manejarEnvio}>
-            <h2>{paso === 1 ? 'Iniciar Sesión' : 'Ingresa el código'}</h2>
+            <h2>{paso === 1 ? 'Iniciar Sesion' : 'Ingresa el codigo'}</h2>
 
             {paso === 1 ? (
-              <input 
-                type="email" 
-                placeholder="Correo electrónico" 
+              <input
+                type="email"
+                placeholder="Correo electronico"
                 className={styles.input}
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                required 
+                onChange={(event) => setInputValue(event.target.value)}
+                required
                 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"
-                title="Por favor, ingresa un correo válido"
+                title="Por favor, ingresa un correo valido"
               />
             ) : (
-              <input 
-                type="text" 
-                placeholder="Código OTP" 
+              <input
+                type="text"
+                placeholder="Codigo OTP"
                 className={styles.input}
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                onChange={(event) => setInputValue(event.target.value)}
                 maxLength={6}
                 required
               />
@@ -128,7 +131,7 @@ const manejarEnvio = async (e) => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;
