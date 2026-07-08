@@ -40,7 +40,18 @@
   cursor: not-allowed;
 }
 
+.schedulePanel .saturdayNotice {
+  grid-column: 2 / 3;
+  grid-row: 2;
+  margin: -6px 0 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .schedulePanel button {
+  grid-column: 3;
+  grid-row: 1;
   height: 40px;
   border: none;
   border-radius: 5px;
@@ -70,6 +81,17 @@
 
   .schedulePanel > div {
     grid-column: 1 / -1;
+  }
+
+  .schedulePanel .saturdayNotice {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    margin-top: -2px;
+  }
+
+  .schedulePanel button {
+    grid-column: 1 / -1;
+    grid-row: auto;
   }
 }
 

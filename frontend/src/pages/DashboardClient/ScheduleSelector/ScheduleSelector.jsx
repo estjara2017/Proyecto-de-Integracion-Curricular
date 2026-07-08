@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import styles from './ScheduleSelector.module.css';
 
-const HORARIOS = ['05:00', '06:00', '07:00', '16:00', '17:00', '18:00', '19:00', 'Sabado 07:00', 'Sabado 08:00'];
+const HORARIOS = ['05:00', '06:00', '07:00', '16:00', '17:00', '18:00', '19:00'];
+const getHorarioSeleccionable = (horario) => (HORARIOS.includes(horario) ? horario : '');
 
 function ScheduleSelector({ visible, disabled = false, horarioActual, onGuardar }) {
-  const [horario, setHorario] = useState(horarioActual || '');
+  const [horario, setHorario] = useState(getHorarioSeleccionable(horarioActual));
   const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState('');
 
@@ -38,6 +39,7 @@ function ScheduleSelector({ visible, disabled = false, horarioActual, onGuardar 
           <option key={item} value={item}>{item}</option>
         ))}
       </select>
+      <p className={styles.saturdayNotice}>Sabados: atendemos de 07:00 a 09:00 sin seleccionar turno.</p>
       <button type="submit" disabled={guardando || disabled}>
         {guardando ? 'Guardando...' : 'Guardar'}
       </button>
