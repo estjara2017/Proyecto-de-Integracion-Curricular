@@ -130,7 +130,9 @@ function Register() {
             </div>
 
             <div className={styles.inputGroup}>
+              <label className={styles.sectionLabel} htmlFor="birthDate">Fecha de Nacimiento</label>
               <input 
+                id="birthDate"
                 type="date" 
                 className={styles.input}
                 value={birthDate}
