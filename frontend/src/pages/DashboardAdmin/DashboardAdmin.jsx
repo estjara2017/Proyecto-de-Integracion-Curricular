@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styles from './DashboardAdmin.module.css';
 import Header2 from '../../components/Header/Header2';
 import AdminProfile from './AdminProfile/AdminProfile';
 import ClientTable from './ClientTable/ClientTable';
 import PlanVerificationTable from './PlanVerificationTable/PlanVerificationTable';
 import AdminLeaderboard from './AdminLeaderBoard/AdminLeaderBoard';
-import AdminRoutineManager from './AdminRoutineManager/AdminRoutineManager';
 import AdminLinksManager from './AdminLinksManager/AdminLinksManager';
 import Button from '../../components/Button/Button';
 import { useAuth } from '../../context/AuthContext';
@@ -26,23 +25,6 @@ export default function DashboardAdmin() {
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [activeTab, setActiveTab] = useState('clientes');
   const [showRoutinePanel, setShowRoutinePanel] = useState(false);
-  const [showRoutineModal, setShowRoutineModal] = useState(false);
-
-  useEffect(() => {
-    if (!showRoutineModal) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') setShowRoutineModal(false);
-    };
-    document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [showRoutineModal]);
 
   const handleSelectAvatar = async (index) => {
     try {
@@ -76,7 +58,7 @@ export default function DashboardAdmin() {
             dbUser={adminUser}
             avatares={AVATARES}
             onCambiarAvatar={() => setShowAvatarModal(true)}
-            onAbrirRutinas={() => setShowRoutineModal(true)}
+            onAbrirRutinas={() => window.open('/Rutinas', '_blank', 'noopener,noreferrer')}
           />
         </section>
 
@@ -179,34 +161,6 @@ export default function DashboardAdmin() {
         </div>
       )}
 
-      {showRoutineModal && (
-        <div
-          className={styles.routineModalOverlay}
-          role="presentation"
-          onMouseDown={() => setShowRoutineModal(false)}
-        >
-          <section
-            className={styles.routineModal}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="routine-modal-title"
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <header className={styles.routineModalHeader}>
-              <div>
-                <h2 id="routine-modal-title">Administracion de rutinas</h2>
-                <p>Crea, edita y asigna rutinas usando las plantillas disponibles.</p>
-              </div>
-              <button type="button" onClick={() => setShowRoutineModal(false)} aria-label="Cerrar ventana de rutinas">
-                X
-              </button>
-            </header>
-            <div className={styles.routineModalBody}>
-              <AdminRoutineManager mode="routines" />
-            </div>
-          </section>
-        </div>
-      )}
     </div>
   );
 }

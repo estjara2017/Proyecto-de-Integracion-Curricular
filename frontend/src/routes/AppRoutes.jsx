@@ -11,6 +11,7 @@ import DashboardAdmin from '../pages/DashboardAdmin/DashboardAdmin'
 import PaymentCheckout from '../pages/PaymentCheckout/PaymentCheckout'
 import Attendance from '../pages/Attendance/Attendance'
 import AdminAttendance from '../pages/AdminAttendance/AdminAttendance'
+import AdminRoutines from '../pages/AdminRoutines/AdminRoutines'
 import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute'
 
 
@@ -29,6 +30,7 @@ function AppRoutes() {
       <Route path="/payment" element={<ProtectedRoute roles={['cliente']}><PaymentCheckout/></ProtectedRoute>}/>
       <Route path="/attendance" element={<Attendance/>}/>
       <Route path="/adminAttendance" element={<ProtectedRoute roles={['admin']}><AdminAttendance/></ProtectedRoute>}/>
+      <Route path="/Rutinas" element={<ProtectedRoute roles={['admin']}><AdminRoutines/></ProtectedRoute>}/>
     </Routes>
   )
 }

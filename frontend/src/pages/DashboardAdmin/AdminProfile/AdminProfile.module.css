@@ -145,15 +145,18 @@
 
 .navButtonsGroup {
   display: flex;
-  gap: 12px;
-  width: 100%;
+  justify-content: flex-end;
+  gap: 8px;
+  width: auto;
 }
 
 .navButtonsGroup button {
-  flex: 1 1 0;
-  width: 100%;
-  min-width: 0;
-  max-width: none;
+  flex: 0 0 96px;
+  width: 96px !important;
+  min-width: 96px;
+  max-width: 96px !important;
+  padding: 8px 10px;
+  font-size: 0.82rem;
 }
 
 /* RESPONSIVE MÓVIL */
@@ -183,12 +186,20 @@
   
   .navigationZone {
     margin-top: 20px;
-    justify-content: center; 
+    justify-content: flex-end;
   }
 
   .navButtonsGroup {
-    width: 100%;
-    justify-content: center;
-    gap: 8px;
+    width: auto;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .navButtonsGroup button {
+    flex-basis: 82px;
+    width: 82px !important;
+    min-width: 82px;
+    max-width: 82px !important;
+    padding: 7px 6px;
   }
 }
