@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './AdminProfile.module.css';
 import Button from '../../../components/Button/Button';
 
-function AdminProfile({ dbUser, avatares = [], onCambiarAvatar }) {
+function AdminProfile({ dbUser, avatares = [], onCambiarAvatar, onAbrirRutinas }) {
   const navigate = useNavigate();
 
   // Prevenir fallos si dbUser no ha cargado desde la base de datos
@@ -126,6 +126,14 @@ function AdminProfile({ dbUser, avatares = [], onCambiarAvatar }) {
             onClick={handleAbrirInicioNuevaPestana}
           >
             Inicio
+          </Button>
+
+          <Button
+            variant="dark"
+            type="button"
+            onClick={onAbrirRutinas}
+          >
+            Rutinas
           </Button>
 
           <Button 

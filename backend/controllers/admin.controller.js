@@ -46,18 +46,21 @@ const esUrlHttpValida = (url = '') => {
 
 const normalizarDiasSemana = (diasSemana = [], bloques = []) => {
     if (Array.isArray(diasSemana) && diasSemana.length) {
-        return diasSemana.map((dia, index) => ({
-            dia: dia.dia || WEEK_DAYS[index] || `Dia ${index + 1}`,
-            bloques: Array.isArray(dia.bloques) ? dia.bloques.map((bloque) => ({
-                tipo: bloque.tipo || 'Bloque',
-                ejercicios: Array.isArray(bloque.ejercicios) ? bloque.ejercicios : []
-            })) : []
-        }));
+        return WEEK_DAYS.map((nombreDia, index) => {
+            const dia = diasSemana.find((item) => item.dia === nombreDia) || diasSemana[index] || {};
+            return {
+                dia: nombreDia,
+                bloques: Array.isArray(dia.bloques) ? dia.bloques.slice(0, 5).map((bloque) => ({
+                    tipo: bloque.tipo || 'Bloque',
+                    ejercicios: Array.isArray(bloque.ejercicios) ? bloque.ejercicios : []
+                })) : []
+            };
+        });
     }
 
     return WEEK_DAYS.map((dia) => ({
         dia,
-        bloques: bloques.map((bloque) => ({
+        bloques: bloques.slice(0, 5).map((bloque) => ({
             tipo: bloque.tipo || 'Bloque',
             ejercicios: Array.isArray(bloque.ejercicios) ? bloque.ejercicios : []
         }))

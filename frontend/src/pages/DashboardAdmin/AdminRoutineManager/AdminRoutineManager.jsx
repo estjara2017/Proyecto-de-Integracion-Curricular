@@ -11,9 +11,9 @@ import rutina6 from '../../../assets/Rutinas6.jpeg';
 import rutina7 from '../../../assets/Rutinas7.jpeg';
 import rutina8 from '../../../assets/Rutinas8.jpeg';
 
-const WEEK_DAYS = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+const WEEK_DAYS = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
 const NIVELES = ['Principiante', 'Novato', 'Intermedio', 'Avanzado', 'Elite'];
-const DEFAULT_BLOCKS = ['Warm-up', 'Fuerza / Weightlifting', 'Skill / Metcon'];
+const DEFAULT_BLOCKS = ['Warm-up', 'Weightlifting', 'Gymnastic Strength', 'Metcon', 'Accesorios / Movilidad'];
 
 const routineTemplates = [
   { id: 'rutina-1', title: 'Rutina 1', image: rutina1 },
@@ -66,13 +66,18 @@ const normalizarRutina = (rutina) => ({
   niveles: rutina.niveles || [],
   usuarioIds: (rutina.usuarioIds || []).map(String),
   lesionObjetivo: rutina.lesionObjetivo || '',
-  diasSemana: (rutina.diasSemana?.length ? rutina.diasSemana : WEEK_DAYS.map((dia) => ({ dia, bloques: rutina.bloques || [] }))).map((dia, index) => ({
-    dia: dia.dia || WEEK_DAYS[index],
-    bloques: (dia.bloques?.length ? dia.bloques : DEFAULT_BLOCKS.map((tipo) => ({ tipo, ejercicios: [] }))).map((bloque) => ({
-      tipo: bloque.tipo || '',
-      ejerciciosTexto: (bloque.ejercicios || []).join('\n')
-    }))
-  }))
+  diasSemana: WEEK_DAYS.map((day, index) => {
+    const dia = (rutina.diasSemana || []).find((item) => item.dia === day)
+      || rutina.diasSemana?.[index]
+      || { dia: day, bloques: rutina.bloques || [] };
+    return {
+      dia: day,
+      bloques: (dia.bloques?.length ? dia.bloques : DEFAULT_BLOCKS.map((tipo) => ({ tipo, ejercicios: [] }))).slice(0, 5).map((bloque) => ({
+        tipo: bloque.tipo || '',
+        ejerciciosTexto: (bloque.ejercicios || []).join('\n')
+      }))
+    };
+  })
 });
 
 const toPayload = (form) => ({
@@ -127,7 +132,9 @@ const isHttpUrl = (url = '') => {
   }
 };
 
-export default function AdminRoutineManager() {
+export default function AdminRoutineManager({ mode = 'all' }) {
+  const showRoutines = mode === 'all' || mode === 'routines';
+  const showResources = mode === 'all' || mode === 'resources';
   const [rutinas, setRutinas] = useState([]);
   const [recursos, setRecursos] = useState([]);
   const [clientes, setClientes] = useState([]);
@@ -136,24 +143,24 @@ export default function AdminRoutineManager() {
   const [form, setForm] = useState(crearFormVacio);
   const [resourceForm, setResourceForm] = useState(crearRecursoVacio);
   const [resourceError, setResourceError] = useState('');
-
-  const cargarDatos = async () => {
-    const [rutinasData, recursosData, clientesData] = await Promise.all([
-      adminService.listarRutinasAdmin(),
-      adminService.listarRecursosPorNivel(),
-      adminService.listarClientes()
-    ]);
-    setRutinas(rutinasData);
-    setRecursos(recursosData);
-    setClientes(clientesData);
-  };
+  const [previewRoutine, setPreviewRoutine] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      cargarDatos().catch((error) => console.error(error));
+      Promise.all([
+        showRoutines ? adminService.listarRutinasAdmin() : Promise.resolve([]),
+        showResources ? adminService.listarRecursosPorNivel() : Promise.resolve([]),
+        showRoutines ? adminService.listarClientes() : Promise.resolve([])
+      ]).then(([rutinasData, recursosData, clientesData]) => {
+        if (showRoutines) {
+          setRutinas(rutinasData);
+          setClientes(clientesData);
+        }
+        if (showResources) setRecursos(recursosData);
+      }).catch((error) => console.error(error));
     }, 0);
     return () => clearTimeout(timer);
-  }, []);
+  }, [showResources, showRoutines]);
 
   const updateDayBlock = (dayIndex, blockIndex, field, value) => {
     setForm((prev) => ({
@@ -182,11 +189,41 @@ export default function AdminRoutineManager() {
 
   const toggleCliente = (id) => {
     const value = String(id);
+    setForm((prev) => {
+      const nextIds = prev.usuarioIds.includes(value)
+        ? prev.usuarioIds.filter((item) => item !== value)
+        : [...prev.usuarioIds, value];
+      const detalles = nextIds
+        .map((clienteId) => clientes.find((cliente) => String(cliente.id) === clienteId))
+        .filter(Boolean)
+        .map((cliente) => `${formatFullName(cliente.nombre, cliente.apellido)}: ${cliente.detalleLesion || 'Sin descripcion'}`);
+      return {
+        ...prev,
+        usuarioIds: nextIds,
+        lesionObjetivo: detalles.join('\n')
+      };
+    });
+  };
+
+  const addDayBlock = () => {
     setForm((prev) => ({
       ...prev,
-      usuarioIds: prev.usuarioIds.includes(value)
-        ? prev.usuarioIds.filter((item) => item !== value)
-        : [...prev.usuarioIds, value]
+      diasSemana: prev.diasSemana.map((dia, index) => (
+        index === activeDay && dia.bloques.length < 5
+          ? { ...dia, bloques: [...dia.bloques, { tipo: '', ejerciciosTexto: '' }] }
+          : dia
+      ))
+    }));
+  };
+
+  const removeDayBlock = (blockIndex) => {
+    setForm((prev) => ({
+      ...prev,
+      diasSemana: prev.diasSemana.map((dia, index) => (
+        index === activeDay && dia.bloques.length > 1
+          ? { ...dia, bloques: dia.bloques.filter((_, itemIndex) => itemIndex !== blockIndex) }
+          : dia
+      ))
     }));
   };
 
@@ -277,11 +314,16 @@ export default function AdminRoutineManager() {
   };
 
   const activeDayData = form.diasSemana[activeDay];
+  const clientesConLesion = clientes.filter((cliente) => (
+    String(cliente.poseeLesion || '').trim().toUpperCase() === 'SI'
+  ));
   const youtubeVideoId = getYoutubeVideoId(resourceForm.url);
   const youtubePreviewUrl = youtubeVideoId ? `https://www.youtube.com/embed/${youtubeVideoId}` : '';
 
   return (
-    <div className={styles.managerGrid}>
+    <div className={`${styles.managerGrid} ${mode !== 'all' ? styles.singleMode : ''}`}>
+      {showRoutines && (
+        <>
       <section className={styles.formPanel}>
         <h4>{form.id ? 'Editar rutina asignable' : 'Crear rutina asignable'}</h4>
         <form onSubmit={handleSubmit}>
@@ -316,12 +358,15 @@ export default function AdminRoutineManager() {
             <>
               <textarea value={form.lesionObjetivo} onChange={(e) => setForm((prev) => ({ ...prev, lesionObjetivo: e.target.value }))} placeholder="Notas de lesion o limitacion: brazos, movilidad reducida, bajo peso..." rows={2} />
               <div className={styles.clientPicker}>
-                {clientes.map((cliente) => (
+                {clientesConLesion.map((cliente) => (
                   <label key={cliente.id}>
                     <input type="checkbox" checked={form.usuarioIds.includes(String(cliente.id))} onChange={() => toggleCliente(cliente.id)} />
                     {formatFullName(cliente.nombre, cliente.apellido)} - {cliente.nivel}
                   </label>
                 ))}
+                {!clientesConLesion.length && (
+                  <p className={styles.emptyText}>No hay clientes registrados con lesion o discapacidad.</p>
+                )}
               </div>
             </>
           )}
@@ -333,15 +378,27 @@ export default function AdminRoutineManager() {
               </button>
             ))}
           </div>
+          <p className={styles.saturdayNotice}>Sabado: escoge la rutina que prefieras.</p>
 
           <div className={styles.blocksList}>
             {activeDayData.bloques.map((bloque, index) => (
               <div key={`${activeDayData.dia}-${index}`} className={styles.blockEditor}>
                 <input value={bloque.tipo} onChange={(e) => updateDayBlock(activeDay, index, 'tipo', e.target.value)} placeholder="Bloque" />
                 <textarea value={bloque.ejerciciosTexto} onChange={(e) => updateDayBlock(activeDay, index, 'ejerciciosTexto', e.target.value)} placeholder="Un ejercicio por linea" rows={4} />
+                <button type="button" className={styles.removeBlockButton} onClick={() => removeDayBlock(index)} disabled={activeDayData.bloques.length <= 1}>
+                  Eliminar seccion
+                </button>
               </div>
             ))}
           </div>
+          <button
+            type="button"
+            className={styles.addBlockButton}
+            onClick={addDayBlock}
+            disabled={activeDayData.bloques.length >= 5}
+          >
+            Agregar seccion ({activeDayData.bloques.length}/5)
+          </button>
 
           <div className={styles.formActions}>
             <button type="button" onClick={() => setForm(crearFormVacio())}>Limpiar</button>
@@ -379,6 +436,7 @@ export default function AdminRoutineManager() {
                   </small>
                 </div>
                 <div className={styles.routineActions}>
+                  <button type="button" onClick={() => setPreviewRoutine(rutina)}>Ver</button>
                   <button type="button" onClick={() => { setForm(normalizarRutina(rutina)); setActiveDay(0); }}>Editar</button>
                   <button type="button" onClick={() => handleDelete(rutina.id)}>Borrar</button>
                 </div>
@@ -389,7 +447,10 @@ export default function AdminRoutineManager() {
           )}
         </div>
       </section>
+        </>
+      )}
 
+      {showResources && (
       <section className={styles.resourcePanel}>
         <h4>Enlaces por nivel</h4>
         <form className={styles.resourceForm} onSubmit={handleResourceSubmit}>
@@ -451,6 +512,7 @@ export default function AdminRoutineManager() {
           )}
         </div>
       </section>
+      )}
 
       {selectedTemplate && (
         <div className={styles.imageModalOverlay} onClick={() => setSelectedTemplate(null)}>
@@ -461,6 +523,37 @@ export default function AdminRoutineManager() {
             </div>
             <div className={styles.imageModalBody}>
               <img src={selectedTemplate.image} alt={selectedTemplate.title} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {previewRoutine && (
+        <div className={styles.imageModalOverlay} onClick={() => setPreviewRoutine(null)}>
+          <div className={styles.routinePreviewModal} onClick={(event) => event.stopPropagation()}>
+            <div className={styles.imageModalHeader}>
+              <h3>Vista del cliente: {previewRoutine.titulo}</h3>
+              <button type="button" onClick={() => setPreviewRoutine(null)} aria-label="Cerrar vista previa">X</button>
+            </div>
+            <div className={styles.routinePreviewBody}>
+              <div className={styles.previewSummary}>
+                <strong>Objetivo</strong>
+                <p>{previewRoutine.objetivo || previewRoutine.descripcion || 'Sin objetivo registrado.'}</p>
+              </div>
+              {(previewRoutine.diasSemana || []).filter((dia) => WEEK_DAYS.includes(dia.dia)).map((dia) => (
+                <article key={dia.dia} className={styles.previewDay}>
+                  <h3>{dia.dia}</h3>
+                  {(dia.bloques || []).map((bloque, index) => (
+                    <section key={`${dia.dia}-${index}`}>
+                      <h4>{bloque.tipo || `Seccion ${index + 1}`}</h4>
+                      <ul>
+                        {(bloque.ejercicios || []).map((ejercicio) => <li key={ejercicio}>{ejercicio}</li>)}
+                      </ul>
+                    </section>
+                  ))}
+                </article>
+              ))}
+              <p className={styles.saturdayNotice}>Sabados: tu escoges tu rutina.</p>
             </div>
           </div>
         </div>

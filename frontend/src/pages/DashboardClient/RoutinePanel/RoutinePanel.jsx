@@ -57,7 +57,7 @@ const getYoutubeEmbedUrl = (url) => {
 
 const isLocalVideo = (url = '') => /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
 
-const WEEK_DAYS = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+const WEEK_DAYS = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
 
 const normalizeDayName = (value = '') => (
   String(value)
@@ -166,6 +166,7 @@ function RoutinePanel({ nivel = 'Principiante', rutinas = [], recursos = [] }) {
                       ))}
                     </article>
                   ))}
+                  <div className={styles.saturdayNotice}>Sabados: tu escoges tu rutina.</div>
                 </div>
               </>
             ) : null}

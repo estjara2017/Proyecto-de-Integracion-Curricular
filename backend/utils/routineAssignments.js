@@ -1,6 +1,6 @@
 const { AdminWorkoutTemplate } = require('../models/index');
 
-const WEEK_DAYS = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+const WEEK_DAYS = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
 
 const normalizeIdList = (value = []) => (
     Array.isArray(value) ? value.map((item) => Number(item)).filter(Boolean) : []

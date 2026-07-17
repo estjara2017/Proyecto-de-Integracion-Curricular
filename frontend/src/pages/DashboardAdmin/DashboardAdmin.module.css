@@ -181,6 +181,81 @@
   z-index: 1000;
 }
 
+.routineModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  padding: clamp(10px, 3vw, 30px);
+  box-sizing: border-box;
+  background-color: rgba(20, 15, 17, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.routineModal {
+  width: min(1180px, 100%);
+  height: min(900px, calc(100vh - clamp(20px, 6vw, 60px)));
+  max-height: 94vh;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.routineModalHeader {
+  flex: 0 0 auto;
+  min-height: 72px;
+  padding: 14px 20px;
+  box-sizing: border-box;
+  background-color: #554e4d;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.routineModalHeader h2,
+.routineModalHeader p {
+  margin: 0;
+}
+
+.routineModalHeader h2 {
+  font-size: 1.15rem;
+  text-transform: uppercase;
+}
+
+.routineModalHeader p {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: #eee8e6;
+}
+
+.routineModalHeader button {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: transparent;
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.routineModalBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(12px, 2vw, 24px);
+  box-sizing: border-box;
+  background-color: #f8f4f6;
+}
+
 .modalContent {
   background-color: #ffffff;
   padding: 25px;
@@ -265,5 +340,22 @@
   .adminAccordionOpen {
     padding: 15px;
     max-height: min(720px, calc(100vh - 120px));
+  }
+
+  .routineModalOverlay {
+    padding: 8px;
+  }
+
+  .routineModal {
+    height: calc(100dvh - 16px);
+    max-height: none;
+  }
+
+  .routineModalHeader {
+    padding: 12px 14px;
+  }
+
+  .routineModalHeader p {
+    display: none;
   }
 }

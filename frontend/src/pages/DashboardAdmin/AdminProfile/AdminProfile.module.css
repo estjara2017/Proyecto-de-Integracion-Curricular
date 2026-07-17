@@ -145,7 +145,15 @@
 
 .navButtonsGroup {
   display: flex;
-  gap: 12px; 
+  gap: 12px;
+  width: 100%;
+}
+
+.navButtonsGroup button {
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
 }
 
 /* RESPONSIVE MÓVIL */
@@ -181,5 +189,6 @@
   .navButtonsGroup {
     width: 100%;
     justify-content: center;
+    gap: 8px;
   }
 }

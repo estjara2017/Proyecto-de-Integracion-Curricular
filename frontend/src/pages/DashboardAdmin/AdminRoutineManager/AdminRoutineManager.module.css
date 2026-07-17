@@ -4,6 +4,10 @@
   gap: 18px;
 }
 
+.singleMode .resourcePanel {
+  grid-column: 1 / -1;
+}
+
 .formPanel,
 .listPanel,
 .resourcePanel {
@@ -269,6 +273,94 @@
 .routineActions button:last-child {
   background-color: #f8e9e9;
   color: #c92a2a;
+}
+
+.removeBlockButton,
+.addBlockButton {
+  border: none;
+  border-radius: 5px;
+  padding: 8px 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.removeBlockButton {
+  justify-self: end;
+  background: #f8e9e9;
+  color: #b42323;
+}
+
+.addBlockButton {
+  background: #e8dde3;
+  color: #4a2834;
+}
+
+.removeBlockButton:disabled,
+.addBlockButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.saturdayNotice {
+  margin: 2px 0 4px;
+  padding: 10px 12px;
+  border-left: 4px solid #7a1e48;
+  border-radius: 5px;
+  background: #f2e8ed;
+  color: #4a2834;
+  font-weight: 800;
+}
+
+.routinePreviewModal {
+  width: min(760px, 96vw);
+  max-height: 92vh;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.routinePreviewBody {
+  overflow-y: auto;
+  padding: 18px;
+  background: #eee;
+  display: grid;
+  gap: 14px;
+}
+
+.previewSummary,
+.previewDay {
+  background: #fff;
+  border: 1px solid #d7c8cf;
+  border-radius: 7px;
+  padding: 14px;
+}
+
+.previewSummary p {
+  margin: 5px 0 0;
+}
+
+.previewDay h3 {
+  margin: 0 0 10px;
+  color: #221111;
+}
+
+.previewDay section {
+  border-top: 1px solid #e2dcd9;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.previewDay h4 {
+  margin: 0 0 5px;
+  color: #7a1e48;
+  text-transform: uppercase;
+}
+
+.previewDay ul {
+  margin: 0;
+  padding-left: 20px;
 }
 
 .routineCard strong {
