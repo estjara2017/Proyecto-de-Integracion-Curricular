@@ -44,8 +44,19 @@ const esUrlHttpValida = (url = '') => {
     }
 };
 
-const normalizarDiasSemana = (diasSemana = [], bloques = []) => {
+const normalizarDiasSemana = (diasSemana = [], bloques = [], soloDia = false) => {
     if (Array.isArray(diasSemana) && diasSemana.length) {
+        if (soloDia) {
+            const dia = diasSemana[0];
+            return [{
+                dia: dia.dia || WEEK_DAYS[0],
+                bloques: Array.isArray(dia.bloques) ? dia.bloques.slice(0, 5).map((bloque) => ({
+                    tipo: bloque.tipo || 'Bloque',
+                    ejercicios: Array.isArray(bloque.ejercicios) ? bloque.ejercicios : []
+                })) : []
+            }];
+        }
+
         return WEEK_DAYS.map((nombreDia, index) => {
             const dia = diasSemana.find((item) => item.dia === nombreDia) || diasSemana[index] || {};
             return {
@@ -281,7 +292,7 @@ exports.guardarRutinaAdmin = async (req, res) => {
             usuarioIds: normalizarListaIds(usuarioIds),
             lesionObjetivo,
             bloques,
-            diasSemana: normalizarDiasSemana(diasSemana, bloques),
+            diasSemana: normalizarDiasSemana(diasSemana, bloques, tipoAsignacion === 'diaria_admin'),
             activo: true
         };
 

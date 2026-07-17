@@ -41,6 +41,7 @@ const crearFormVacio = () => ({
   niveles: [],
   usuarioIds: [],
   lesionObjetivo: '',
+  soloAdminDiaria: false,
   diasSemana: WEEK_DAYS.map(crearDiaVacio)
 });
 
@@ -62,13 +63,15 @@ const normalizarRutina = (rutina) => ({
   etiqueta: rutina.etiqueta || '',
   descripcion: rutina.descripcion || '',
   objetivo: rutina.objetivo || '',
-  tipoAsignacion: rutina.tipoAsignacion || 'nivel',
+  tipoAsignacion: rutina.tipoAsignacion === 'diaria_admin' ? 'nivel' : (rutina.tipoAsignacion || 'nivel'),
   niveles: rutina.niveles || [],
   usuarioIds: (rutina.usuarioIds || []).map(String),
   lesionObjetivo: rutina.lesionObjetivo || '',
+  soloAdminDiaria: rutina.tipoAsignacion === 'diaria_admin',
   diasSemana: WEEK_DAYS.map((day, index) => {
-    const dia = (rutina.diasSemana || []).find((item) => item.dia === day)
-      || rutina.diasSemana?.[index]
+    const exactDay = (rutina.diasSemana || []).find((item) => item.dia === day);
+    const dia = exactDay
+      || (rutina.tipoAsignacion === 'diaria_admin' ? crearDiaVacio(day) : rutina.diasSemana?.[index])
       || { dia: day, bloques: rutina.bloques || [] };
     return {
       dia: day,
@@ -80,17 +83,17 @@ const normalizarRutina = (rutina) => ({
   })
 });
 
-const toPayload = (form) => ({
+const toPayload = (form, activeDay = 0) => ({
   id: form.id,
   titulo: form.titulo,
   etiqueta: form.etiqueta,
   descripcion: form.descripcion,
   objetivo: form.objetivo,
-  tipoAsignacion: form.tipoAsignacion,
-  niveles: form.tipoAsignacion === 'cliente' ? [] : form.niveles,
-  usuarioIds: form.tipoAsignacion === 'nivel' ? [] : form.usuarioIds.map(Number),
+  tipoAsignacion: form.soloAdminDiaria ? 'diaria_admin' : form.tipoAsignacion,
+  niveles: form.soloAdminDiaria || form.tipoAsignacion === 'cliente' ? [] : form.niveles,
+  usuarioIds: form.soloAdminDiaria || form.tipoAsignacion === 'nivel' ? [] : form.usuarioIds.map(Number),
   lesionObjetivo: form.lesionObjetivo,
-  diasSemana: form.diasSemana.map((dia) => ({
+  diasSemana: (form.soloAdminDiaria ? [form.diasSemana[activeDay]] : form.diasSemana).map((dia) => ({
     dia: dia.dia,
     bloques: dia.bloques.map((bloque) => ({
       tipo: bloque.tipo,
@@ -98,6 +101,17 @@ const toPayload = (form) => ({
     })).filter((bloque) => bloque.tipo || bloque.ejercicios.length)
   }))
 });
+
+const getRoutineActiveDay = (rutina) => {
+  if (rutina.tipoAsignacion !== 'diaria_admin') return 0;
+  const dayIndex = WEEK_DAYS.indexOf(rutina.diasSemana?.[0]?.dia);
+  return dayIndex >= 0 ? dayIndex : 0;
+};
+
+const getTodayDayIndex = () => {
+  const jsDay = new Date().getDay();
+  return jsDay >= 1 && jsDay <= 5 ? jsDay - 1 : 0;
+};
 
 const getYoutubeVideoId = (url = '') => {
   try {
@@ -139,7 +153,7 @@ export default function AdminRoutineManager({ mode = 'all' }) {
   const [recursos, setRecursos] = useState([]);
   const [clientes, setClientes] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [activeDay, setActiveDay] = useState(0);
+  const [activeDay, setActiveDay] = useState(getTodayDayIndex);
   const [form, setForm] = useState(crearFormVacio);
   const [resourceForm, setResourceForm] = useState(crearRecursoVacio);
   const [resourceError, setResourceError] = useState('');
@@ -229,13 +243,13 @@ export default function AdminRoutineManager({ mode = 'all' }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const saved = await adminService.guardarRutinaAdmin(toPayload(form));
+    const saved = await adminService.guardarRutinaAdmin(toPayload(form, activeDay));
     setRutinas((prev) => {
       const exists = prev.some((item) => item.id === saved.id);
       return exists ? prev.map((item) => item.id === saved.id ? saved : item) : [saved, ...prev];
     });
     setForm(crearFormVacio());
-    setActiveDay(0);
+    setActiveDay(getTodayDayIndex());
   };
 
   const handleDelete = async (id) => {
@@ -332,7 +346,19 @@ export default function AdminRoutineManager({ mode = 'all' }) {
           <textarea value={form.descripcion} onChange={(e) => setForm((prev) => ({ ...prev, descripcion: e.target.value }))} placeholder="Descripcion general" rows={2} />
           <textarea value={form.objetivo} onChange={(e) => setForm((prev) => ({ ...prev, objetivo: e.target.value }))} placeholder="Objetivo que vera el cliente" rows={2} />
 
-          <div className={styles.assignmentPanel}>
+          <label className={styles.dailySaveOption}>
+            <input
+              type="checkbox"
+              checked={form.soloAdminDiaria}
+              onChange={(e) => setForm((prev) => ({ ...prev, soloAdminDiaria: e.target.checked }))}
+            />
+            <span>
+              <strong>Rutina diaria del administrador</strong>
+              Guarda solamente {form.diasSemana[activeDay].dia}; no se asignara a clientes ni niveles.
+            </span>
+          </label>
+
+          {!form.soloAdminDiaria && <div className={styles.assignmentPanel}>
             <label>
               <input type="radio" name="tipoAsignacion" value="nivel" checked={form.tipoAsignacion === 'nivel'} onChange={(e) => setForm((prev) => ({ ...prev, tipoAsignacion: e.target.value }))} />
               Asignar por nivel
@@ -341,9 +367,9 @@ export default function AdminRoutineManager({ mode = 'all' }) {
               <input type="radio" name="tipoAsignacion" value="cliente" checked={form.tipoAsignacion === 'cliente'} onChange={(e) => setForm((prev) => ({ ...prev, tipoAsignacion: e.target.value }))} />
               Asignar a clientes especificos
             </label>
-          </div>
+          </div>}
 
-          {form.tipoAsignacion !== 'cliente' && (
+          {!form.soloAdminDiaria && form.tipoAsignacion !== 'cliente' && (
             <div className={styles.checkGrid}>
               {NIVELES.map((nivel) => (
                 <label key={nivel}>
@@ -354,7 +380,7 @@ export default function AdminRoutineManager({ mode = 'all' }) {
             </div>
           )}
 
-          {form.tipoAsignacion !== 'nivel' && (
+          {!form.soloAdminDiaria && form.tipoAsignacion !== 'nivel' && (
             <>
               <textarea value={form.lesionObjetivo} onChange={(e) => setForm((prev) => ({ ...prev, lesionObjetivo: e.target.value }))} placeholder="Notas de lesion o limitacion: brazos, movilidad reducida, bajo peso..." rows={2} />
               <div className={styles.clientPicker}>
@@ -432,12 +458,16 @@ export default function AdminRoutineManager({ mode = 'all' }) {
                   <strong>{rutina.titulo}</strong>
                   <p>{rutina.etiqueta || rutina.descripcion}</p>
                   <small>
-                    {rutina.usuarioIds?.length ? `Clientes: ${rutina.usuarioIds.length}` : `Niveles: ${(rutina.niveles || []).join(', ') || 'Sin asignar'}`}
+                    {rutina.tipoAsignacion === 'diaria_admin'
+                      ? `Rutina diaria del administrador: ${rutina.diasSemana?.[0]?.dia || 'Dia seleccionado'}`
+                      : rutina.usuarioIds?.length
+                        ? `Clientes: ${rutina.usuarioIds.length}`
+                        : `Niveles: ${(rutina.niveles || []).join(', ') || 'Sin asignar'}`}
                   </small>
                 </div>
                 <div className={styles.routineActions}>
                   <button type="button" onClick={() => setPreviewRoutine(rutina)}>Ver</button>
-                  <button type="button" onClick={() => { setForm(normalizarRutina(rutina)); setActiveDay(0); }}>Editar</button>
+                  <button type="button" onClick={() => { setForm(normalizarRutina(rutina)); setActiveDay(getRoutineActiveDay(rutina)); }}>Editar</button>
                   <button type="button" onClick={() => handleDelete(rutina.id)}>Borrar</button>
                 </div>
               </article>
@@ -540,7 +570,10 @@ export default function AdminRoutineManager({ mode = 'all' }) {
                 <strong>Objetivo</strong>
                 <p>{previewRoutine.objetivo || previewRoutine.descripcion || 'Sin objetivo registrado.'}</p>
               </div>
-              {(previewRoutine.diasSemana || []).filter((dia) => WEEK_DAYS.includes(dia.dia)).map((dia) => (
+              {(previewRoutine.diasSemana || [])
+                .filter((dia) => WEEK_DAYS.includes(dia.dia))
+                .filter((_, index) => previewRoutine.tipoAsignacion !== 'diaria_admin' || index === 0)
+                .map((dia) => (
                 <article key={dia.dia} className={styles.previewDay}>
                   <h3>{dia.dia}</h3>
                   {(dia.bloques || []).map((bloque, index) => (
@@ -553,7 +586,9 @@ export default function AdminRoutineManager({ mode = 'all' }) {
                   ))}
                 </article>
               ))}
-              <p className={styles.saturdayNotice}>Sabados: tu escoges tu rutina.</p>
+              {previewRoutine.tipoAsignacion !== 'diaria_admin' && (
+                <p className={styles.saturdayNotice}>Sabados: tu escoges tu rutina.</p>
+              )}
             </div>
           </div>
         </div>

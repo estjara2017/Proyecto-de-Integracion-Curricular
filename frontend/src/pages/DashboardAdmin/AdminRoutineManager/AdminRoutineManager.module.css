@@ -275,6 +275,29 @@
   color: #c92a2a;
 }
 
+.dailySaveOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid #c9aeba;
+  border-radius: 6px;
+  background: #f5edf1;
+  color: #4a2834;
+  cursor: pointer;
+}
+
+.dailySaveOption input {
+  width: auto;
+  margin-top: 3px;
+}
+
+.dailySaveOption span {
+  display: grid;
+  gap: 2px;
+  font-size: 0.85rem;
+}
+
 .removeBlockButton,
 .addBlockButton {
   border: none;
