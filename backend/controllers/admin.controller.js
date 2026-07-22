@@ -110,13 +110,6 @@ exports.listarClientes = async (req, res) => {
             order: [['apellido', 'ASC'], ['nombre', 'ASC']]
         });
 
-        const fechaHoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Guayaquil' });
-        const asistenciasHoy = await Attendance.findAll({
-            where: { fecha: fechaHoy, usuarioId: clientes.map((cliente) => cliente.id) },
-            attributes: ['usuarioId']
-        });
-        const clientesRegistrados = new Set(asistenciasHoy.map((asistencia) => Number(asistencia.usuarioId)));
-
         for (const cliente of clientes) {
             const nivel = await Level.findOne({ where: { nombre: cliente.nivel } });
             const metricas = calcularPorcentajeProgreso(cliente, nivel);
@@ -145,6 +138,15 @@ exports.listarClientesParaAsistencia = async (req, res) => {
             where,
             order: [['apellido', 'ASC'], ['nombre', 'ASC']]
         });
+
+        const fechaHoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Guayaquil' });
+        const asistenciasHoy = await Attendance.findAll({
+            where: { fecha: fechaHoy, usuarioId: clientes.map((cliente) => cliente.id) },
+            attributes: ['usuarioId']
+        });
+        const clientesRegistrados = new Set(
+            asistenciasHoy.map((asistencia) => Number(asistencia.usuarioId))
+        );
 
         const data = clientes
             .map((cliente) => ({
