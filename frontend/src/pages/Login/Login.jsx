@@ -7,7 +7,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import { useAuth } from '../../context/AuthContext';
 import { usuarioService } from '../../services/usuarioService';
 
-function Login({ embedded = false, openDashboardInNewTab = false }) {
+function Login({ embedded = false }) {
   const navigate = useNavigate();
   const { loginContext } = useAuth();
 
@@ -43,22 +43,13 @@ function Login({ embedded = false, openDashboardInNewTab = false }) {
       return;
     }
 
-    const dashboardTab = openDashboardInNewTab ? window.open('', '_blank') : null;
-
     try {
       const respuesta = await usuarioService.verificarOtp(correo, inputValue);
       loginContext(respuesta.usuario, respuesta.token);
 
       const dashboardPath = respuesta.usuario.rol === 'admin' ? '/dashboardAdmin' : '/dashboardClient';
-
-      if (openDashboardInNewTab && dashboardTab) {
-        dashboardTab.location.href = dashboardPath;
-        dashboardTab.focus();
-      } else {
-        navigate(dashboardPath);
-      }
+      navigate(dashboardPath, { replace: true });
     } catch (error) {
-      if (dashboardTab) dashboardTab.close();
       alert(error.message || 'Codigo incorrecto');
     }
   };

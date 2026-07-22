@@ -56,7 +56,7 @@ function Attendance() {
         </section>
 
         <section className={styles.loginSection}>
-          <Login embedded openDashboardInNewTab />
+          <Login embedded />
         </section>
       </main>
 
