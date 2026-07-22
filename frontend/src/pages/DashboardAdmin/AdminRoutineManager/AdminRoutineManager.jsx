@@ -16,7 +16,7 @@ const NIVELES = ['Principiante', 'Novato', 'Intermedio', 'Avanzado', 'Elite'];
 const DEFAULT_BLOCKS = ['Warm-up', 'Weightlifting', 'Gymnastic Strength', 'Metcon', 'Accesorios / Movilidad'];
 const DAILY_ROUTINE_TYPES = ['diaria_admin', 'rutina_general', 'rutina_avanzada'];
 const isDailyRoutine = (tipo) => DAILY_ROUTINE_TYPES.includes(tipo);
-const getDailyRoutineLabel = (tipo) => tipo === 'rutina_avanzada' ? 'Rutina Avanzada' : 'Rutina General';
+const getDailyRoutineLabel = (tipo) => tipo === 'rutina_avanzada' ? 'Clase Competidores' : 'Clase General';
 
 const routineTemplates = [
   { id: 'rutina-1', title: 'Rutina 1', image: rutina1 },
@@ -353,8 +353,8 @@ export default function AdminRoutineManager({ mode = 'all' }) {
 
           <div className={styles.dailySaveGrid}>
             {[
-              ['rutina_general', 'Rutina General'],
-              ['rutina_avanzada', 'Rutina Avanzada']
+              ['rutina_general', 'Clase General'],
+              ['rutina_avanzada', 'Clase Competidores']
             ].map(([value, label]) => (
               <label key={value} className={styles.dailySaveOption}>
                 <input
