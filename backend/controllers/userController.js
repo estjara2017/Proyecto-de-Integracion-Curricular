@@ -220,7 +220,7 @@ exports.obtenerRutinasDelNivel = async (req, res) => {
 
 exports.actualizarHorario = async (req, res) => {
     try {
-        const horariosValidos = ['05:00', '06:00', '07:00', '16:00', '17:00', '18:00', '19:00'];
+        const horariosValidos = ['05:00', '06:00', '07:00', '08:00', '16:00', '17:00', '18:00', '19:00'];
         const { horarioEntrenamiento } = req.body;
 
         if (!horariosValidos.includes(horarioEntrenamiento)) {

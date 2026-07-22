@@ -5,7 +5,27 @@ import { adminService } from '../../services/adminService';
 import AttendanceQr from '../DashboardAdmin/AttendanceQr/AttendanceQr';
 import { toPascalCaseText } from '../../utils/displayFormatters';
 
-const HORARIOS = ['', '05:00', '06:00', '07:00', '16:00', '17:00', '18:00', '19:00', 'Sabado 07:00', 'Sabado 08:00'];
+const GRUPOS_HORARIOS = [
+  {
+    label: 'Manana',
+    options: [
+      ['05:00', '05:00 - 06:00'],
+      ['06:00', '06:00 - 07:00'],
+      ['07:00', '07:00 - 08:00'],
+      ['08:00', '08:00 - 09:00']
+    ]
+  },
+  {
+    label: 'Tarde',
+    options: [
+      ['16:00', '16:00 - 17:00'],
+      ['17:00', '17:00 - 18:00'],
+      ['18:00', '18:00 - 19:00'],
+      ['19:00', '19:00 - 20:00']
+    ]
+  }
+];
+const ETIQUETAS_HORARIOS = Object.fromEntries(GRUPOS_HORARIOS.flatMap((grupo) => grupo.options));
 const RANGOS = ['', '12-18', '18-30', '30-50', '50+'];
 const GENEROS = ['', 'masculino', 'femenino'];
 const NIVELES = ['', 'Principiante', 'Novato', 'Intermedio', 'Avanzado', 'Elite'];
@@ -66,7 +86,12 @@ export default function AdminAttendance() {
 
           <div className={styles.filters}>
             <select value={filters.horario} onChange={(e) => setFilters((prev) => ({ ...prev, horario: e.target.value }))}>
-              {HORARIOS.map((item) => <option key={item || 'all'} value={item}>{item || 'Todos los horarios'}</option>)}
+              <option value="">Todos los horarios</option>
+              {GRUPOS_HORARIOS.map((grupo) => (
+                <optgroup key={grupo.label} label={grupo.label}>
+                  {grupo.options.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                </optgroup>
+              ))}
             </select>
             <select value={filters.genero} onChange={(e) => setFilters((prev) => ({ ...prev, genero: e.target.value }))}>
               {GENEROS.map((item) => <option key={item || 'all'} value={item}>{item || 'Todos los generos'}</option>)}
@@ -97,7 +122,7 @@ export default function AdminAttendance() {
                 {clientes.map((cliente) => (
                   <tr key={cliente.id}>
                     <td>{toPascalCaseText(cliente.nombre)}</td>
-                    <td>{cliente.horarioEntrenamiento || '--'}</td>
+                    <td>{ETIQUETAS_HORARIOS[cliente.horarioEntrenamiento] || cliente.horarioEntrenamiento || '--'}</td>
                     <td>{toPascalCaseText(cliente.genero) || '--'}</td>
                     <td>
                       <span

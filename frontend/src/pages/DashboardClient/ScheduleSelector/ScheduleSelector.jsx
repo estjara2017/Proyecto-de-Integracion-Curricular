@@ -1,7 +1,27 @@
 import { useState } from 'react';
 import styles from './ScheduleSelector.module.css';
 
-const HORARIOS = ['05:00', '06:00', '07:00', '16:00', '17:00', '18:00', '19:00'];
+const GRUPOS_HORARIOS = [
+  {
+    label: 'Manana: 05:00 - 09:00',
+    options: [
+      { value: '05:00', label: '05:00 - 06:00' },
+      { value: '06:00', label: '06:00 - 07:00' },
+      { value: '07:00', label: '07:00 - 08:00' },
+      { value: '08:00', label: '08:00 - 09:00' }
+    ]
+  },
+  {
+    label: 'Tarde: 16:00 - 20:00',
+    options: [
+      { value: '16:00', label: '16:00 - 17:00' },
+      { value: '17:00', label: '17:00 - 18:00' },
+      { value: '18:00', label: '18:00 - 19:00' },
+      { value: '19:00', label: '19:00 - 20:00' }
+    ]
+  }
+];
+const HORARIOS = GRUPOS_HORARIOS.flatMap((grupo) => grupo.options.map((option) => option.value));
 const getHorarioSeleccionable = (horario) => (HORARIOS.includes(horario) ? horario : '');
 
 function ScheduleSelector({ visible, disabled = false, horarioActual, onGuardar }) {
@@ -35,11 +55,15 @@ function ScheduleSelector({ visible, disabled = false, horarioActual, onGuardar 
       </div>
       <select value={horario} onChange={(e) => setHorario(e.target.value)} required disabled={disabled}>
         <option value="">Selecciona horario</option>
-        {HORARIOS.map((item) => (
-          <option key={item} value={item}>{item}</option>
+        {GRUPOS_HORARIOS.map((grupo) => (
+          <optgroup key={grupo.label} label={grupo.label}>
+            {grupo.options.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </optgroup>
         ))}
       </select>
-      <p className={styles.saturdayNotice}>Sabados: atendemos de 07:00 a 09:00 sin seleccionar turno.</p>
+      <p className={styles.saturdayNotice}>Sabados: atendemos solo de 07:00 a 09:00, sin seleccionar turno.</p>
       <button type="submit" disabled={guardando || disabled}>
         {guardando ? 'Guardando...' : 'Guardar'}
       </button>
