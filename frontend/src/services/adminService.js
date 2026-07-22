@@ -28,10 +28,10 @@ export const adminService = {
     return apiRequest(`/admin/clientes/${id}`, { method: 'DELETE' });
   },
 
-  asignarAdminPorCedula: async (cedula) => {
+  asignarAdminPorCorreo: async (correo) => {
     const response = await apiRequest('/admin/usuarios/rol-admin', {
       method: 'PATCH',
-      body: JSON.stringify({ cedula })
+      body: JSON.stringify({ correo })
     });
     return response.data;
   },

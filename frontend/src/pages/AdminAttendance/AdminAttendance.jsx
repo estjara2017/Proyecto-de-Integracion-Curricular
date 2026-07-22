@@ -32,6 +32,9 @@ export default function AdminAttendance() {
     try {
       await adminService.registrarAsistenciaManual({ usuarioId });
       setMessage(`Asistencia registrada para ${nombre}.`);
+      setClientes((prev) => prev.map((cliente) => (
+        cliente.id === usuarioId ? { ...cliente, asistenciaRegistrada: true } : cliente
+      )));
     } catch (error) {
       setMessage(error.message || 'No se pudo registrar la asistencia.');
     }
@@ -85,7 +88,7 @@ export default function AdminAttendance() {
                   <th>Cliente</th>
                   <th>Horario</th>
                   <th>Genero</th>
-                  <th>Edad</th>
+                  <th>Estado</th>
                   <th>Nivel</th>
                   <th>Accion</th>
                 </tr>
@@ -96,11 +99,19 @@ export default function AdminAttendance() {
                     <td>{toPascalCaseText(cliente.nombre)}</td>
                     <td>{cliente.horarioEntrenamiento || '--'}</td>
                     <td>{toPascalCaseText(cliente.genero) || '--'}</td>
-                    <td>{cliente.edad} ({cliente.rangoEdad})</td>
+                    <td>
+                      <span
+                        className={`${styles.attendanceStatus} ${cliente.asistenciaRegistrada ? styles.registered : styles.notRegistered}`}
+                        title={cliente.asistenciaRegistrada ? 'Registrado' : 'No registrado'}
+                        aria-label={cliente.asistenciaRegistrada ? 'Registrado' : 'No registrado'}
+                      >
+                        {cliente.asistenciaRegistrada ? '✓' : '✕'}
+                      </span>
+                    </td>
                     <td>{cliente.nivel}</td>
                     <td>
-                      <button type="button" onClick={() => registrar(cliente.id, toPascalCaseText(cliente.nombre))}>
-                        Registrar
+                      <button type="button" disabled={cliente.asistenciaRegistrada} onClick={() => registrar(cliente.id, toPascalCaseText(cliente.nombre))}>
+                        {cliente.asistenciaRegistrada ? 'Registrado' : 'Registrar'}
                       </button>
                     </td>
                   </tr>

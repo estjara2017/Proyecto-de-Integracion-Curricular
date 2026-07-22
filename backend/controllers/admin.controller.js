@@ -1,6 +1,6 @@
-const { Usuario, Plan, Suscripcion, Pago, Level, LevelResource, RoutineTemplate, AdminWorkoutTemplate } = require('../models/index');
+const { Usuario, Plan, Suscripcion, Pago, Level, LevelResource, RoutineTemplate, AdminWorkoutTemplate, Attendance } = require('../models/index');
 const { calcularEdad, obtenerRangoEdad, calcularPorcentajeProgreso } = require('../utils/athleteMetrics');
-const { isValidPhone, normalizeUserTextFields, toUpperText } = require('../utils/textNormalization');
+const { isValidPhone, normalizeEmail, normalizeUserTextFields, toUpperText } = require('../utils/textNormalization');
 const { WEEK_DAYS } = require('../utils/routineAssignments');
 
 const normalizarListaIds = (value = []) => (
@@ -110,6 +110,13 @@ exports.listarClientes = async (req, res) => {
             order: [['apellido', 'ASC'], ['nombre', 'ASC']]
         });
 
+        const fechaHoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Guayaquil' });
+        const asistenciasHoy = await Attendance.findAll({
+            where: { fecha: fechaHoy, usuarioId: clientes.map((cliente) => cliente.id) },
+            attributes: ['usuarioId']
+        });
+        const clientesRegistrados = new Set(asistenciasHoy.map((asistencia) => Number(asistencia.usuarioId)));
+
         for (const cliente of clientes) {
             const nivel = await Level.findOne({ where: { nombre: cliente.nivel } });
             const metricas = calcularPorcentajeProgreso(cliente, nivel);
@@ -147,7 +154,8 @@ exports.listarClientesParaAsistencia = async (req, res) => {
                 horarioEntrenamiento: cliente.horarioEntrenamiento,
                 edad: calcularEdad(cliente.fechaNacimiento),
                 rangoEdad: obtenerRangoEdad(calcularEdad(cliente.fechaNacimiento)),
-                nivel: cliente.nivel
+                nivel: cliente.nivel,
+                asistenciaRegistrada: clientesRegistrados.has(Number(cliente.id))
             }))
             .filter((cliente) => !rangoEdad || cliente.rangoEdad === rangoEdad);
 
@@ -207,16 +215,16 @@ exports.eliminarCliente = async (req, res) => {
     }
 };
 
-exports.asignarRolAdminPorCedula = async (req, res) => {
+exports.asignarRolAdminPorCorreo = async (req, res) => {
     try {
-        const { cedula } = req.body;
-        if (!cedula) {
-            return res.status(400).json({ status: 'error', message: 'La cedula es obligatoria.' });
+        const { correo } = req.body;
+        if (!correo) {
+            return res.status(400).json({ status: 'error', message: 'El correo electronico es obligatorio.' });
         }
 
-        const usuario = await Usuario.findOne({ where: { cedula: toUpperText(cedula) } });
+        const usuario = await Usuario.findOne({ where: { correo: normalizeEmail(correo) } });
         if (!usuario) {
-            return res.status(404).json({ status: 'error', message: 'No existe un usuario con esa cedula.' });
+            return res.status(404).json({ status: 'error', message: 'No existe un usuario con ese correo electronico.' });
         }
 
         usuario.rol = 'admin';
@@ -292,7 +300,11 @@ exports.guardarRutinaAdmin = async (req, res) => {
             usuarioIds: normalizarListaIds(usuarioIds),
             lesionObjetivo,
             bloques,
-            diasSemana: normalizarDiasSemana(diasSemana, bloques, tipoAsignacion === 'diaria_admin'),
+            diasSemana: normalizarDiasSemana(
+                diasSemana,
+                bloques,
+                ['diaria_admin', 'rutina_general', 'rutina_avanzada'].includes(tipoAsignacion)
+            ),
             activo: true
         };
 

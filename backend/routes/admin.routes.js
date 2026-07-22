@@ -11,7 +11,7 @@ router.get('/clientes', adminController.listarClientes);
 router.get('/clientes/asistencia', adminController.listarClientesParaAsistencia);
 router.patch('/clientes/:id', adminController.actualizarCliente);
 router.delete('/clientes/:id', adminController.eliminarCliente);
-router.patch('/usuarios/rol-admin', adminController.asignarRolAdminPorCedula);
+router.patch('/usuarios/rol-admin', adminController.asignarRolAdminPorCorreo);
 router.get('/pagos/pendientes', paymentController.listarPagosPendientesAdmin);
 router.patch('/pagos/aprobar', paymentController.aprobarPagoAdmin);
 router.patch('/pagos/rechazar', paymentController.rechazarPagoAdmin);

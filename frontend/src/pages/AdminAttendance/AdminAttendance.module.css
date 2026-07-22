@@ -140,6 +140,25 @@
   cursor: pointer;
 }
 
+.tablePanel button:disabled {
+  background-color: #8a817f;
+  cursor: default;
+}
+
+.attendanceStatus {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.registered { background-color: #287a45; }
+.notRegistered { background-color: #b83232; }
+
 @media (max-width: 720px) {
   .page {
     padding: 10px;

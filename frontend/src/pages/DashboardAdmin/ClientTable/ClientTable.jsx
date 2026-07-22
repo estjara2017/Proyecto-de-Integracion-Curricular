@@ -23,7 +23,7 @@ export default function ClientTable() {
   const [editingId, setEditingId] = useState(null);
   const [editFormData, setEditFormData] = useState({ phone: '', address: '', email: '', weight: '', height: '', liftWeight: '', maxAverage: '' });
   const [error, setError] = useState('');
-  const [cedulaAdmin, setCedulaAdmin] = useState('');
+  const [correoAdmin, setCorreoAdmin] = useState('');
 
   const cargarClientes = async () => {
     try {
@@ -103,9 +103,9 @@ export default function ClientTable() {
   const handleAsignarAdmin = async (event) => {
     event.preventDefault();
     try {
-      const usuario = await adminService.asignarAdminPorCedula(cedulaAdmin.trim());
+      const usuario = await adminService.asignarAdminPorCorreo(correoAdmin.trim());
       alert(`${formatFullName(usuario.nombre, usuario.apellido)} ahora tiene rol de administrador.`);
-      setCedulaAdmin('');
+      setCorreoAdmin('');
       await cargarClientes();
     } catch (err) {
       alert(err.message || 'No se pudo asignar el rol de administrador');
@@ -115,12 +115,12 @@ export default function ClientTable() {
   return (
     <div className={styles.tableContainer}>
       <form className={styles.adminRoleForm} onSubmit={handleAsignarAdmin}>
-        <span>Asignar administrador por cedula</span>
+        <span>Asignar administrador por correo electronico</span>
         <input
-          type="text"
-          value={cedulaAdmin}
-          onChange={(e) => setCedulaAdmin(e.target.value)}
-          placeholder="Cedula / Identificacion"
+          type="email"
+          value={correoAdmin}
+          onChange={(e) => setCorreoAdmin(toLowerInput(e.target.value))}
+          placeholder="Correo electronico"
           required
         />
         <button type="submit">Asignar</button>
