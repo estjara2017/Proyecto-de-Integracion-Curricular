@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./Attendance.module.css";
 import Login from "../Login/Login";
 import Header2 from "../../components/Header/Header2";
@@ -8,12 +8,14 @@ import { fetchPalabraDelDia } from "../../services/attendanceService";
 
 function Attendance() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const qrTokenInicial = useRef(searchParams.get("qr"));
   const [palabra, setPalabra] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const cargarPalabra = async () => {
-      const qrToken = searchParams.get("qr");
+      const qrToken = qrTokenInicial.current;
 
       if (!qrToken) {
         localStorage.removeItem("elemental_attendance_qr_token");
@@ -26,7 +28,7 @@ function Attendance() {
         setPalabra(palabraClave);
         setError(null);
         localStorage.setItem("elemental_attendance_qr_token", qrToken);
-        window.history.replaceState({}, "", "/attendance");
+        navigate("/attendance", { replace: true });
       } catch (err) {
         console.error("Error al obtener la palabra del dia:", err);
         localStorage.removeItem("elemental_attendance_qr_token");
@@ -35,7 +37,7 @@ function Attendance() {
     };
 
     cargarPalabra();
-  }, [searchParams]);
+  }, [navigate]);
 
   return (
     <div className={styles.pageWrapper}>
