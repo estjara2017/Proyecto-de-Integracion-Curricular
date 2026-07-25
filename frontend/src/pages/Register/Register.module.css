@@ -321,3 +321,9 @@
     transform: translateY(0);
   }
 }
+.validationError {
+  margin: 0.35rem 0 0;
+  color: #ff8a8a;
+  font-size: 0.82rem;
+  line-height: 1.2;
+}

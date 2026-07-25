@@ -14,7 +14,7 @@ export const normalizeUserPayload = (payload = {}) => ({
   ...payload,
   nombre: toUpperInput(payload.nombre),
   apellido: toUpperInput(payload.apellido),
-  cedula: toUpperInput(payload.cedula),
+  cedula: onlyDigits(payload.cedula),
   correo: toLowerInput(payload.correo),
   telefono: onlyDigits(payload.telefono),
   direccion: toUpperInput(payload.direccion),

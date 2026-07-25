@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import styles from './Register.module.css'
 import Button from '../../components/Button/Button'
 import logo from '../../assets/logo1.png'
@@ -5,6 +6,19 @@ import { useRegisterForm } from '../../hooks/useRegisterForm' // Comprueba que l
 import { onlyDigits, toLowerInput } from '../../utils/inputNormalization'
 
 function Register() {
+  const [numericErrors, setNumericErrors] = useState({ cedula: '', telefono: '' })
+
+  const handleNumericChange = (field, value, setter) => {
+    const hasInvalidCharacters = /\D/.test(value)
+    const fieldLabel = field === 'cedula' ? 'La cédula' : 'El teléfono'
+
+    setNumericErrors((current) => ({
+      ...current,
+      [field]: hasInvalidCharacters ? `${fieldLabel} solo debe contener números enteros.` : ''
+    }))
+    setter(onlyDigits(value))
+  }
+
   // 🚀 Asegúrate de incluir setDescripcionLesion aquí en la destructuración:
   const {
     alertMessage,
@@ -67,9 +81,17 @@ function Register() {
                 placeholder="Cédula / Identificación" 
                 className={styles.input}
                 value={idCard}
-                onChange={(e) => setIdCard(e.target.value)}
+                onChange={(e) => handleNumericChange('cedula', e.target.value, setIdCard)}
+                inputMode="numeric"
+                pattern="[0-9]+"
+                aria-describedby="cedula-error"
                 required 
               />
+              {numericErrors.cedula && (
+                <p id="cedula-error" className={styles.validationError} role="alert">
+                  {numericErrors.cedula}
+                </p>
+              )}
             </div>
 
             <div className={styles.inputGroup}>
@@ -78,11 +100,17 @@ function Register() {
                 placeholder="Teléfono de contacto" 
                 className={styles.input}
                 value={phone}
-                onChange={(e) => setPhone(onlyDigits(e.target.value))}
+                onChange={(e) => handleNumericChange('telefono', e.target.value, setPhone)}
                 inputMode="numeric"
-                pattern="[0-9]*"
+                pattern="[0-9]+"
+                aria-describedby="telefono-error"
                 required 
               />
+              {numericErrors.telefono && (
+                <p id="telefono-error" className={styles.validationError} role="alert">
+                  {numericErrors.telefono}
+                </p>
+              )}
             </div>
 
             <div className={styles.inputGroup}>

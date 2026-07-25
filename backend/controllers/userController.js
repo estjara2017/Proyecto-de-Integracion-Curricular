@@ -2,7 +2,7 @@ const { Usuario, OtpModel, Level, LevelResource, RoutineTemplate, sequelize } = 
 const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const { calcularEdad, obtenerRangoEdad, calcularPorcentajeProgreso, calcularSemanaCiclo } = require('../utils/athleteMetrics');
-const { isValidPhone, normalizeEmail, normalizeUserTextFields } = require('../utils/textNormalization');
+const { isValidCedula, isValidPhone, normalizeEmail, normalizeUserTextFields } = require('../utils/textNormalization');
 const { getAssignedRoutinesForUser } = require('../utils/routineAssignments');
 const { enviarCodigoOtp } = require('../services/emailService');
 
@@ -37,6 +37,10 @@ exports.registrarUsuario = async (req, res) => {
 
         if (!isValidPhone(telefono)) {
             return res.status(400).json({ status: 'error', message: 'El telefono solo debe contener numeros.' });
+        }
+
+        if (!isValidCedula(cedula)) {
+            return res.status(400).json({ status: 'error', message: 'La cedula solo debe contener numeros enteros.' });
         }
 
         const usuarioNormalizado = normalizeUserTextFields({

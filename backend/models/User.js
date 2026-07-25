@@ -15,7 +15,19 @@ const Usuario = sequelize.define('Usuario', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     nombre: { type: DataTypes.STRING, allowNull: false, set(value) { setUpper.call(this, 'nombre', value); } },
     apellido: { type: DataTypes.STRING, allowNull: false, set(value) { setUpper.call(this, 'apellido', value); } },
-    cedula: { type: DataTypes.STRING, unique: true, allowNull: false, set(value) { setUpper.call(this, 'cedula', value); } },
+    cedula: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+        set(value) { setUpper.call(this, 'cedula', value); },
+        validate: {
+            soloNumeros(value) {
+                if (!/^[0-9]+$/.test(value)) {
+                    throw new Error('La cedula solo debe contener numeros enteros.');
+                }
+            }
+        }
+    },
     correo: {
         type: DataTypes.STRING,
         unique: true,
