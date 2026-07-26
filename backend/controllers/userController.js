@@ -9,6 +9,23 @@ const { enviarCodigoOtp } = require('../services/emailService');
 const JWT_SECRET = process.env.JWT_SECRET || 'ElementalCrossTraining_Secret_Key_2026';
 const isProduction = process.env.NODE_ENV === 'production';
 
+const isAtLeastTenYearsOld = (fechaNacimiento) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(fechaNacimiento || ''))) return false;
+
+    const [year, month, day] = fechaNacimiento.split('-').map(Number);
+    const birthDate = new Date(year, month - 1, day);
+    if (
+        birthDate.getFullYear() !== year
+        || birthDate.getMonth() !== month - 1
+        || birthDate.getDate() !== day
+    ) return false;
+
+    const maximumBirthDate = new Date();
+    maximumBirthDate.setHours(0, 0, 0, 0);
+    maximumBirthDate.setFullYear(maximumBirthDate.getFullYear() - 10);
+    return birthDate <= maximumBirthDate;
+};
+
 const buscarUsuarioPorCorreo = (correo) => {
     const correoNormalizado = normalizeEmail(correo);
     return Usuario.findOne({
@@ -36,11 +53,15 @@ exports.registrarUsuario = async (req, res) => {
         }
 
         if (!isValidPhone(telefono)) {
-            return res.status(400).json({ status: 'error', message: 'El telefono solo debe contener numeros.' });
+            return res.status(400).json({ status: 'error', message: 'El telefono debe contener entre 1 y 10 numeros enteros.' });
         }
 
         if (!isValidCedula(cedula)) {
-            return res.status(400).json({ status: 'error', message: 'La cedula solo debe contener numeros enteros.' });
+            return res.status(400).json({ status: 'error', message: 'La cedula debe contener entre 1 y 10 numeros enteros.' });
+        }
+
+        if (!isAtLeastTenYearsOld(fechaNacimiento)) {
+            return res.status(400).json({ status: 'error', message: 'El usuario debe tener al menos 10 años de edad.' });
         }
 
         const usuarioNormalizado = normalizeUserTextFields({

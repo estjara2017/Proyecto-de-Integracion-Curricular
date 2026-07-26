@@ -8,15 +8,15 @@ const installUserNormalizationTrigger = async () => {
             NEW."nombre" = UPPER(TRIM(NEW."nombre"));
             NEW."apellido" = UPPER(TRIM(NEW."apellido"));
             NEW."cedula" = UPPER(TRIM(NEW."cedula"));
-            IF NEW."cedula" !~ '^[0-9]+$' THEN
-                RAISE EXCEPTION 'La cedula solo debe contener numeros enteros.';
+            IF NEW."cedula" !~ '^[0-9]{1,10}$' THEN
+                RAISE EXCEPTION 'La cedula debe contener entre 1 y 10 numeros enteros.';
             END IF;
             NEW."correo" = LOWER(TRIM(NEW."correo"));
 
             IF NEW."telefono" IS NOT NULL THEN
                 NEW."telefono" = TRIM(NEW."telefono");
-                IF NEW."telefono" !~ '^[0-9]+$' THEN
-                    RAISE EXCEPTION 'El telefono solo debe contener numeros.';
+                IF NEW."telefono" !~ '^[0-9]{1,10}$' THEN
+                    RAISE EXCEPTION 'El telefono debe contener entre 1 y 10 numeros enteros.';
                 END IF;
                 NEW."telefono" = UPPER(NEW."telefono");
             END IF;

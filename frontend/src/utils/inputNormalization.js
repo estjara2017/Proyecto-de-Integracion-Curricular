@@ -1,4 +1,5 @@
 export const onlyDigits = (value) => String(value || '').replace(/\D/g, '');
+export const onlyTenDigits = (value) => onlyDigits(value).slice(0, 10);
 
 export const toUpperInput = (value) => {
   if (typeof value !== 'string') return value;
@@ -14,9 +15,9 @@ export const normalizeUserPayload = (payload = {}) => ({
   ...payload,
   nombre: toUpperInput(payload.nombre),
   apellido: toUpperInput(payload.apellido),
-  cedula: onlyDigits(payload.cedula),
+  cedula: onlyTenDigits(payload.cedula),
   correo: toLowerInput(payload.correo),
-  telefono: onlyDigits(payload.telefono),
+  telefono: onlyTenDigits(payload.telefono),
   direccion: toUpperInput(payload.direccion),
   genero: toUpperInput(payload.genero),
   poseeLesion: toUpperInput(payload.poseeLesion),

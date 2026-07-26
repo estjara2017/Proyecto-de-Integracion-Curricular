@@ -11,7 +11,7 @@ const USER_UPPERCASE_FIELDS = [
 
 const USER_LOWERCASE_FIELDS = ['correo'];
 const USER_NORMALIZED_FIELDS = [...USER_UPPERCASE_FIELDS, ...USER_LOWERCASE_FIELDS];
-const DIGITS_REGEX = /^[0-9]+$/;
+const IDENTIFIER_DIGITS_REGEX = /^[0-9]{1,10}$/;
 
 const toUpperText = (value) => {
     if (typeof value !== 'string') return value;
@@ -45,12 +45,12 @@ const normalizeUserTextFields = (payload = {}) => {
 
 const isValidPhone = (telefono) => {
     if (telefono === undefined || telefono === null || telefono === '') return true;
-    return DIGITS_REGEX.test(String(telefono).trim());
+    return IDENTIFIER_DIGITS_REGEX.test(String(telefono).trim());
 };
 
 const isValidCedula = (cedula) => {
     if (cedula === undefined || cedula === null || cedula === '') return false;
-    return DIGITS_REGEX.test(String(cedula).trim());
+    return IDENTIFIER_DIGITS_REGEX.test(String(cedula).trim());
 };
 
 module.exports = {

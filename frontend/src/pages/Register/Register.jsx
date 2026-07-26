@@ -5,18 +5,35 @@ import logo from '../../assets/logo1.png'
 import { useRegisterForm } from '../../hooks/useRegisterForm' // Comprueba que la ruta apunte bien a src/hooks
 import { onlyDigits, toLowerInput } from '../../utils/inputNormalization'
 
+const getMaximumBirthDate = () => {
+  const date = new Date()
+  date.setFullYear(date.getFullYear() - 10)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 function Register() {
   const [numericErrors, setNumericErrors] = useState({ cedula: '', telefono: '' })
 
   const handleNumericChange = (field, value, setter) => {
     const hasInvalidCharacters = /\D/.test(value)
+    const hasTooManyDigits = onlyDigits(value).length > 10
     const fieldLabel = field === 'cedula' ? 'La cédula' : 'El teléfono'
+    let errorMessage = ''
+
+    if (hasInvalidCharacters) {
+      errorMessage = `${fieldLabel} solo debe contener números enteros.`
+    } else if (hasTooManyDigits) {
+      errorMessage = `${fieldLabel} solo puede tener hasta 10 dígitos.`
+    }
 
     setNumericErrors((current) => ({
       ...current,
-      [field]: hasInvalidCharacters ? `${fieldLabel} solo debe contener números enteros.` : ''
+      [field]: errorMessage
     }))
-    setter(onlyDigits(value))
+    setter(onlyDigits(value).slice(0, 10))
   }
 
   // 🚀 Asegúrate de incluir setDescripcionLesion aquí en la destructuración:
@@ -84,7 +101,8 @@ function Register() {
                 value={idCard}
                 onChange={(e) => handleNumericChange('cedula', e.target.value, setIdCard)}
                 inputMode="numeric"
-                pattern="[0-9]+"
+                pattern="[0-9]{1,10}"
+                maxLength={10}
                 aria-describedby="cedula-error"
                 required 
               />
@@ -103,7 +121,8 @@ function Register() {
                 value={phone}
                 onChange={(e) => handleNumericChange('telefono', e.target.value, setPhone)}
                 inputMode="numeric"
-                pattern="[0-9]+"
+                pattern="[0-9]{1,10}"
+                maxLength={10}
                 aria-describedby="telefono-error"
                 required 
               />
@@ -166,6 +185,7 @@ function Register() {
                 className={styles.input}
                 value={birthDate}
                 onChange={(e) => setBirthDate(e.target.value)}
+                max={getMaximumBirthDate()}
                 required 
               />
             </div>

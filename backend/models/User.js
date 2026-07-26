@@ -22,8 +22,8 @@ const Usuario = sequelize.define('Usuario', {
         set(value) { setUpper.call(this, 'cedula', value); },
         validate: {
             soloNumeros(value) {
-                if (!/^[0-9]+$/.test(value)) {
-                    throw new Error('La cedula solo debe contener numeros enteros.');
+                if (!/^[0-9]{1,10}$/.test(value)) {
+                    throw new Error('La cedula debe contener entre 1 y 10 numeros enteros.');
                 }
             }
         }
@@ -40,8 +40,8 @@ const Usuario = sequelize.define('Usuario', {
         set(value) { setUpper.call(this, 'telefono', value); },
         validate: {
             soloNumeros(value) {
-                if (value && !/^[0-9]+$/.test(value)) {
-                    throw new Error('El telefono solo debe contener numeros.');
+                if (value && !/^[0-9]{1,10}$/.test(value)) {
+                    throw new Error('El telefono debe contener entre 1 y 10 numeros enteros.');
                 }
             }
         }
