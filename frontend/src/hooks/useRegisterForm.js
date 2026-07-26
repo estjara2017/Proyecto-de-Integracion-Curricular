@@ -9,6 +9,7 @@ export function useRegisterForm() {
 
   const alertMessage = location.state?.message;
   const [showAlert, setShowAlert] = useState(!!alertMessage);
+  const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState('');
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -38,6 +39,7 @@ export function useRegisterForm() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setRegistrationSuccessMessage('');
 
     const userData = normalizeUserPayload({
       nombre: firstName,
@@ -56,7 +58,19 @@ export function useRegisterForm() {
 
     try {
       await usuarioService.registrar(userData);
-      navigate('/login');
+      setRegistrationSuccessMessage('Se registró correctamente. Por favor, inicie sesión.');
+      setFirstName('');
+      setLastName('');
+      setIdCard('');
+      setPhone('');
+      setEmail('');
+      setWeight('');
+      setHeight('');
+      setAddress('');
+      setBirthDate('');
+      setGender('masculino');
+      setTieneLesion('no');
+      setDescripcionLesion('');
     } catch (error) {
       alert(error.message || 'No se pudo registrar el usuario');
     }
@@ -65,6 +79,7 @@ export function useRegisterForm() {
   return {
     alertMessage,
     showAlert,
+    registrationSuccessMessage,
     firstName, setFirstName,
     lastName, setLastName,
     idCard, setIdCard,

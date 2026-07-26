@@ -23,6 +23,7 @@ function Register() {
   const {
     alertMessage,
     showAlert,
+    registrationSuccessMessage,
     firstName, setFirstName,
     lastName, setLastName,
     idCard, setIdCard,
@@ -245,10 +246,25 @@ function Register() {
 
       {/* Lado Derecho */}
       <div className={styles.logoContainer}>
-        {showAlert && (
-          <div className={styles.planAlert}>
-            <span className={styles.alertIcon}>⚠️</span>
-            <p>{alertMessage}</p>
+        {(showAlert || registrationSuccessMessage) && (
+          <div
+            className={`${styles.planAlert} ${registrationSuccessMessage ? styles.successAlert : ''}`}
+            role="status"
+            aria-live="polite"
+          >
+            <span className={styles.alertIcon}>{registrationSuccessMessage ? '✓' : '⚠️'}</span>
+            <div className={styles.alertContent}>
+              <p>{registrationSuccessMessage || alertMessage}</p>
+              {registrationSuccessMessage && (
+                <button
+                  type="button"
+                  className={styles.loginLink}
+                  onClick={() => navigate('/login')}
+                >
+                  Iniciar sesión
+                </button>
+              )}
+            </div>
           </div>
         )}
         <img src={logo} alt="Logo Institutional" className={styles.logo} />
