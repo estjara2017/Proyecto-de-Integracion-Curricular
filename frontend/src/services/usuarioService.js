@@ -15,6 +15,7 @@ export const usuarioService = {
     });
   },
 
+// Envio de la solicitud tranformando en JSON peticion HTTP o HTTPS si tiene SSL al backend
   verificarOtp: async (correo, codigoOtp) => {
     const data = await apiRequest('/usuarios/login/verificar-otp', {
       method: 'POST',
