@@ -72,6 +72,13 @@
 .headerBlock {
   border-left: 4px solid #7a1e48;
   padding-left: 14px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 18px;
 }
 
@@ -84,6 +91,28 @@
 .headerBlock p {
   margin: 0;
   color: #665c59;
+}
+
+.headerBlock small {
+  display: block;
+  margin-top: 5px;
+  color: #7b706d;
+}
+
+.refreshButton {
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 5px;
+  background-color: #554e4d;
+  color: #ffffff;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.refreshButton:disabled {
+  opacity: 0.7;
+  cursor: wait;
 }
 
 .filters {
@@ -184,6 +213,15 @@
   .manualPanel {
     padding: 16px;
     max-height: none;
+  }
+
+  .headerRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .refreshButton {
+    width: 100%;
   }
 
   .filters {

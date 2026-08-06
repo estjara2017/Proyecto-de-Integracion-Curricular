@@ -35,17 +35,42 @@ export default function AdminAttendance() {
   const [clientes, setClientes] = useState([]);
   const [message, setMessage] = useState('');
   const [showQrPanel, setShowQrPanel] = useState(false);
+  const [actualizando, setActualizando] = useState(false);
+  const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
 
-  const cargarClientes = useCallback(async () => {
-    const data = await adminService.listarClientesParaAsistencia(filters);
-    setClientes(data);
+  const cargarClientes = useCallback(async ({ mostrarCarga = false } = {}) => {
+    if (mostrarCarga) setActualizando(true);
+    try {
+      const data = await adminService.listarClientesParaAsistencia(filters);
+      setClientes(data);
+      setUltimaActualizacion(new Date());
+    } finally {
+      if (mostrarCarga) setActualizando(false);
+    }
   }, [filters]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const cargaInicial = setTimeout(() => {
       cargarClientes().catch((error) => setMessage(error.message));
     }, 0);
-    return () => clearTimeout(timer);
+
+    const actualizarEstados = () => {
+      cargarClientes().catch(() => {});
+    };
+    const intervalo = window.setInterval(actualizarEstados, 15000);
+    const actualizarAlVolver = () => {
+      if (document.visibilityState === 'visible') actualizarEstados();
+    };
+
+    window.addEventListener('focus', actualizarEstados);
+    document.addEventListener('visibilitychange', actualizarAlVolver);
+
+    return () => {
+      clearTimeout(cargaInicial);
+      clearInterval(intervalo);
+      window.removeEventListener('focus', actualizarEstados);
+      document.removeEventListener('visibilitychange', actualizarAlVolver);
+    };
   }, [cargarClientes]);
 
   const registrar = async (usuarioId, nombre) => {
@@ -79,9 +104,22 @@ export default function AdminAttendance() {
         </section>
 
         <section className={styles.manualPanel}>
-          <div className={styles.headerBlock}>
-            <h1>Registro Manual de Asistencia</h1>
-            <p>Filtra por horario, genero, rango de edad o nivel para registrar asistencia de apoyo.</p>
+          <div className={styles.headerRow}>
+            <div className={styles.headerBlock}>
+              <h1>Control de Asistencia de Hoy</h1>
+              <p>El estado se actualiza automáticamente cuando un cliente registra su asistencia.</p>
+              {ultimaActualizacion && (
+                <small>Última actualización: {ultimaActualizacion.toLocaleTimeString('es-EC')}</small>
+              )}
+            </div>
+            <button
+              type="button"
+              className={styles.refreshButton}
+              disabled={actualizando}
+              onClick={() => cargarClientes({ mostrarCarga: true }).catch((error) => setMessage(error.message))}
+            >
+              {actualizando ? 'Actualizando...' : 'Actualizar estados'}
+            </button>
           </div>
 
           <div className={styles.filters}>
@@ -113,7 +151,7 @@ export default function AdminAttendance() {
                   <th>Cliente</th>
                   <th>Horario</th>
                   <th>Genero</th>
-                  <th>Estado</th>
+                  <th>Asistencia de hoy</th>
                   <th>Nivel</th>
                   <th>Accion</th>
                 </tr>

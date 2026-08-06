@@ -2,6 +2,7 @@ const { Usuario, Plan, Suscripcion, Pago, Level, LevelResource, RoutineTemplate,
 const { calcularEdad, obtenerRangoEdad, calcularPorcentajeProgreso } = require('../utils/athleteMetrics');
 const { isValidPhone, normalizeEmail, normalizeUserTextFields, toUpperText } = require('../utils/textNormalization');
 const { WEEK_DAYS } = require('../utils/routineAssignments');
+const { obtenerFechaEcuador } = require('../utils/ecuadorDate');
 
 const normalizarListaIds = (value = []) => (
     Array.isArray(value) ? value.map((item) => Number(item)).filter(Boolean) : []
@@ -139,7 +140,7 @@ exports.listarClientesParaAsistencia = async (req, res) => {
             order: [['apellido', 'ASC'], ['nombre', 'ASC']]
         });
 
-        const fechaHoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Guayaquil' });
+        const fechaHoy = obtenerFechaEcuador();
         const asistenciasHoy = await Attendance.findAll({
             where: { fecha: fechaHoy, usuarioId: clientes.map((cliente) => cliente.id) },
             attributes: ['usuarioId']

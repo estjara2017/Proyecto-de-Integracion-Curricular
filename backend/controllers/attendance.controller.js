@@ -4,6 +4,7 @@ const Suscripcion = require('../models/planUsuario');
 const AttendanceQrToken = require('../models/AttendanceQrToken');
 const { Op } = require('sequelize');
 const crypto = require('crypto');
+const { obtenerFechaEcuador } = require('../utils/ecuadorDate');
 
 const PALABRAS_QR = [
     'WOD', 'BURPEE', 'AMRAP', 'THRUSTER', 'SNATCH',
@@ -113,7 +114,7 @@ exports.registrarAutoAsistencia = async (req, res) => {
     try {
         const { palabraIngresada, qrToken } = req.body;
         const usuarioId = req.user.id;
-        const hoy = new Date().toISOString().split('T')[0];
+        const hoy = obtenerFechaEcuador();
 
         const qrValido = await validarTokenQr(qrToken);
         if (!qrValido) {
@@ -169,7 +170,7 @@ exports.registrarAutoAsistencia = async (req, res) => {
 exports.registrarAsistenciaPorAdmin = async (req, res) => {
     try {
         const { usuarioId, fechaAsistencia } = req.body;
-        const fechaFinal = fechaAsistencia || new Date().toISOString().split('T')[0];
+        const fechaFinal = fechaAsistencia || obtenerFechaEcuador();
 
         const usuario = await Usuario.findByPk(usuarioId);
         if (!usuario) {
