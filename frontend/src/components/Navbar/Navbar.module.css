@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
   padding: 6px;
   margin: 15px auto;
   width: 100%;
@@ -77,6 +78,7 @@
 /* 📱 RESPONSIVE: MODO CARRUSEL DESLIZABLE HORIZONTAL */
 @media (max-width: 600px) {
   .navbar {
+    justify-content: flex-start;
     border-radius: 20px;
     padding: 6px 12px;
     /* Activa scroll horizontal si el contenido desborda en pantallas pequeñas */
@@ -89,7 +91,9 @@
   }
 
   .navList {
-    width: auto;
+    flex: 0 0 max-content;
+    width: max-content;
+    min-width: max-content;
     gap: 8px; /* Espaciado entre botones del carrusel */
   }
 
