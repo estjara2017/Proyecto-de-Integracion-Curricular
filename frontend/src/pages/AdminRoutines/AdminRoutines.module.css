@@ -8,13 +8,12 @@
 }
 
 .workspace {
-  min-height: calc(100dvh - 102px);
   max-width: 1500px;
   margin: clamp(8px, 1.5vh, 16px) auto 0;
 }
 
 .card {
-  min-height: calc(100dvh - 102px);
+  height: clamp(720px, calc(100dvh - 70px), 1050px);
   border: 1px solid rgba(74, 40, 52, 0.15);
   border-radius: 12px;
   background: #ffffff;
@@ -53,9 +52,40 @@
   min-height: 0;
   padding: clamp(10px, 1.5vw, 20px);
   overflow-y: auto;
-  max-height: calc(100dvh - 180px);
   overscroll-behavior: contain;
   background: #f8f4f6;
+}
+
+.dashboardButton {
+  position: fixed;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: 30;
+  width: auto;
+  max-width: calc(100vw - 28px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  padding: 13px 20px;
+  background-color: #7a1e48;
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(74, 40, 52, 0.35);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboardButton:hover {
+  background-color: #5e1537;
+  box-shadow: 0 10px 28px rgba(74, 40, 52, 0.45);
+  transform: translateY(-2px);
+}
+
+.dashboardButton:focus-visible {
+  outline: 3px solid rgba(122, 30, 72, 0.35);
+  outline-offset: 3px;
 }
 
 @media (max-width: 768px) {
@@ -64,20 +94,22 @@
   }
 
   .workspace {
-    min-height: calc(100dvh - 82px);
     margin-top: 6px;
   }
 
   .card {
     border-radius: 9px;
-    min-height: calc(100dvh - 82px);
+    height: max(680px, calc(100dvh - 40px));
   }
 
   .cardHeader p {
     display: none;
   }
 
-  .cardBody {
-    max-height: calc(100dvh - 130px);
+  .dashboardButton {
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    padding: 11px 16px;
+    font-size: 0.9rem;
   }
 }
