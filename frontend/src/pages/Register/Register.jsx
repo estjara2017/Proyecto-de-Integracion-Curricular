@@ -77,6 +77,8 @@ function Register() {
                 className={styles.input}
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
+                minLength={2}
+                maxLength={60}
                 required 
               />
             </div>
@@ -89,6 +91,8 @@ function Register() {
                 className={styles.input}
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
+                minLength={2}
+                maxLength={80}
                 required 
               />
             </div>
@@ -140,6 +144,7 @@ function Register() {
                 className={styles.input}
                 value={email}
                 onChange={(e) => setEmail(toLowerInput(e.target.value))}
+                maxLength={254}
                 required 
               />
             </div>
@@ -173,6 +178,8 @@ function Register() {
                 className={styles.input}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                minLength={2}
+                maxLength={150}
                 required 
               />
             </div>

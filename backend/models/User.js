@@ -13,10 +13,32 @@ const setLowerEmail = function setLowerEmail(value) {
 
 const Usuario = sequelize.define('Usuario', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    nombre: { type: DataTypes.STRING, allowNull: false, set(value) { setUpper.call(this, 'nombre', value); } },
-    apellido: { type: DataTypes.STRING, allowNull: false, set(value) { setUpper.call(this, 'apellido', value); } },
+    nombre: {
+        type: DataTypes.STRING(60),
+        allowNull: false,
+        set(value) { setUpper.call(this, 'nombre', value); },
+        validate: {
+            longitudNombre(value) {
+                if ((this.isNewRecord || this.changed('nombre')) && (String(value || '').length < 2 || String(value).length > 60)) {
+                    throw new Error('El nombre debe contener entre 2 y 60 caracteres.');
+                }
+            }
+        }
+    },
+    apellido: {
+        type: DataTypes.STRING(80),
+        allowNull: false,
+        set(value) { setUpper.call(this, 'apellido', value); },
+        validate: {
+            longitudApellido(value) {
+                if ((this.isNewRecord || this.changed('apellido')) && (String(value || '').length < 2 || String(value).length > 80)) {
+                    throw new Error('El apellido debe contener entre 2 y 80 caracteres.');
+                }
+            }
+        }
+    },
     cedula: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(10),
         unique: true,
         allowNull: false,
         set(value) { setUpper.call(this, 'cedula', value); },
@@ -29,14 +51,21 @@ const Usuario = sequelize.define('Usuario', {
         }
     },
     correo: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(254),
         unique: true,
         allowNull: false,
         set: setLowerEmail,
-        validate: { isEmail: true }
+        validate: {
+            isEmail: true,
+            longitudCorreo(value) {
+                if ((this.isNewRecord || this.changed('correo')) && (String(value || '').length < 5 || String(value).length > 254)) {
+                    throw new Error('El correo debe contener entre 5 y 254 caracteres.');
+                }
+            }
+        }
     }, // Campo clave para el login con OTP
     telefono: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(10),
         set(value) { setUpper.call(this, 'telefono', value); },
         validate: {
             soloNumeros(value) {
@@ -48,7 +77,17 @@ const Usuario = sequelize.define('Usuario', {
     },
     peso: { type: DataTypes.FLOAT }, 
     estatura: { type: DataTypes.FLOAT }, 
-    direccion: { type: DataTypes.STRING, set(value) { setUpper.call(this, 'direccion', value); } },
+    direccion: {
+        type: DataTypes.STRING(150),
+        set(value) { setUpper.call(this, 'direccion', value); },
+        validate: {
+            longitudDireccion(value) {
+                if (value && (this.isNewRecord || this.changed('direccion')) && (value.length < 2 || value.length > 150)) {
+                    throw new Error('La direccion debe contener entre 2 y 150 caracteres.');
+                }
+            }
+        }
+    },
     fechaNacimiento: { type: DataTypes.DATEONLY },
     genero: { type: DataTypes.STRING, set(value) { setUpper.call(this, 'genero', value); } },
     poseeLesion: { type: DataTypes.STRING, defaultValue: 'NO', set(value) { setUpper.call(this, 'poseeLesion', value); } },

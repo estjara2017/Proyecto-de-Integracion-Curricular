@@ -92,6 +92,12 @@ exports.registrarUsuario = async (req, res) => {
             data: nuevoUsuario
         });
     } catch (error) {
+        if (error.name === 'SequelizeValidationError') {
+            return res.status(400).json({
+                status: 'error',
+                message: error.errors?.[0]?.message || 'Los datos ingresados no cumplen los limites permitidos.'
+            });
+        }
         return res.status(500).json({ status: 'error', message: 'Error interno en el servidor.', error: error.message });
     }
 };

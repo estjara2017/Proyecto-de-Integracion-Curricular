@@ -170,6 +170,7 @@ export default function ClientTable() {
                             name="address"
                             value={editFormData.address}
                             onChange={handleEditFormChange}
+                            maxLength={150}
                             className={styles.editInput}
                           />
                         ) : (
@@ -184,6 +185,7 @@ export default function ClientTable() {
                             name="email"
                             value={editFormData.email}
                             onChange={(event) => setEditFormData((prev) => ({ ...prev, email: toLowerInput(event.target.value) }))}
+                            maxLength={254}
                             className={styles.editInput}
                           />
                         ) : (

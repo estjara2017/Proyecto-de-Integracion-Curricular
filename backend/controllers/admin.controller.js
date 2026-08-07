@@ -219,6 +219,12 @@ exports.actualizarCliente = async (req, res) => {
         await usuario.save();
         return res.status(200).json({ status: 'success', data: usuario });
     } catch (error) {
+        if (error.name === 'SequelizeValidationError') {
+            return res.status(400).json({
+                status: 'error',
+                message: error.errors?.[0]?.message || 'Los datos ingresados no cumplen los limites permitidos.'
+            });
+        }
         return res.status(500).json({ status: 'error', error: error.message });
     }
 };

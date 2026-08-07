@@ -85,9 +85,24 @@
 }
 
 .clientName {
+  display: -webkit-box;
+  max-width: 36rem;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   font-weight: bold;
   color: #212529;
   font-size: 1.1rem;
+}
+
+.clientPhone,
+.clientAddress,
+.clientEmail {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* Estado Badges */
