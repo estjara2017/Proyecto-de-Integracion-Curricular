@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header2 from '../../components/Header/Header2';
 import styles from './AdminAttendance.module.css';
 import { adminService } from '../../services/adminService';
@@ -31,6 +32,7 @@ const GENEROS = ['', 'masculino', 'femenino'];
 const NIVELES = ['', 'Principiante', 'Novato', 'Intermedio', 'Avanzado', 'Elite'];
 
 export default function AdminAttendance() {
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({ horario: '', genero: '', rangoEdad: '', nivel: '' });
   const [clientes, setClientes] = useState([]);
   const [message, setMessage] = useState('');
@@ -184,6 +186,14 @@ export default function AdminAttendance() {
           </div>
         </section>
       </main>
+
+      <button
+        type="button"
+        className={styles.dashboardButton}
+        onClick={() => navigate('/dashboardAdmin')}
+      >
+        Panel de control
+      </button>
     </div>
   );
 }

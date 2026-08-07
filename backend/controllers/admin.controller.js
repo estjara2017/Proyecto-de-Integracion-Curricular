@@ -1,4 +1,5 @@
 const { Usuario, Plan, Suscripcion, Pago, Level, LevelResource, RoutineTemplate, AdminWorkoutTemplate, Attendance } = require('../models/index');
+const { Op } = require('sequelize');
 const { calcularEdad, obtenerRangoEdad, calcularPorcentajeProgreso } = require('../utils/athleteMetrics');
 const { isValidPhone, normalizeEmail, normalizeUserTextFields, toUpperText } = require('../utils/textNormalization');
 const { WEEK_DAYS } = require('../utils/routineAssignments');
@@ -130,6 +131,7 @@ exports.listarClientesParaAsistencia = async (req, res) => {
     try {
         const { horario, genero, rangoEdad, nivel } = req.query;
         const where = { rol: 'cliente', estado: 'activo' };
+        const fechaHoy = obtenerFechaEcuador();
 
         if (horario) where.horarioEntrenamiento = horario;
         if (genero) where.genero = toUpperText(genero);
@@ -137,10 +139,26 @@ exports.listarClientesParaAsistencia = async (req, res) => {
 
         const clientes = await Usuario.findAll({
             where,
+            include: [{
+                model: Suscripcion,
+                attributes: [],
+                required: true,
+                where: {
+                    estado: 'activo',
+                    fechaInicio: { [Op.lte]: fechaHoy },
+                    fechaFin: { [Op.gte]: fechaHoy },
+                    diasTotalesDisponibles: { [Op.gt]: 0 }
+                },
+                include: [{
+                    model: Plan,
+                    attributes: [],
+                    required: true,
+                    where: { duracionDias: { [Op.gte]: 12 } }
+                }]
+            }],
             order: [['apellido', 'ASC'], ['nombre', 'ASC']]
         });
 
-        const fechaHoy = obtenerFechaEcuador();
         const asistenciasHoy = await Attendance.findAll({
             where: { fecha: fechaHoy, usuarioId: clientes.map((cliente) => cliente.id) },
             attributes: ['usuarioId']
